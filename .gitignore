@@ -1,0 +1,184 @@
+# ============================================================
+# CampusOS — Root .gitignore
+# Covers: backend (Node/Express/Prisma), frontend (Next.js),
+#         infrastructure, editors, and OS-level artifacts
+# ============================================================
+
+
+# ==========================
+# Node / npm
+# ==========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.pnp
+.pnp.*
+package-lock.json   # optional: remove this line if you want to commit lock files
+# yarn.lock         # keep this commented if you use yarn
+
+
+# ==========================
+# Environment Variables
+# !! NEVER commit secrets !!
+# ==========================
+.env
+.env.*
+!.env.example        # allow example template to be committed
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+
+# ==========================
+# TypeScript Build Artifacts
+# ==========================
+dist/
+build/
+out/
+*.tsbuildinfo
+*.d.ts.map
+
+
+# ==========================
+# Backend — Express / Prisma
+# ==========================
+backend/dist/
+backend/node_modules/
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Prisma generated client (regenerated via `prisma generate`)
+backend/node_modules/.prisma/
+
+
+# ==========================
+# Frontend — Next.js
+# ==========================
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/node_modules/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+frontend/.env.local
+frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo
+
+# Next.js cache
+frontend/.next/cache/
+
+
+# ==========================
+# Testing & Coverage
+# ==========================
+coverage/
+backend/coverage/
+frontend/coverage/
+*.lcov
+.nyc_output/
+
+
+# ==========================
+# Logs
+# ==========================
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+
+# ==========================
+# OS-level Files
+# ==========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+
+# ==========================
+# IDE & Editor Files
+# ==========================
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json    # allow recommended extensions list
+!.vscode/settings.json      # allow shared settings
+.history/
+
+# JetBrains (IntelliJ, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+Session.vim
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Emacs
+*#
+.#*
+
+
+# ==========================
+# Docker
+# ==========================
+# Keep docker-compose.yml but ignore local override
+docker-compose.override.yml
+docker-compose.local.yml
+.docker/
+
+
+# ==========================
+# Miscellaneous
+# ==========================
+*.pem
+*.key
+*.cert
+*.crt
+.vercel
+.netlify
+.turbo/
+.cache/
+tmp/
+temp/
+.temp/
+
+# Prisma migrations lock (keep actual migration files)
+# prisma/migrations/  <-- do NOT ignore this; migrations should be committed
