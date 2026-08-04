@@ -59,203 +59,119 @@
 
 ---
 
-## 🔲 NEXT STEP: Phase 2 — Placement Preparation
+## ✅ PHASE 2: Placement Preparation — COMPLETE
+
+### What Was Built
+
+#### Backend — `backend/`
+| File | Status | Description |
+|------|--------|-------------|
+| `prisma/schema.prisma` | ✅ Done | Added `Difficulty` and `TopicStatus` enums, added `PreparationCategory`, `PreparationTopic`, and `PreparationProgress` models, and updated the `User` relation. |
+| `prisma/seed.js` | ✅ Done | Script to seed default categories and topics (Arrays, Strings, Linked Lists, OS, DBMS, etc.) cleanly using Node.js. |
+| `package.json` | ✅ Done | Configured `"prisma": { "seed": "node prisma/seed.js" }`. |
+| `src/app.ts` | ✅ Done | Registered `/api/v1/placement` routing path. |
+| `src/modules/placement/types.ts` | ✅ Done | Difficulty and TopicStatus types. |
+| `src/modules/placement/schema.ts` | ✅ Done | `updateProgressSchema` Zod validation. |
+| `src/modules/placement/repository.ts` | ✅ Done | Database queries for categories, topics by category, progress overview, and progress upserts. |
+| `src/modules/placement/service.ts` | ✅ Done | Category completion percent stats, topic list formatting, and progress updates. |
+| `src/modules/placement/controller.ts` | ✅ Done | Category list, topics list, and progress updates with safe string casting. |
+| `src/modules/placement/routes.ts` | ✅ Done | GET /categories, GET /categories/:categoryId/topics, PUT /progress/:topicId (all authenticated). |
+
+#### Frontend — `frontend/`
+| File | Status | Description |
+|------|--------|-------------|
+| `src/app/dashboard/placement/page.tsx` | ✅ Done | Category grid dashboard with visual progress percentages and completion metrics. |
+| `src/app/dashboard/placement/[categoryId]/page.tsx` | ✅ Done | Topic detail checklist showing Difficulty badges, learning resource links, note input boxes, and status controls syncing instantly via TanStack Query mutations. |
+
+#### TypeScript Verification
+- ✅ `cd backend && npm run build` — compiles cleanly with zero errors
+- ✅ `cd frontend && npx tsc --noEmit` — passes with zero errors
+
+---
+
+## 🔲 NEXT STEP: Phase 3 — Mentorship
 
 ### What To Build
 
-**Goal**: Allow students to track their DSA and CS exam preparation by category (e.g., Arrays, Trees, DBMS, OS) and topic.
+**Goal**: Connect students with seniors, developers, or alumni for 1-on-1 mentorship.
 
 ---
 
-### Step 1 — Extend Prisma Schema
+### Step 1 — Extend Database Schema
 
-Add these 3 models to `backend/prisma/schema.prisma`:
+Add these models to `backend/prisma/schema.prisma`:
 
 ```prisma
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
 }
 
-enum TopicStatus {
-  NOT_STARTED
-  IN_PROGRESS
-  COMPLETED
+model MentorProfile {
+  id          String              @id @default(uuid())
+  userId      String              @unique
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  company     String
+  skills      String[]
+  bio         String?
+  linkedinUrl String?
+  calendlyUrl String?
+  isAvailable Boolean             @default(true)
+  requests    MentorshipRequest[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 }
 
-model PreparationCategory {
-  id          String               @id @default(uuid())
-  name        String
-  description String?
-  icon        String?
-  color       String?
-  topics      PreparationTopic[]
-  createdAt   DateTime             @default(now())
-}
-
-model PreparationTopic {
-  id           String                   @id @default(uuid())
-  title        String
-  categoryId   String
-  category     PreparationCategory      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  difficulty   Difficulty               @default(MEDIUM)
-  resourceUrl  String?
-  progress     PreparationProgress[]
-  createdAt    DateTime                 @default(now())
-}
-
-model PreparationProgress {
-  id        String      @id @default(uuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  topicId   String
-  topic     PreparationTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  status    TopicStatus @default(NOT_STARTED)
-  notes     String?
-  updatedAt DateTime    @updatedAt
-  createdAt DateTime    @default(now())
-
-  @@unique([userId, topicId])
+model MentorshipRequest {
+  id        String        @id @default(uuid())
+  studentId String
+  student   User          @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
+  mentorId  String
+  mentor    MentorProfile @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  message   String
+  status    RequestStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
 ```
 
-Also add `@@relation` back-reference on `User`:
+Also, update `User` model to include back-relations:
 ```prisma
-preparationProgress PreparationProgress[]
+mentorProfile   MentorProfile?
+studentRequests MentorshipRequest[] @relation("StudentRequests")
 ```
 
-Then run: `cd backend && npx prisma migrate dev --name add-placement-module`
+Then run: `cd backend && npx prisma migrate dev --name add-mentorship-module`
 
 ---
 
-### Step 2 — Create Backend Placement Module
+### Step 2 — Create Backend Mentorship Module
 
-Create these files inside `backend/src/modules/placement/`:
+Create the directory `backend/src/modules/mentorship/` and define:
 
-**`types.ts`**
-```ts
-export type DifficultyLevel = 'EASY' | 'MEDIUM' | 'HARD';
-export type StatusType = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
-```
+**`schema.ts`**
+- `createMentorProfileSchema`: validated fields (title, company, skills, bio, linkedinUrl, calendlyUrl)
+- `requestMentorshipSchema`: message payload validator
 
 **`repository.ts`**
-- `getAllCategories()` — Prisma query for all categories with topic count
-- `getTopicsByCategory(categoryId: string)` — topics list for a category
-- `getUserProgress(userId: string)` — all progress records for a user
-- `upsertProgress(userId, topicId, status, notes?)` — create or update progress (Prisma upsert)
+- `getMentors()`: list all mentors where `isAvailable = true`
+- `findMentorById(id)`: fetch specific mentor including profile
+- `createMentorProfile(userId, data)`: insert mentor credentials
+- `createRequest(studentId, mentorId, message)`: log pending mentorship request
+- `getRequestById(id)`: fetch request details
+- `updateRequestStatus(id, status)`: transition PENDING to ACCEPTED/REJECTED
+- `getStudentRequests(studentId)`: list sent requests
+- `getMentorRequests(mentorId)`: list received requests
 
 **`service.ts`**
-- Wraps repository methods
-- `getCategoryOverview(userId)` — returns categories with per-topic completion stats
+- Handle profile updates and request operations
+- Prevent student from requesting the same mentor twice in PENDING status
+- Restrict self-mentoring requests
 
 **`controller.ts`**
-- `getCategories(req, res)` — GET /placement/categories
-- `getTopics(req, res)` — GET /placement/categories/:categoryId/topics
-- `getMyProgress(req, res)` — GET /placement/progress
-- `updateProgress(req, res)` — PUT /placement/progress/:topicId
-
-**`schema.ts`** — Zod schema for PUT progress body
-**`routes.ts`** — Mount all 4 routes with `authenticate` middleware
-
-Register module in `src/app.ts`:
-```ts
-import placementRoutes from './modules/placement/routes';
-app.use('/api/v1/placement', placementRoutes);
-```
-
----
-
-### Step 3 — Seed Initial Categories + Topics
-
-Create `backend/prisma/seed.ts`:
-```ts
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-
-async function main() {
-  const categories = [
-    { name: 'Arrays & Strings', icon: '📦', color: '#6366f1' },
-    { name: 'Linked Lists', icon: '🔗', color: '#8b5cf6' },
-    { name: 'Trees & Graphs', icon: '🌲', color: '#10b981' },
-    { name: 'Dynamic Programming', icon: '🧩', color: '#f59e0b' },
-    { name: 'Operating Systems', icon: '🖥️', color: '#3b82f6' },
-    { name: 'DBMS', icon: '🗃️', color: '#ef4444' },
-    { name: 'Computer Networks', icon: '🌐', color: '#06b6d4' },
-    { name: 'System Design', icon: '🏗️', color: '#ec4899' },
-  ];
-
-  for (const cat of categories) {
-    await prisma.preparationCategory.upsert({
-      where: { name: cat.name },
-      update: {},
-      create: cat,
-    });
-  }
-  console.log('Seeded categories');
-}
-
-main().catch(console.error).finally(() => prisma.$disconnect());
-```
-
-Add to `package.json`:
-```json
-"prisma": { "seed": "ts-node prisma/seed.ts" }
-```
-Run: `npx prisma db seed`
-
----
-
-### Step 4 — Frontend Placement Pages
-
-Create `frontend/src/app/dashboard/placement/`:
-
-**`page.tsx`** — Category overview grid
-- Fetches `GET /api/v1/placement/categories`
-- Shows cards per category with animated circular progress ring
-- Each card links to `/dashboard/placement/[categoryId]`
-
-**`[categoryId]/page.tsx`** — Topic detail view
-- Fetches topics for the category
-- Lists topics with Difficulty badge (Easy/Medium/Hard)
-- Each topic has a three-state toggle: NOT_STARTED → IN_PROGRESS → COMPLETED
-- PUT to `/api/v1/placement/progress/:topicId` on toggle click
-- Shows notes textarea on expand (optional)
-
----
-
-### Files To Create for Phase 2 (Summary)
-
-```
-backend/prisma/seed.ts                           [NEW]
-backend/src/modules/placement/types.ts           [NEW]
-backend/src/modules/placement/schema.ts          [NEW]
-backend/src/modules/placement/repository.ts      [NEW]
-backend/src/modules/placement/service.ts         [NEW]
-backend/src/modules/placement/controller.ts      [NEW]
-backend/src/modules/placement/routes.ts          [NEW]
-backend/prisma/schema.prisma                     [MODIFY — add 3 models + enums]
-backend/src/app.ts                               [MODIFY — register placement route]
-
-frontend/src/app/dashboard/placement/page.tsx                [NEW]
-frontend/src/app/dashboard/placement/[categoryId]/page.tsx   [NEW]
-```
-
-### Commands To Run at Start of Phase 2
-```bash
-# 1. Add models to schema.prisma
-# 2. Run migration
-cd backend && npx prisma migrate dev --name add-placement-module
-
-# 3. Generate fresh client
-npx prisma generate
-
-# 4. Seed categories
-npx prisma db seed
-
-# 5. Start dev servers
-npm run dev           # in backend/
-npm run dev           # in frontend/ (separate terminal)
 ```
 
 ---

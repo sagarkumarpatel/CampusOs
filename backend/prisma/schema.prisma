@@ -15,14 +15,62 @@ enum Role {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
-  passwordHash String
-  role         Role          @default(STUDENT)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  profile      Profile?
-  refreshTokens RefreshToken[]
+  id                String                @id @default(uuid())
+  email             String                @unique
+  passwordHash      String
+  role              Role                  @default(STUDENT)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  profile           Profile?
+  refreshTokens     RefreshToken[]
+  placementProgress PreparationProgress[]
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum TopicStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model PreparationCategory {
+  id          String             @id @default(uuid())
+  name        String             @unique
+  description String?
+  icon        String?
+  color       String?
+  topics      PreparationTopic[]
+  createdAt   DateTime           @default(now())
+}
+
+model PreparationTopic {
+  id          String                @id @default(uuid())
+  title       String
+  categoryId  String
+  category    PreparationCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  difficulty  Difficulty            @default(MEDIUM)
+  resourceUrl String?
+  progress    PreparationProgress[]
+  createdAt   DateTime              @default(now())
+}
+
+model PreparationProgress {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicId   String
+  topic     PreparationTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  status    TopicStatus      @default(NOT_STARTED)
+  notes     String?
+  updatedAt DateTime         @updatedAt
+  createdAt DateTime         @default(now())
+
+  @@unique([userId, topicId])
 }
 
 model RefreshToken {

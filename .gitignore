@@ -182,3 +182,6 @@ temp/
 
 # Prisma migrations lock (keep actual migration files)
 # prisma/migrations/  <-- do NOT ignore this; migrations should be committed
+
+# Reference Running Guide
+RUNNING_GUIDE.md
