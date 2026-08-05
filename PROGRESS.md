@@ -89,98 +89,150 @@
 
 ---
 
-## 🔲 NEXT STEP: Phase 3 — Mentorship
+## ✅ PHASE 3: Mentorship — COMPLETE
+
+### What Was Built
+
+#### Backend — `backend/`
+| File | Status | Description |
+|------|--------|-------------|
+| `prisma/schema.prisma` | ✅ Done | Added `RequestStatus` enum, `MentorProfile`, and `MentorshipRequest` models and linked relations to the `User` model. |
+| `src/app.ts` | ✅ Done | Registered `/api/v1/mentors` routing endpoints. |
+| `src/modules/mentorship/types.ts` | ✅ Done | Declared RequestStatus type contracts. |
+| `src/modules/mentorship/schema.ts` | ✅ Done | Zod schema checks for `createMentorProfileSchema`, `requestMentorshipSchema`, and status updates. |
+| `src/modules/mentorship/repository.ts` | ✅ Done | Database selectors for active mentors, single profiles, pending request searches, request creation, status edits, and student/mentor request lists. |
+| `src/modules/mentorship/service.ts` | ✅ Done | Blocked self-mentorship and duplicated pending invitations; aggregated and formatted request outputs. |
+| `src/modules/mentorship/controller.ts` | ✅ Done | Setup profile, request sessions, accept/reject, and list operations handlers. |
+| `src/modules/mentorship/routes.ts` | ✅ Done | Bound GET /mentors, POST /profile, POST /:id/request, GET /requests, and PUT /requests/:id (all authenticated). |
+
+#### Frontend — `frontend/`
+| File | Status | Description |
+|------|--------|-------------|
+| `src/app/dashboard/mentorship/page.tsx` | ✅ Done | Mentor discovery grid view with search query inputs, skill tag filters, custom inline SVG LinkedIn links, profile creation/management form, and request modals. |
+| `src/app/dashboard/mentorship/requests/page.tsx` | ✅ Done | Bidirectional requests dashboard with separate tabs for students (sent status, Calendly scheduling links, LinkedIn references) and mentors (accept/reject action buttons). |
+
+#### TypeScript Verification
+- ✅ `cd backend && npm run build` — compiles cleanly with zero errors
+- ✅ `cd frontend && npx tsc --noEmit` — passes with zero errors
+
+---
+
+## 🔲 NEXT STEP: Phase 4 — Events Hub
 
 ### What To Build
 
-**Goal**: Connect students with seniors, developers, or alumni for 1-on-1 mentorship.
+**Goal**: Allow students to browse and register for campus events like hackathons, coding contests, seminars, and workshops.
 
 ---
 
 ### Step 1 — Extend Database Schema
 
-Add these models to `backend/prisma/schema.prisma`:
+Add these models and enums to `backend/prisma/schema.prisma`:
 
 ```prisma
-enum RequestStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-  CANCELLED
+enum EventType {
+  HACKATHON
+  CONTEST
+  SEMINAR
+  WORKSHOP
 }
 
-model MentorProfile {
-  id          String              @id @default(uuid())
-  userId      String              @unique
-  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title       String
-  company     String
-  skills      String[]
-  bio         String?
-  linkedinUrl String?
-  calendlyUrl String?
-  isAvailable Boolean             @default(true)
-  requests    MentorshipRequest[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+model Event {
+  id                   String              @id @default(uuid())
+  title                String
+  description          String
+  type                 EventType           @default(HACKATHON)
+  startDate            DateTime
+  endDate              DateTime
+  venue                String?
+  registrationDeadline DateTime
+  maxAttendees         Int?
+  organizerId          String
+  organizer            User                @relation("OrganizedEvents", fields: [organizerId], references: [id], onDelete: Cascade)
+  coverImageUrl        String?
+  registrations        EventRegistration[]
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }
 
-model MentorshipRequest {
-  id        String        @id @default(uuid())
-  studentId String
-  student   User          @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
-  mentorId  String
-  mentor    MentorProfile @relation(fields: [mentorId], references: [id], onDelete: Cascade)
-  message   String
-  status    RequestStatus @default(PENDING)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+model EventRegistration {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation("UserRegistrations", fields: [userId], references: [id], onDelete: Cascade)
+  eventId      String
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  registeredAt DateTime @default(now())
+
+  @@unique([userId, eventId])
 }
 ```
 
-Also, update `User` model to include back-relations:
+Also, update the `User` model to include back-relations:
 ```prisma
-mentorProfile   MentorProfile?
-studentRequests MentorshipRequest[] @relation("StudentRequests")
+organizedEvents   Event[]             @relation("OrganizedEvents")
+eventRegistrations EventRegistration[] @relation("UserRegistrations")
 ```
 
-Then run: `cd backend && npx prisma migrate dev --name add-mentorship-module`
+Then run: `cd backend && npx prisma migrate dev --name add-events-module`
 
 ---
 
-### Step 2 — Create Backend Mentorship Module
+### Step 2 — Create Backend Events Module
 
-Create the directory `backend/src/modules/mentorship/` and define:
+Create the directory `backend/src/modules/events/` and define:
 
 **`schema.ts`**
-- `createMentorProfileSchema`: validated fields (title, company, skills, bio, linkedinUrl, calendlyUrl)
-- `requestMentorshipSchema`: message payload validator
+- Zod schema for creating an event (validates title, type, dates, registrationDeadline, etc.)
 
 **`repository.ts`**
-- `getMentors()`: list all mentors where `isAvailable = true`
-- `findMentorById(id)`: fetch specific mentor including profile
-- `createMentorProfile(userId, data)`: insert mentor credentials
-- `createRequest(studentId, mentorId, message)`: log pending mentorship request
-- `getRequestById(id)`: fetch request details
-- `updateRequestStatus(id, status)`: transition PENDING to ACCEPTED/REJECTED
-- `getStudentRequests(studentId)`: list sent requests
-- `getMentorRequests(mentorId)`: list received requests
+- `getEvents()`: list all future events (with registration counts)
+- `createEvent(organizerId, data)`: insert event
+- `registerForEvent(userId, eventId)`: insert registration
+- `cancelRegistration(userId, eventId)`: delete registration
+- `getRegistrationsByUser(userId)`: list events registered by a user
 
 **`service.ts`**
-- Handle profile updates and request operations
-- Prevent student from requesting the same mentor twice in PENDING status
-- Restrict self-mentoring requests
+- Enforce business rules (preventing registration after deadline, checking max attendee limits)
 
-**`controller.ts`**
-```
+- Handlers for fetching events, creating events (requires role EVENT_ORGANIZER), registering, and cancelling.
+
+**`routes.ts`**
+- Mount routes with `authenticate` and conditional `requireRole('EVENT_ORGANIZER')` middleware.
+
+Register routes in `app.ts`.
 
 ---
 
-## 🔲 Phase 3: Mentorship — PENDING
-See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.
+### Step 3 — Frontend Events Hub Pages
 
-## 🔲 Phase 4: Events — PENDING
-See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.
+Create `frontend/src/app/dashboard/events/`:
+
+**`page.tsx`** — Event feed
+- Browse available events, filter by `EventType`, and show register/cancel action buttons.
+- Display cards with start dates, types, registrations counts, and deadline warnings.
+- For `EVENT_ORGANIZER` users, show a floating "Create Event" action button opening a form modal.
+
+**`[eventId]/page.tsx`** — Event details page
+- Deep-dive view of description, exact schedule dates, venue location, organizer contact, and custom confirmation notices.
+
+---
+
+### Files To Create for Phase 4 (Summary)
+
+```
+backend/src/modules/events/schema.ts              [NEW]
+backend/src/modules/events/repository.ts          [NEW]
+backend/src/modules/events/service.ts             [NEW]
+backend/src/modules/events/controller.ts          [NEW]
+backend/src/modules/events/routes.ts              [NEW]
+backend/prisma/schema.prisma                     [MODIFY — add models + enums]
+backend/src/app.ts                               [MODIFY — register events routes]
+
+frontend/src/app/dashboard/events/page.tsx                   [NEW]
+frontend/src/app/dashboard/events/[eventId]/page.tsx         [NEW]
+```
+
+---
 
 ## 🔲 Phase 5: Clubs — PENDING
 See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.

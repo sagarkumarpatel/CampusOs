@@ -24,6 +24,8 @@ model User {
   profile           Profile?
   refreshTokens     RefreshToken[]
   placementProgress PreparationProgress[]
+  mentorProfile     MentorProfile?
+  studentRequests   MentorshipRequest[]   @relation("StudentRequests")
 }
 
 enum Difficulty {
@@ -96,4 +98,39 @@ model Profile {
   resumeUrl      String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+model MentorProfile {
+  id          String              @id @default(uuid())
+  userId      String              @unique
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  company     String
+  skills      String[]
+  bio         String?
+  linkedinUrl String?
+  calendlyUrl String?
+  isAvailable Boolean             @default(true)
+  requests    MentorshipRequest[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model MentorshipRequest {
+  id        String        @id @default(uuid())
+  studentId String
+  student   User          @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
+  mentorId  String
+  mentor    MentorProfile @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  message   String
+  status    RequestStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
