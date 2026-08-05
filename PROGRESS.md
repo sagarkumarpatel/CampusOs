@@ -96,20 +96,29 @@
 #### Backend — `backend/`
 | File | Status | Description |
 |------|--------|-------------|
-| `prisma/schema.prisma` | ✅ Done | Added `RequestStatus` enum, `MentorProfile`, and `MentorshipRequest` models and linked relations to the `User` model. |
+| `prisma/schema.prisma` | ✅ Done | Added `RequestStatus` enum, `MentorProfile`, and `MentorshipRequest` models; linked back-relations to the `User` model. |
 | `src/app.ts` | ✅ Done | Registered `/api/v1/mentors` routing endpoints. |
-| `src/modules/mentorship/types.ts` | ✅ Done | Declared RequestStatus type contracts. |
-| `src/modules/mentorship/schema.ts` | ✅ Done | Zod schema checks for `createMentorProfileSchema`, `requestMentorshipSchema`, and status updates. |
-| `src/modules/mentorship/repository.ts` | ✅ Done | Database selectors for active mentors, single profiles, pending request searches, request creation, status edits, and student/mentor request lists. |
-| `src/modules/mentorship/service.ts` | ✅ Done | Blocked self-mentorship and duplicated pending invitations; aggregated and formatted request outputs. |
-| `src/modules/mentorship/controller.ts` | ✅ Done | Setup profile, request sessions, accept/reject, and list operations handlers. |
-| `src/modules/mentorship/routes.ts` | ✅ Done | Bound GET /mentors, POST /profile, POST /:id/request, GET /requests, and PUT /requests/:id (all authenticated). |
+| `src/modules/mentorship/types.ts` | ✅ Done | Declared `RequestStatus` type contracts. |
+| `src/modules/mentorship/schema.ts` | ✅ Done | Zod schemas for `createMentorProfileSchema`, `requestMentorshipSchema`, and `updateRequestStatusSchema`. |
+| `src/modules/mentorship/repository.ts` | ✅ Done | Database queries for fetching all mentors (no availability filter), single profiles, pending duplicate checks, request creation, status transitions, and student/mentor request list views. |
+| `src/modules/mentorship/service.ts` | ✅ Done | Self-mentorship prevention, duplicate-pending check; formats mentor and request listings for API response. |
+| `src/modules/mentorship/controller.ts` | ✅ Done | Handlers for profile setup, request session, accept/reject/cancel, and request listings. Fixed HTTP `201` status on request creation. |
+| `src/modules/mentorship/routes.ts` | ✅ Done | `GET /mentors`, `GET /mentors/profile`, `POST /mentors/profile`, `POST /mentors/:id/request`, `GET /mentors/requests`, `PUT /mentors/requests/:id` (all authenticated). |
 
 #### Frontend — `frontend/`
 | File | Status | Description |
 |------|--------|-------------|
-| `src/app/dashboard/mentorship/page.tsx` | ✅ Done | Mentor discovery grid view with search query inputs, skill tag filters, custom inline SVG LinkedIn links, profile creation/management form, and request modals. |
-| `src/app/dashboard/mentorship/requests/page.tsx` | ✅ Done | Bidirectional requests dashboard with separate tabs for students (sent status, Calendly scheduling links, LinkedIn references) and mentors (accept/reject action buttons). |
+| `src/app/dashboard/mentorship/page.tsx` | ✅ Done | Full mentor discovery directory with: skill-aware search (matches name/company/title/skills), dropdown skill filter, **YOU** badge on own card, disabled own-card request button, **"My Requests →"** nav button, and redesigned request modal with 3-step how-it-works guide, live character counter, and 20-char minimum enforcement. |
+| `src/app/dashboard/mentorship/requests/page.tsx` | ✅ Done | Bidirectional request dashboard rewritten with clear status banners: ACCEPTED shows a prominent "Connect on LinkedIn" button + optional Calendly booking link; REJECTED shows closure message with redirect to browse more mentors; PENDING shows cancel option. |
+
+#### Bug Fixes & Improvements (Phase 3 post-implementation)
+| Fix | File | Description |
+|-----|------|-------------|
+| Mentor visibility | `repository.ts` | Removed `where: { isAvailable: true }` — all registered mentors now show regardless of availability flag |
+| Own profile hidden | `service.ts` | Removed `.filter(m => m.userId !== userId)` — users can now see their own mentor card in the directory |
+| Search didn't match skills | `page.tsx` | Added `m.skills.some(s => s.toLowerCase().includes(q))` to the filter — typing a skill in the search bar now filters mentors |
+| Wrong HTTP status | `controller.ts` | Fixed `res.status(211)` → `res.status(201)` on mentorship request creation |
+| No self-indicator on card | `page.tsx` | Added **YOU** pill badge and replaced "Request Session" with "Your Profile" on own cards |
 
 #### TypeScript Verification
 - ✅ `cd backend && npm run build` — compiles cleanly with zero errors

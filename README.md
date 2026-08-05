@@ -8,9 +8,9 @@
 Placement prep · Mentor matching · Event hubs · Clubs · Academic resources · Career tracking
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#)
-[![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](#)
+[![Node.js](https://img.shields.io/badge/Node.js-24+-green.svg)](#)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black.svg)](#)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](#)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7-blue.svg)](#)
 [![Prisma](https://img.shields.io/badge/Prisma-6-2D3748.svg)](#)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791.svg)](#)
 
@@ -45,10 +45,10 @@ Instead of juggling separate tools for tracking interview prep, finding mentors,
 |--------|-------------|--------|
 | 🔐 **Authentication** | Register, login, refresh tokens (JWT + HTTP-only cookies) | ✅ Live |
 | 👤 **User Profiles** | Personal info, skills, college, graduation year, resume | ✅ Live |
-| 📚 **Placement Preparation** | Topic-wise DSA + CS progress tracker by categories | 🔲 Phase 2 |
-| 👥 **Mentorship** | Find mentors, send requests, manage sessions | 🔲 Phase 3 |
+| 📚 **Placement Preparation** | Topic-wise DSA + CS progress tracker with category dashboards | ✅ Live |
+| 👥 **Mentorship** | Find mentors, send session requests, accept/reject flow, LinkedIn connect | ✅ Live |
 | 📅 **Events Hub** | Browse/register for hackathons, contests, seminars | 🔲 Phase 4 |
-| 🏛️ **Clubs Portal** | Discover and join campus clubs | 🔲 Phase 5 |
+| 🏙️ **Clubs Portal** | Discover and join campus clubs | 🔲 Phase 5 |
 | 📄 **Academic Resources** | Lecture notes, PYQs, roadmaps, cheat sheets | 🔲 Phase 6 |
 | 💼 **Career Tracking** | Log job/internship applications with status timelines | 🔲 Phase 7 |
 
@@ -57,9 +57,10 @@ Instead of juggling separate tools for tracking interview prep, finding mentors,
 ## Tech Stack
 
 ### Backend
-- **Runtime**: Node.js 20+
+- **Runtime**: Node.js 24+
 - **Framework**: Express.js 5
-- **Language**: TypeScript (strict mode)
+- **Language**: TypeScript 7 (strict mode)
+- **Dev runner**: `tsx watch` (replaces ts-node-dev for Node 24 compatibility)
 - **ORM**: Prisma 6 with PostgreSQL
 - **Auth**: JWT (access token 15m + refresh token 7d via HTTP-only cookie)
 - **Validation**: Zod
@@ -73,9 +74,9 @@ Instead of juggling separate tools for tracking interview prep, finding mentors,
 - **Icons**: Lucide React
 
 ### Infrastructure
-- **Database**: PostgreSQL 15 (via Docker locally)
-- **Cache**: Redis 7 (via Docker, used in future phases)
-- **Local Dev**: `docker-compose.yml`
+- **Database**: PostgreSQL 15 (local install or Docker)
+- **Cache**: Redis 7 (via Docker, for future phases)
+- **Local Dev**: `docker-compose.yml` (optional)
 
 ---
 
@@ -97,14 +98,14 @@ CampusOsProject/
 │       ├── config/prisma.ts    # Prisma client
 │       ├── middleware/auth.ts  # JWT + RBAC middleware
 │       └── modules/
-│           ├── auth/           # Registration, login, token refresh
+│           ├── auth/           # JWT register/login/refresh/logout
 │           ├── users/          # Profile management
-│           ├── placement/      # [Phase 2]
-│           ├── mentorship/     # [Phase 3]
-│           ├── events/         # [Phase 4]
-│           ├── clubs/          # [Phase 5]
-│           ├── resources/      # [Phase 6]
-│           └── career/         # [Phase 7]
+│           ├── placement/      # ✅ Phase 2 — Topic progress tracker
+│           ├── mentorship/     # ✅ Phase 3 — Mentor profiles + session requests
+│           ├── events/         # 🔲 Phase 4
+│           ├── clubs/          # 🔲 Phase 5
+│           ├── resources/      # 🔲 Phase 6
+│           └── career/         # 🔲 Phase 7
 │
 └── frontend/
     └── src/
@@ -118,12 +119,12 @@ CampusOsProject/
                 ├── layout.tsx              # Sidebar layout
                 ├── page.tsx                # Dashboard overview
                 ├── profile/               # Profile edit
-                ├── placement/             # [Phase 2]
-                ├── mentorship/            # [Phase 3]
-                ├── events/                # [Phase 4]
-                ├── clubs/                 # [Phase 5]
-                ├── resources/             # [Phase 6]
-                └── career/                # [Phase 7]
+                ├── placement/             # ✅ Phase 2 — Category grid + topic checklist
+                ├── mentorship/            # ✅ Phase 3 — Mentor directory + requests
+                ├── events/                # 🔲 Phase 4
+                ├── clubs/                 # 🔲 Phase 5
+                ├── resources/             # 🔲 Phase 6
+                └── career/                # 🔲 Phase 7
 ```
 
 ---
@@ -132,9 +133,9 @@ CampusOsProject/
 
 ### Prerequisites
 
-- **Node.js** 20+
+- **Node.js** 20+ (tested on Node 24)
 - **npm** 10+
-- **Docker Desktop** (for local Postgres/Redis)
+- **PostgreSQL** (local install) or Docker Desktop
 
 ### 1. Clone the repository
 
@@ -146,10 +147,12 @@ cd CampusOsProject
 ### 2. Start local database
 
 ```bash
+# Option A — Docker
 docker compose up -d postgres
-```
 
-> If Docker is not available, create a free database at [railway.app](https://railway.app) or [supabase.com](https://supabase.com) and paste the connection string in `.env`.
+# Option B — Local PostgreSQL
+# Create a database named 'campusos' and update backend/.env
+```
 
 ### 3. Configure backend environment
 
@@ -171,6 +174,7 @@ NODE_ENV="development"
 ```bash
 cd backend
 npx prisma migrate dev --name init
+npx prisma db seed      # Seeds placement categories and topics
 npx prisma generate
 ```
 
@@ -222,6 +226,25 @@ Navigate to **http://localhost:3000** to see the landing page.
 | `GET` | `/api/v1/users/profile` | ✅ Bearer | Get own profile |
 | `PUT` | `/api/v1/users/profile` | ✅ Bearer | Update own profile |
 
+### Placement Preparation
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/v1/placement/categories` | ✅ Bearer | List all prep categories |
+| `GET` | `/api/v1/placement/categories/:id/topics` | ✅ Bearer | Topics + user progress for a category |
+| `PUT` | `/api/v1/placement/progress/:topicId` | ✅ Bearer | Update topic completion status |
+
+### Mentorship
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/v1/mentors` | ✅ Bearer | List all mentor profiles |
+| `GET` | `/api/v1/mentors/profile` | ✅ Bearer | Get own mentor profile |
+| `POST` | `/api/v1/mentors/profile` | ✅ Bearer | Create or update mentor profile |
+| `POST` | `/api/v1/mentors/:mentorId/request` | ✅ Bearer | Send mentorship session request |
+| `GET` | `/api/v1/mentors/requests` | ✅ Bearer | Get sent (student) + received (mentor) requests |
+| `PUT` | `/api/v1/mentors/requests/:requestId` | ✅ Bearer | Accept / Reject / Cancel a request |
+
 ### System
 
 | Method | Endpoint | Auth | Description |
@@ -235,9 +258,9 @@ Navigate to **http://localhost:3000** to see the landing page.
 | Phase | Module | Status |
 |-------|--------|--------|
 | Phase 1 | Foundation (Auth, Profile, Dashboard Layout) | ✅ **Complete** |
-| Phase 2 | Placement Preparation (Categories, Topics, Progress) | 🔲 Next |
-| Phase 3 | Mentorship (Mentor Profiles, Requests, Sessions) | 🔲 Pending |
-| Phase 4 | Events Hub (Create, Browse, Register) | 🔲 Pending |
+| Phase 2 | Placement Preparation (Categories, Topics, Progress) | ✅ **Complete** |
+| Phase 3 | Mentorship (Mentor Profiles, Session Requests, Accept/Reject) | ✅ **Complete** |
+| Phase 4 | Events Hub (Create, Browse, Register) | 🔲 Next |
 | Phase 5 | Clubs Portal (Discover, Join, Manage) | 🔲 Pending |
 | Phase 6 | Academic Resources (Upload, Search, Bookmark) | 🔲 Pending |
 | Phase 7 | Career Tracking (Applications, Status, Timeline) | 🔲 Pending |
