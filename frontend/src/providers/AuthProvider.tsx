@@ -31,6 +31,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Global promise cache to prevent React Strict Mode or concurrent triggers
+// from calling /auth/refresh at the same time and breaking token rotation.
+let globalRefreshPromise: Promise<boolean> | null = null;
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,29 +42,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const refreshSession = async (): Promise<boolean> => {
-    try {
-      const data = await apiFetch('/auth/refresh', { method: 'POST', skipAuth: true });
-      setAccessToken(data.accessToken);
-      
-      const profile = await apiFetch('/users/profile');
-      setUser({
-        id: data.user.id,
-        email: data.user.email,
-        role: data.user.role,
-        profile,
-      });
-      return true;
-    } catch (err) {
-      setAccessToken(null);
-      setUser(null);
-      return false;
+    // If a refresh is already in progress, join it instead of starting a new one
+    if (globalRefreshPromise) {
+      return globalRefreshPromise;
     }
+
+    globalRefreshPromise = (async () => {
+      try {
+        const data = await apiFetch('/auth/refresh', { method: 'POST', skipAuth: true });
+        setAccessToken(data.accessToken);
+        
+        const profile = await apiFetch('/users/profile');
+        setUser({
+          id: data.user.id,
+          email: data.user.email,
+          role: data.user.role,
+          profile,
+        });
+        return true;
+      } catch (err) {
+        setAccessToken(null);
+        setUser(null);
+        return false;
+      } finally {
+        globalRefreshPromise = null;
+      }
+    })();
+
+    return globalRefreshPromise;
   };
 
   useEffect(() => {
+    let active = true;
+    
     const initializeAuth = async () => {
       await refreshSession();
-      setLoading(false);
+      if (active) {
+        setLoading(false);
+      }
     };
 
     initializeAuth();
@@ -71,7 +90,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     window.addEventListener('auth-logout', handleLogoutEvent);
-    return () => window.removeEventListener('auth-logout', handleLogoutEvent);
+    return () => {
+      active = false;
+      window.removeEventListener('auth-logout', handleLogoutEvent);
+    };
   }, []);
 
   const login = async (email: string, passwordHash: string) => {

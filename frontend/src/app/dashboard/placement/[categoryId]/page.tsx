@@ -16,15 +16,19 @@ interface Topic {
   notes: string | null;
 }
 
+import { useAuth } from '../../../../providers/AuthProvider';
+
 export default function CategoryTopicsPage() {
   const params = useParams();
   const categoryId = params.categoryId as string;
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { user, loading } = useAuth();
 
   const { data: topics, isLoading, error } = useQuery<Topic[]>({
     queryKey: ['placement-topics', categoryId],
     queryFn: () => apiFetch(`/placement/categories/${categoryId}/topics`),
+    enabled: !loading && !!user,
   });
 
   const mutation = useMutation({

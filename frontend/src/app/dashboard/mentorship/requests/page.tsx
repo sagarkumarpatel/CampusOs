@@ -53,12 +53,13 @@ interface RequestLists {
 }
 
 export default function MentorshipRequestsPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: requests, isLoading } = useQuery<RequestLists>({
     queryKey: ['mentors-requests'],
     queryFn: () => apiFetch('/mentors/requests'),
+    enabled: !loading && !!user,
   });
 
   const mutation = useMutation({

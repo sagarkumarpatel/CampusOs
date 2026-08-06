@@ -24,7 +24,9 @@ export async function apiFetch(path: string, options: RequestOptions = {}) {
   }
 
   const url = `${API_URL}${path}`;
-  let response = await fetch(url, { ...options, headers });
+  // credentials: 'include' ensures the HTTP-only refresh token cookie
+  // is sent with every request (required for cross-origin cookie support)
+  let response = await fetch(url, { ...options, headers, credentials: 'include' });
 
   // Handle Token Refresh on 401
   if (response.status === 401 && accessToken && !options.skipAuth) {
@@ -32,6 +34,7 @@ export async function apiFetch(path: string, options: RequestOptions = {}) {
       const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // must include so the cookie is sent here too
       });
 
       if (refreshResponse.ok) {
@@ -40,7 +43,7 @@ export async function apiFetch(path: string, options: RequestOptions = {}) {
         headers.set('Authorization', `Bearer ${accessToken}`);
         
         // Retry the original request
-        response = await fetch(url, { ...options, headers });
+        response = await fetch(url, { ...options, headers, credentials: 'include' });
       } else {
         // Clear token if refresh fails
         accessToken = null;

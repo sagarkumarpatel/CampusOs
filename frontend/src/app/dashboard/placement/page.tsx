@@ -17,10 +17,15 @@ interface CategoryOverview {
   progressPercent: number;
 }
 
+import { useAuth } from '../../../providers/AuthProvider';
+
 export default function PlacementDashboard() {
+  const { user, loading } = useAuth();
+
   const { data: categories, isLoading, error } = useQuery<CategoryOverview[]>({
     queryKey: ['placement-categories'],
     queryFn: () => apiFetch('/placement/categories'),
+    enabled: !loading && !!user,
   });
 
   const { data: overallProgress } = useQuery<{
@@ -30,6 +35,7 @@ export default function PlacementDashboard() {
   }>({
     queryKey: ['placement-overall'],
     queryFn: () => apiFetch('/placement/progress'),
+    enabled: !loading && !!user,
   });
 
   if (isLoading) {

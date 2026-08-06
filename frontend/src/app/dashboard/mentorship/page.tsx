@@ -48,7 +48,7 @@ interface OwnProfile {
 }
 
 export default function MentorshipDirectory() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [selectedSkill, setSelectedSkill] = useState('');
@@ -57,9 +57,11 @@ export default function MentorshipDirectory() {
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   // Queries
-  const { data: mentors, isLoading } = useQuery<Mentor[]>({
+  const { data: mentors, isLoading, isError } = useQuery<Mentor[]>({
     queryKey: ['mentors-list'],
     queryFn: () => apiFetch('/mentors'),
+    enabled: !loading && !!user, // only fetch once auth initialization completes
+    retry: 1,
   });
 
   const { data: ownProfile } = useQuery<OwnProfile | null>({
@@ -211,7 +213,18 @@ export default function MentorshipDirectory() {
 
       {/* Directory Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredMentors.length === 0 ? (
+        {isLoading ? (
+          <div className="col-span-full text-center py-16 text-slate-500">
+            <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+            <p className="text-sm">Loading mentors...</p>
+          </div>
+        ) : isError ? (
+          <div className="col-span-full text-center py-16 text-slate-500">
+            <Compass className="w-12 h-12 mx-auto mb-4 opacity-35" />
+            <p className="text-sm text-rose-400 mb-1">Failed to load mentors.</p>
+            <p className="text-xs text-slate-500">Please try refreshing the page or logging in again.</p>
+          </div>
+        ) : filteredMentors.length === 0 ? (
           <div className="col-span-full text-center py-16 text-slate-500">
             <Compass className="w-12 h-12 mx-auto mb-4 opacity-35" />
             No mentors found matching your filters.
