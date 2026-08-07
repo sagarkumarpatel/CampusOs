@@ -15,17 +15,18 @@ enum Role {
 }
 
 model User {
-  id                String                @id @default(uuid())
-  email             String                @unique
-  passwordHash      String
-  role              Role                  @default(STUDENT)
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
-  profile           Profile?
-  refreshTokens     RefreshToken[]
-  placementProgress PreparationProgress[]
-  mentorProfile     MentorProfile?
-  studentRequests   MentorshipRequest[]   @relation("StudentRequests")
+  id              String               @id @default(uuid())
+  email           String               @unique
+  passwordHash    String
+  role            Role                 @default(STUDENT)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  profile         Profile?
+  refreshTokens   RefreshToken[]
+  mentorProfile   MentorProfile?
+  studentRequests MentorshipRequest[]  @relation("StudentRequests")
+  dsaProgress     UserDsaProblem[]
+  dsaProblems     DsaProblem[]
 }
 
 enum Difficulty {
@@ -34,46 +35,7 @@ enum Difficulty {
   HARD
 }
 
-enum TopicStatus {
-  NOT_STARTED
-  IN_PROGRESS
-  COMPLETED
-}
 
-model PreparationCategory {
-  id          String             @id @default(uuid())
-  name        String             @unique
-  description String?
-  icon        String?
-  color       String?
-  topics      PreparationTopic[]
-  createdAt   DateTime           @default(now())
-}
-
-model PreparationTopic {
-  id          String                @id @default(uuid())
-  title       String
-  categoryId  String
-  category    PreparationCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  difficulty  Difficulty            @default(MEDIUM)
-  resourceUrl String?
-  progress    PreparationProgress[]
-  createdAt   DateTime              @default(now())
-}
-
-model PreparationProgress {
-  id        String           @id @default(uuid())
-  userId    String
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  topicId   String
-  topic     PreparationTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  status    TopicStatus      @default(NOT_STARTED)
-  notes     String?
-  updatedAt DateTime         @updatedAt
-  createdAt DateTime         @default(now())
-
-  @@unique([userId, topicId])
-}
 
 model RefreshToken {
   id        String   @id @default(uuid())
@@ -133,4 +95,38 @@ model MentorshipRequest {
   status    RequestStatus @default(PENDING)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+}
+
+model DsaCategory {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  problems    DsaProblem[]
+  createdAt   DateTime     @default(now())
+}
+
+model DsaProblem {
+  id            String            @id @default(uuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId    String
+  category      DsaCategory       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  problemName   String
+  problemLink   String
+  difficulty    Difficulty        @default(MEDIUM)
+  userCompleted UserDsaProblem[]
+  createdAt     DateTime          @default(now())
+}
+
+model UserDsaProblem {
+  id        String     @id @default(uuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemId String
+  problem   DsaProblem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  completed Boolean    @default(false)
+  updatedAt DateTime   @updatedAt
+  createdAt DateTime   @default(now())
+
+  @@unique([userId, problemId])
 }

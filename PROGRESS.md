@@ -66,22 +66,24 @@
 #### Backend — `backend/`
 | File | Status | Description |
 |------|--------|-------------|
-| `prisma/schema.prisma` | ✅ Done | Added `Difficulty` and `TopicStatus` enums, added `PreparationCategory`, `PreparationTopic`, and `PreparationProgress` models, and updated the `User` relation. |
-| `prisma/seed.js` | ✅ Done | Script to seed default categories and topics (Arrays, Strings, Linked Lists, OS, DBMS, etc.) cleanly using Node.js. |
+| `prisma/schema.prisma` | ✅ Done | Added `Difficulty` and `TopicStatus` enums, added `PreparationCategory`, `PreparationTopic`, and `PreparationProgress` models. Added `DsaCategory`, `DsaProblem`, and `UserDsaProblem` models. |
+| `prisma/seed.ts` | ✅ Done | Seeded default placement topics, and now updated to seed the 10 core DSA Categories. |
 | `package.json` | ✅ Done | Configured `"prisma": { "seed": "node prisma/seed.js" }`. |
-| `src/app.ts` | ✅ Done | Registered `/api/v1/placement` routing path. |
-| `src/modules/placement/types.ts` | ✅ Done | Difficulty and TopicStatus types. |
-| `src/modules/placement/schema.ts` | ✅ Done | `updateProgressSchema` Zod validation. |
-| `src/modules/placement/repository.ts` | ✅ Done | Database queries for categories, topics by category, progress overview, and progress upserts. |
-| `src/modules/placement/service.ts` | ✅ Done | Category completion percent stats, topic list formatting, and progress updates. |
-| `src/modules/placement/controller.ts` | ✅ Done | Category list, topics list, and progress updates with safe string casting. |
-| `src/modules/placement/routes.ts` | ✅ Done | GET /categories, GET /categories/:categoryId/topics, PUT /progress/:topicId (all authenticated). |
+| `src/app.ts` | ✅ Done | Registered `/api/v1/placement` and `/api/v1/dsa` routing paths. |
+| `src/modules/placement/*` | ✅ Done | Types, Zod validation schemas, Repository, Service, Controller, Routes for Placement Prep module. |
+| `src/modules/dsa/*` | ✅ Done | Zod validation schemas, Repository, Service, Controller, Routes for the DSA Practice Tracker. |
 
 #### Frontend — `frontend/`
 | File | Status | Description |
 |------|--------|-------------|
-| `src/app/dashboard/placement/page.tsx` | ✅ Done | Category grid dashboard with visual progress percentages and completion metrics. |
-| `src/app/dashboard/placement/[categoryId]/page.tsx` | ✅ Done | Topic detail checklist showing Difficulty badges, learning resource links, note input boxes, and status controls syncing instantly via TanStack Query mutations. |
+| `src/app/dashboard/placement/page.tsx` | ✅ Done | Category grid dashboard with visual progress percentages, completion metrics, and the new global **DSA Dashboard Card**. |
+| `src/app/dashboard/placement/[categoryId]/page.tsx` | ✅ Done | Topic detail checklist with status controls syncing instantly via TanStack Query mutations. |
+| `src/app/dashboard/placement/dsa/page.tsx` | ✅ Done | Split-pane detailed DSA Tracker layout (categories list on left, dynamic problem table on right, status checkboxes, add/edit/delete modals). |
+
+#### Bug Fixes & Session Persistence Improvements
+- **Session Persistence**: Added `credentials: 'include'` to all `fetch()` calls in `api.ts`. Changed `JWT_ACCESS_EXPIRATION` to `5h` in backend.
+- **Strict Mode Mount Fix**: Added a promise caching mechanism in `AuthProvider.tsx` to handle React Strict Mode duplicate refresh requests.
+- **Next.js IPv4 Proxy Rewrite**: Configured explicit IPv4 `127.0.0.1:5000` rewrite proxy in `next.config.ts` to solve connection refusal errors.
 
 #### TypeScript Verification
 - ✅ `cd backend && npm run build` — compiles cleanly with zero errors

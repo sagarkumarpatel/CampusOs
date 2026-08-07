@@ -3,8 +3,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRoutes from './modules/auth/routes';
 import userRoutes from './modules/users/routes';
-import placementRoutes from './modules/placement/routes';
 import mentorshipRoutes from './modules/mentorship/routes';
+import dsaRoutes from './modules/dsa/routes';
 import prisma from './config/prisma';
 
 const app = express();
@@ -19,8 +19,8 @@ app.use(cookieParser());
 // REST routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/placement', placementRoutes);
 app.use('/api/v1/mentors', mentorshipRoutes);
+app.use('/api/v1/dsa', dsaRoutes);
 
 // Health check endpoint
 app.get('/health', async (req, res) => {

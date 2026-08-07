@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { apiFetch, setAccessToken, getAccessToken } from '../lib/api';
 import { useRouter, usePathname } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface User {
   id: string;
@@ -40,6 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
 
   const refreshSession = async (): Promise<boolean> => {
     // If a refresh is already in progress, join it instead of starting a new one
@@ -97,6 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, passwordHash: string) => {
+    queryClient.clear();
     const data = await apiFetch('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password: passwordHash }),
@@ -108,6 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (email: string, passwordHash: string, firstName: string, lastName: string, role: string) => {
+    queryClient.clear();
     const data = await apiFetch('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ email, password: passwordHash, firstName, lastName, role }),
@@ -124,6 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       // Ignore logout errors
     } finally {
+      queryClient.clear();
       setAccessToken(null);
       setUser(null);
       router.push('/auth/login');

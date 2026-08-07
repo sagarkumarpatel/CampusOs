@@ -1,9 +1,24 @@
-import { PrismaClient } from '@prisma/client';
-
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  // DSA Categories Seeding
+  console.log('Cleaning database records...');
+
+  // Truncate tables with cascade or in order of dependencies
+  // Order: UserDsaProblem -> DsaProblem -> Profile -> RefreshToken -> MentorshipRequest -> MentorProfile -> User -> DsaCategory
+  await prisma.userDsaProblem.deleteMany({});
+  await prisma.dsaProblem.deleteMany({});
+  await prisma.profile.deleteMany({});
+  await prisma.refreshToken.deleteMany({});
+  await prisma.mentorshipRequest.deleteMany({});
+  await prisma.mentorProfile.deleteMany({});
+  await prisma.user.deleteMany({});
+  await prisma.dsaCategory.deleteMany({});
+
+  console.log('Database records cleared successfully.');
+
+  // Re-seed category templates
+  console.log('Seeding DSA categories...');
   const dsaCategories = [
     { name: 'Arrays', description: 'Consecutive memory blocks, prefix sums, sliding windows' },
     { name: 'Strings', description: 'Text processing, substrings, matching patterns' },
@@ -17,21 +32,18 @@ async function main() {
     { name: 'Dynamic Programming', description: 'Memoization, tabulation, subproblem optimizations' }
   ];
 
-  console.log('Seeding DSA categories...');
   for (const cat of dsaCategories) {
-    await prisma.dsaCategory.upsert({
-      where: { name: cat.name },
-      update: { description: cat.description },
-      create: { name: cat.name, description: cat.description }
+    await prisma.dsaCategory.create({
+      data: { name: cat.name, description: cat.description }
     });
   }
 
-  console.log('Seeding completed successfully.');
+  console.log('DSA categories re-seeded successfully.');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('Error cleaning database:', e);
     process.exit(1);
   })
   .finally(async () => {

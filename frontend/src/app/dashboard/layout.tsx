@@ -42,8 +42,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col md:flex-row">
       {/* Sidebar navigation */}
-      <aside className="w-full md:w-64 bg-slate-900 border-b md:border-b-0 md:border-r border-white/5 flex flex-col shrink-0">
-        <div className="p-6 border-b border-white/5 flex items-center justify-between">
+      <aside className="w-full md:w-64 md:h-screen md:sticky md:top-0 bg-slate-900 border-b md:border-b-0 md:border-r border-white/5 flex flex-col shrink-0 overflow-hidden">
+        {/* Logo Header */}
+        <div className="p-6 border-b border-white/5 flex items-center justify-between shrink-0">
           <Link href="/dashboard" className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-violet-300">
             CampusOS
           </Link>
@@ -53,8 +54,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         {/* User preview */}
-        <div className="p-6 flex items-center gap-3 border-b border-white/5 bg-white/5">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center font-bold text-white shadow-md">
+        <div className="p-6 flex items-center gap-3 border-b border-white/5 bg-white/5 shrink-0">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center font-bold text-white shadow-md shrink-0">
             {user?.profile?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
           </div>
           <div className="flex-1 overflow-hidden">
@@ -65,7 +66,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
+        {/* Navigation list (scrolls independently) */}
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto min-h-0">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
@@ -86,7 +88,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/5 space-y-1">
+        {/* Bottom Actions Pin */}
+        <div className="p-4 border-t border-white/5 space-y-1 shrink-0 mt-auto bg-slate-900/80 backdrop-blur-md">
           <Link
             href="/dashboard/profile"
             className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
@@ -100,7 +103,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Link>
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all text-left"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all text-left cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             Sign Out
