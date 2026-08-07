@@ -66,14 +66,7 @@ export default function DsaTrackerPage() {
     enabled: !loading && !!user,
   });
 
-  // Automatically select/expand first category if none active
-  const hasInitialized = React.useRef(false);
-  React.useEffect(() => {
-    if (categories && categories.length > 0 && !hasInitialized.current) {
-      setExpandedCategoryId(categories[0].id);
-      hasInitialized.current = true;
-    }
-  }, [categories]);
+
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategoryId(expandedCategoryId === categoryId ? null : categoryId);
