@@ -11,7 +11,7 @@
 
 | # | Module | Summary |
 |---|--------|---------|
-| 1 | **Placement Preparation** | DSA Practice Tracker with categories, user-owned problems, and accordion checklist views |
+| 1 | **Placement Preparation** | DSA Practice Tracker (17 topics), Core Subject Notes manager, and Personal Resume Link Manager |
 | 2 | **Mentorship** | Find, request, and manage mentor-student guidance |
 | 3 | **Events Hub** | Browse, register, and track hackathons, contests, seminars |
 | 4 | **Clubs Portal** | Discover, join, and manage campus clubs |
@@ -100,6 +100,18 @@ CampusOsProject/
 │           │   ├── service.ts      # Stats and problem logic
 │           │   ├── controller.ts   # Handlers
 │           │   └── routes.ts       # REST routing endpoints
+│           ├── subject-notes/      # Core Subject Notes Module
+│           │   ├── schema.ts
+│           │   ├── repository.ts
+│           │   ├── service.ts
+│           │   ├── controller.ts
+│           │   └── routes.ts       # /api/v1/core-subject-notes
+│           ├── personal-resume/    # Personal Resume Link Manager
+│           │   ├── schema.ts
+│           │   ├── repository.ts
+│           │   ├── service.ts
+│           │   ├── controller.ts
+│           │   └── routes.ts       # /api/v1/personal-resume
 │           ├── mentorship/         # Mentorship Module
 │           ├── events/             # [PHASE 4 — TO BUILD]
 │           ├── clubs/              # [PHASE 5 — TO BUILD]
@@ -128,9 +140,9 @@ CampusOsProject/
                 ├── page.tsx        # Overview Dashboard card
                 ├── profile/page.tsx
                 └── placement/
-                    ├── page.tsx    # Placement Landing (DSA Overview stats)
+                    ├── page.tsx    # Placement Dashboard (3-col: DSA card, Subject Notes, Personal Resume)
                     └── dsa/
-                        └── page.tsx # Full Width Accordion DSA Tracker
+                        └── page.tsx # Full Width Accordion DSA Tracker (17 topics)
 ```
 
 ---
@@ -160,6 +172,8 @@ model User {
   studentRequests MentorshipRequest[]  @relation("StudentRequests")
   dsaProgress     UserDsaProblem[]
   dsaProblems     DsaProblem[]
+  subjectNotes    SubjectNote[]
+  personalResume  PersonalResume?
 }
 
 model DsaCategory {
@@ -194,6 +208,25 @@ model UserDsaProblem {
   createdAt DateTime   @default(now())
 
   @@unique([userId, problemId])
+}
+
+model SubjectNote {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject    String
+  notesLink  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model PersonalResume {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resumeLink String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 ```
 
@@ -239,3 +272,15 @@ LOGIN / LOGOUT / SWAP:
 * `POST /api/v1/mentors/:mentorId/request` — request guidance session
 * `GET /api/v1/mentors/requests` — list bidirectional requests
 * `PUT /api/v1/mentors/requests/:requestId` — accept/reject/cancel requests
+
+### Core Subject Notes (Phase 2)
+* `GET /api/v1/core-subject-notes` — list user's notes
+* `POST /api/v1/core-subject-notes` — add a note
+* `PUT /api/v1/core-subject-notes/:id` — update a note (ownership guard)
+* `DELETE /api/v1/core-subject-notes/:id` — delete a note (ownership guard)
+
+### Personal Resume (Phase 2)
+* `GET /api/v1/personal-resume` — get user's saved resume link
+* `POST /api/v1/personal-resume` — save resume link (one per user)
+* `PUT /api/v1/personal-resume/:id` — update resume link (ownership guard)
+* `DELETE /api/v1/personal-resume/:id` — remove resume link (ownership guard)

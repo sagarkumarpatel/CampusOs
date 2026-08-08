@@ -61,25 +61,28 @@
 
 ## ✅ PHASE 2: Placement Preparation — COMPLETE
 
+> Includes: DSA Practice Tracker (17 topics), Core Subject Notes, and Personal Resume Link Manager.
+
 ### What Was Built
 
 #### Backend — `backend/`
 | File | Status | Description |
 |------|--------|-------------|
-| `prisma/schema.prisma` | ✅ Done | Added `Difficulty` enum, added `DsaCategory`, `DsaProblem`, and `UserDsaProblem` models. All legacy non-isolated placement tables (`PreparationCategory`, `PreparationTopic`, `PreparationProgress`) and `TopicStatus` enum were completely removed. |
-| `prisma/seed.ts` & `seed.js` | ✅ Done | Updated to seed only the 10 core DSA Categories. |
-| `prisma/clean-db.js` | ✅ Done | Added database reset utility script that empties transactional tables and re-seeds DSA categories. |
-| `package.json` | ✅ Done | Configured `db:clean` script shortcut to easily reset environment state. |
-| `src/app.ts` | ✅ Done | Registered `/api/v1/dsa` routes and removed obsolete `/api/v1/placement` route. |
-| `src/modules/dsa/*` | ✅ Done | Types, Zod validation schemas, Repository, Service, Controller, Routes for the fully user-isolated DSA Practice Tracker. Includes backend ownership validation guards. |
-| `src/modules/placement/*` | ✅ Done | Stubbed out legacy routes, controller, service, and repository with clean shell stubs to maintain compilation safety. |
-| `src/modules/subject-notes/*` | ✅ Done | Types, Zod validation schema, Repository, Service, Controller, Routes for the fully user-isolated Core Subject Notes. Includes ownership verification. |
+| `prisma/schema.prisma` | ✅ Done | Added `Difficulty` enum, `DsaCategory`, `DsaProblem`, `UserDsaProblem`, `SubjectNote`, and `PersonalResume` models. All legacy non-isolated placement tables were completely removed. |
+| `prisma/seed.ts` & `seed.js` | ✅ Done | Updated to seed **17 DSA Categories**: Arrays, Binary Search, Linked Lists, Trees, Graphs, Dynamic Programming, Stacks & Queues, Hashing, Sorting & Searching, Bit Manipulation, Recursion & Backtracking, Tries, Segment Tree, Greedy, Two Pointers, Sliding Window, Monotonic Stack. |
+| `prisma/clean-db.js` | ✅ Done | Database reset utility script that empties transactional tables and re-seeds all 17 DSA categories. |
+| `package.json` | ✅ Done | Configured `db:clean` script shortcut. |
+| `src/app.ts` | ✅ Done | Registered `/api/v1/dsa`, `/api/v1/core-subject-notes`, and `/api/v1/personal-resume` routes. |
+| `src/modules/dsa/*` | ✅ Done | Types, Zod schemas, Repository, Service, Controller, Routes for the fully user-isolated DSA Practice Tracker. Includes backend ownership validation guards. |
+| `src/modules/placement/*` | ✅ Done | Stubbed out legacy routes with clean shell stubs to maintain compilation safety. |
+| `src/modules/subject-notes/*` | ✅ Done | Types, Zod schema, Repository, Service, Controller, Routes for Core Subject Notes. Ownership verified per request. |
+| `src/modules/personal-resume/*` | ✅ Done | Zod schema, Repository, Service, Controller, Routes for Personal Resume Link Manager. One resume per user; ownership guard on PUT and DELETE. |
 
 #### Frontend — `frontend/`
 | File | Status | Description |
 |------|--------|-------------|
-| `src/app/dashboard/placement/page.tsx` | ✅ Done | Redesigned placement prep dashboard to display ONLY the isolated user's **DSA Practice Tracker Card** overview. |
-| `src/app/dashboard/placement/dsa/page.tsx` | ✅ Done | Redesigned full-width accordion DSA tracker. Topics expand inline to fetch and display their corresponding problem lists with proper loading states, clean hierarchies, and actions (edit, delete, status toggle). All accordion cards default to collapsed on load. |
+| `src/app/dashboard/placement/page.tsx` | ✅ Done | Redesigned placement prep dashboard with a **3-column layout**: DSA Practice Tracker card overview (col 1), Core Subject Notes manager (col 2), and Personal Resume Link Manager (col 3). |
+| `src/app/dashboard/placement/dsa/page.tsx` | ✅ Done | Redesigned full-width accordion DSA tracker. Topics expand inline to fetch and display their corresponding problem lists. All 17 topic cards default to collapsed on load. |
 | `src/app/dashboard/layout.tsx` | ✅ Done | Locked the navigation sidebar to viewport height and anchored bottom actions (settings, sign-out) with independent scroll panels. |
 | `src/providers/AuthProvider.tsx` | ✅ Done | Added `queryClient.clear()` during login, registration, and logout events to prevent cross-session cache bleed. |
 

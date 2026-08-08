@@ -45,7 +45,7 @@ Instead of juggling separate tools for tracking interview prep, finding mentors,
 |--------|-------------|--------|
 | 🔐 **Authentication** | Register, login, refresh tokens (JWT + HTTP-only cookies) | ✅ Live |
 | 👤 **User Profiles** | Personal info, skills, college, graduation year, resume | ✅ Live |
-| 📚 **Placement Preparation** | DSA Practice Tracker with categories, problem logs, and accordion lists | ✅ Live |
+| 📚 **Placement Preparation** | DSA Practice Tracker (17 topics with accordion UI), Core Subject Notes manager, and Personal Resume Link Manager | ✅ Live |
 | 👥 **Mentorship** | Find mentors, send session requests, accept/reject flow, LinkedIn connect | ✅ Live |
 | 📅 **Events Hub** | Browse/register for hackathons, contests, seminars | 🔲 Phase 4 |
 | 🏙️ **Clubs Portal** | Discover and join campus clubs | 🔲 Phase 5 |
@@ -104,6 +104,8 @@ CampusOsProject/
 │           ├── auth/           # JWT register/login/refresh/logout
 │           ├── users/          # Profile management
 │           ├── dsa/            # ✅ Phase 2 — DSA Tracker
+│           ├── subject-notes/  # ✅ Phase 2 — Core Subject Notes
+│           ├── personal-resume/ # ✅ Phase 2 — Personal Resume Link Manager
 │           ├── mentorship/     # ✅ Phase 3 — Mentorship Module
 │           ├── events/         # 🔲 Phase 4
 │           ├── clubs/          # 🔲 Phase 5
@@ -123,8 +125,8 @@ CampusOsProject/
                 ├── page.tsx                # Dashboard overview
                 ├── profile/                # Profile edit
                 └── placement/
-                    ├── page.tsx            # DSA Stats overview
-                    └── dsa/                # ✅ Phase 2 — Accordion DSA Tracker
+                    ├── page.tsx            # 3-col Dashboard (DSA card, Subject Notes, Personal Resume)
+                    └── dsa/                # ✅ Phase 2 — Accordion DSA Tracker (17 topics)
 ```
 
 ---
@@ -247,6 +249,24 @@ Navigate to **http://localhost:3000** to see the landing page.
 | `POST` | `/api/v1/mentors/:mentorId/request` | ✅ Bearer | Send mentorship request |
 | `GET` | `/api/v1/mentors/requests` | ✅ Bearer | Get requests |
 | `PUT` | `/api/v1/mentors/requests/:requestId` | ✅ Bearer | Accept / Reject / Cancel request |
+
+### Core Subject Notes
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/v1/core-subject-notes` | ✅ Bearer | List user's subject notes |
+| `POST` | `/api/v1/core-subject-notes` | ✅ Bearer | Add a subject note |
+| `PUT` | `/api/v1/core-subject-notes/:id` | ✅ Bearer | Update a subject note |
+| `DELETE` | `/api/v1/core-subject-notes/:id` | ✅ Bearer | Delete a subject note |
+
+### Personal Resume
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/v1/personal-resume` | ✅ Bearer | Get saved resume link |
+| `POST` | `/api/v1/personal-resume` | ✅ Bearer | Save a resume link (one per user) |
+| `PUT` | `/api/v1/personal-resume/:id` | ✅ Bearer | Update resume link |
+| `DELETE` | `/api/v1/personal-resume/:id` | ✅ Bearer | Remove saved resume link |
 
 ---
 
