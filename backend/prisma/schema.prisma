@@ -27,6 +27,7 @@ model User {
   studentRequests MentorshipRequest[]  @relation("StudentRequests")
   dsaProgress     UserDsaProblem[]
   dsaProblems     DsaProblem[]
+  subjectNotes    CoreSubjectNote[]
 }
 
 enum Difficulty {
@@ -129,4 +130,16 @@ model UserDsaProblem {
   createdAt DateTime   @default(now())
 
   @@unique([userId, problemId])
+}
+
+model CoreSubjectNote {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject    String
+  notesLink  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, subject])
 }

@@ -73,6 +73,7 @@
 | `src/app.ts` | ✅ Done | Registered `/api/v1/dsa` routes and removed obsolete `/api/v1/placement` route. |
 | `src/modules/dsa/*` | ✅ Done | Types, Zod validation schemas, Repository, Service, Controller, Routes for the fully user-isolated DSA Practice Tracker. Includes backend ownership validation guards. |
 | `src/modules/placement/*` | ✅ Done | Stubbed out legacy routes, controller, service, and repository with clean shell stubs to maintain compilation safety. |
+| `src/modules/subject-notes/*` | ✅ Done | Types, Zod validation schema, Repository, Service, Controller, Routes for the fully user-isolated Core Subject Notes. Includes ownership verification. |
 
 #### Frontend — `frontend/`
 | File | Status | Description |
