@@ -12,7 +12,14 @@ const dsaCategories = [
   { name: 'Trees', description: 'Hierarchical nodes, BSTs, traversals' },
   { name: 'Heap', description: 'Priority queues, top-K problems' },
   { name: 'Graphs', description: 'Networked vertices, BFS, DFS, shortest path' },
-  { name: 'Dynamic Programming', description: 'Memoization, tabulation, subproblem optimizations' }
+  { name: 'Dynamic Programming', description: 'Memoization, tabulation, subproblem optimizations' },
+  { name: 'Recursion & Backtracking', description: 'Call stack, state exploration, base cases, subset/permutation problems' },
+  { name: 'Tries', description: 'Prefix trees, word search, autocomplete data structures' },
+  { name: 'Segment Tree', description: 'Range queries, point updates, lazy propagation' },
+  { name: 'Greedy', description: 'Local optimization, activity selection, interval scheduling' },
+  { name: 'Two Pointers', description: 'Opposite ends, fast/slow pointers, array/string partitioning' },
+  { name: 'Sliding Window', description: 'Fixed and dynamic window sizes, subarray optimization' },
+  { name: 'Monotonic Stack', description: 'Next greater element, histogram problems' }
 ];
 
 async function main() {
