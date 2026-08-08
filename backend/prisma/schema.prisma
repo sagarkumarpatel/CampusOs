@@ -28,6 +28,7 @@ model User {
   dsaProgress     UserDsaProblem[]
   dsaProblems     DsaProblem[]
   subjectNotes    CoreSubjectNote[]
+  resume          PersonalResume?
 }
 
 enum Difficulty {
@@ -142,4 +143,13 @@ model CoreSubjectNote {
   updatedAt  DateTime @updatedAt
 
   @@unique([userId, subject])
+}
+
+model PersonalResume {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resumeLink String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
