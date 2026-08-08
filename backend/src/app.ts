@@ -7,6 +7,7 @@ import mentorshipRoutes from './modules/mentorship/routes';
 import dsaRoutes from './modules/dsa/routes';
 import subjectNotesRoutes from './modules/subject-notes/routes';
 import personalResumeRoutes from './modules/personal-resume/routes';
+import eventRoutes from './modules/events/routes';
 import prisma from './config/prisma';
 
 const app = express();
@@ -25,6 +26,7 @@ app.use('/api/v1/mentors', mentorshipRoutes);
 app.use('/api/v1/dsa', dsaRoutes);
 app.use('/api/v1/core-subject-notes', subjectNotesRoutes);
 app.use('/api/v1/personal-resume', personalResumeRoutes);
+app.use('/api/v1/events', eventRoutes);
 
 // Health check endpoint
 app.get('/health', async (req, res) => {

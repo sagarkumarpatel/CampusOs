@@ -134,124 +134,37 @@
 
 ---
 
-## 🔲 NEXT STEP: Phase 4 — Events Hub
+## ✅ PHASE 4: Events Hub — COMPLETE
 
-### What To Build
+### What Was Built
 
-**Goal**: Allow students to browse and register for campus events like hackathons, coding contests, seminars, and workshops.
+#### Backend — `backend/`
+| File | Status | Description |
+|------|--------|-------------|
+| `prisma/schema.prisma` | ✅ Done | Added `EventCategory` enum and `Event` model; linked relations to User model. |
+| `src/config/cloudinary.ts` | ✅ Done | Cloudinary SDK initialized using `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` env vars. Credentials **verified working** via Cloudinary API ping. Images stored under `campusos/events/` folder. |
+| `backend/.env` | ✅ Done | Cloudinary credentials added by user and confirmed valid. |
+| `backend/.env.example` | ✅ Done | Template updated with Cloudinary placeholder variables and dashboard URL reference. |
+| `src/app.ts` | ✅ Done | Registered `/api/v1/events` endpoint routing. |
+| `src/modules/events/*` | ✅ Done | Types, Zod schemas, Repository, Service, Controller, Routes for the Events Hub module. Enforces Event Manager (`EVENT_ORGANIZER`) authorization on write/delete APIs. Handles image upload buffers to Cloudinary. |
 
----
+#### Frontend — `frontend/`
+| File | Status | Description |
+|------|--------|-------------|
+| `src/app/dashboard/events/page.tsx` | ✅ Done | Responsive Events Hub view. Tab selectors for Upcoming vs Past Announcements. Search filtering. Category filter buttons. View Details modal overlay. If user is `EVENT_ORGANIZER`, shows "Publish Event" floating button with a popup form modal handling file uploads and metadata validation, and displays a delete button for announcements. |
 
-### Step 1 — Extend Database Schema
+#### Cloudinary Verification
+- ✅ Credentials configured in `backend/.env`
+- ✅ API ping returned `status: ok` — integration confirmed working
+- 🗑️ `src/test-cloudinary.ts` — temporary dev helper; deleted after verification
 
-Add these models and enums to `backend/prisma/schema.prisma`:
-
-```prisma
-enum EventType {
-  HACKATHON
-  CONTEST
-  SEMINAR
-  WORKSHOP
-}
-
-model Event {
-  id                   String              @id @default(uuid())
-  title                String
-  description          String
-  type                 EventType           @default(HACKATHON)
-  startDate            DateTime
-  endDate              DateTime
-  venue                String?
-  registrationDeadline DateTime
-  maxAttendees         Int?
-  organizerId          String
-  organizer            User                @relation("OrganizedEvents", fields: [organizerId], references: [id], onDelete: Cascade)
-  coverImageUrl        String?
-  registrations        EventRegistration[]
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
-}
-
-model EventRegistration {
-  id           String   @id @default(uuid())
-  userId       String
-  user         User     @relation("UserRegistrations", fields: [userId], references: [id], onDelete: Cascade)
-  eventId      String
-  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  registeredAt DateTime @default(now())
-
-  @@unique([userId, eventId])
-}
-```
-
-Also, update the `User` model to include back-relations:
-```prisma
-organizedEvents   Event[]             @relation("OrganizedEvents")
-eventRegistrations EventRegistration[] @relation("UserRegistrations")
-```
-
-Then run: `cd backend && npx prisma migrate dev --name add-events-module`
+#### TypeScript Verification
+- ✅ `cd backend && npm run build` — compiles cleanly with zero errors
+- ✅ `cd frontend && npx tsc --noEmit` — passes with zero errors
 
 ---
 
-### Step 2 — Create Backend Events Module
-
-Create the directory `backend/src/modules/events/` and define:
-
-**`schema.ts`**
-- Zod schema for creating an event (validates title, type, dates, registrationDeadline, etc.)
-
-**`repository.ts`**
-- `getEvents()`: list all future events (with registration counts)
-- `createEvent(organizerId, data)`: insert event
-- `registerForEvent(userId, eventId)`: insert registration
-- `cancelRegistration(userId, eventId)`: delete registration
-- `getRegistrationsByUser(userId)`: list events registered by a user
-
-**`service.ts`**
-- Enforce business rules (preventing registration after deadline, checking max attendee limits)
-
-- Handlers for fetching events, creating events (requires role EVENT_ORGANIZER), registering, and cancelling.
-
-**`routes.ts`**
-- Mount routes with `authenticate` and conditional `requireRole('EVENT_ORGANIZER')` middleware.
-
-Register routes in `app.ts`.
-
----
-
-### Step 3 — Frontend Events Hub Pages
-
-Create `frontend/src/app/dashboard/events/`:
-
-**`page.tsx`** — Event feed
-- Browse available events, filter by `EventType`, and show register/cancel action buttons.
-- Display cards with start dates, types, registrations counts, and deadline warnings.
-- For `EVENT_ORGANIZER` users, show a floating "Create Event" action button opening a form modal.
-
-**`[eventId]/page.tsx`** — Event details page
-- Deep-dive view of description, exact schedule dates, venue location, organizer contact, and custom confirmation notices.
-
----
-
-### Files To Create for Phase 4 (Summary)
-
-```
-backend/src/modules/events/schema.ts              [NEW]
-backend/src/modules/events/repository.ts          [NEW]
-backend/src/modules/events/service.ts             [NEW]
-backend/src/modules/events/controller.ts          [NEW]
-backend/src/modules/events/routes.ts              [NEW]
-backend/prisma/schema.prisma                     [MODIFY — add models + enums]
-backend/src/app.ts                               [MODIFY — register events routes]
-
-frontend/src/app/dashboard/events/page.tsx                   [NEW]
-frontend/src/app/dashboard/events/[eventId]/page.tsx         [NEW]
-```
-
----
-
-## 🔲 Phase 5: Clubs — PENDING
+## 🔲 NEXT STEP: Phase 5 — Clubs Portal
 See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.
 
 ## 🔲 Phase 6: Academic Resources — PENDING

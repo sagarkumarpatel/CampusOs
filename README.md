@@ -47,7 +47,7 @@ Instead of juggling separate tools for tracking interview prep, finding mentors,
 | 👤 **User Profiles** | Personal info, skills, college, graduation year, resume | ✅ Live |
 | 📚 **Placement Preparation** | DSA Practice Tracker (17 topics with accordion UI), Core Subject Notes manager, and Personal Resume Link Manager | ✅ Live |
 | 👥 **Mentorship** | Find mentors, send session requests, accept/reject flow, LinkedIn connect | ✅ Live |
-| 📅 **Events Hub** | Browse/register for hackathons, contests, seminars | 🔲 Phase 4 |
+| 📅 **Events Hub** | Browse/filter announcements, external registration redirect, image uploads | ✅ Live |
 | 🏙️ **Clubs Portal** | Discover and join campus clubs | 🔲 Phase 5 |
 | 📄 **Academic Resources** | Lecture notes, PYQs, roadmaps, cheatsheets | 🔲 Phase 6 |
 | 💼 **Career Tracking** | Log job/internship applications with status timelines | 🔲 Phase 7 |
@@ -65,6 +65,7 @@ Instead of juggling separate tools for tracking interview prep, finding mentors,
 - **Auth**: JWT (access token 15m + refresh token 7d via HTTP-only cookie)
 - **Validation**: Zod
 - **Password Hashing**: bcryptjs
+- **Image Storage**: Cloudinary (event banner uploads — `campusos/events/` folder)
 
 ### Frontend
 - **Framework**: Next.js 16 (App Router)
@@ -169,6 +170,12 @@ JWT_ACCESS_EXPIRATION="15m"
 JWT_REFRESH_EXPIRATION="7d"
 CORS_ORIGIN="http://localhost:3000"
 NODE_ENV="development"
+
+# Cloudinary — required for Events Hub banner image uploads
+# Get these from https://cloudinary.com/console
+CLOUDINARY_CLOUD_NAME="your_cloud_name"
+CLOUDINARY_API_KEY="your_api_key"
+CLOUDINARY_API_SECRET="your_api_secret"
 ```
 
 ### 4. Run database migrations
@@ -277,8 +284,8 @@ Navigate to **http://localhost:3000** to see the landing page.
 | Phase 1 | Foundation (Auth, Profile, Dashboard Layout) | ✅ **Complete** |
 | Phase 2 | Placement Prep (DSA Tracker with Accordion UI) | ✅ **Complete** |
 | Phase 3 | Mentorship (Mentor Profiles, Session Requests) | ✅ **Complete** |
-| Phase 4 | Events Hub (Create, Browse, Register) | 🔲 Next |
-| Phase 5 | Clubs Portal (Discover, Join, Manage) | 🔲 Pending |
+| Phase 4 | Events Hub (Create, Browse, Filter, External Redirect) | ✅ **Complete** |
+| Phase 5 | Clubs Portal (Discover, Join, Manage) | 🔲 Next |
 | Phase 6 | Academic Resources (Upload, Search, Bookmark) | 🔲 Pending |
 | Phase 7 | Career Tracking (Applications, Status, Timeline) | 🔲 Pending |
 

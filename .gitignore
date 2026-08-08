@@ -63,6 +63,10 @@ backend/.env.*
 # Prisma generated client (regenerated via `prisma generate`)
 backend/node_modules/.prisma/
 
+# Temporary/dev helper scripts (not part of application)
+backend/src/test-*.ts
+
+
 
 # ==========================
 # Frontend — Next.js

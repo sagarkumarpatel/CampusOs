@@ -13,7 +13,7 @@
 |---|--------|---------|
 | 1 | **Placement Preparation** | DSA Practice Tracker (17 topics), Core Subject Notes manager, and Personal Resume Link Manager |
 | 2 | **Mentorship** | Find, request, and manage mentor-student guidance |
-| 3 | **Events Hub** | Browse, register, and track hackathons, contests, seminars |
+| 3 | **Events Hub** | Browse, filter, publish, and delete events with banner image uploads to Cloudinary |
 | 4 | **Clubs Portal** | Discover, join, and manage campus clubs |
 | 5 | **Academic Resources** | Share, search, and bookmark lecture notes, Subject PYQs, roadmaps |
 | 6 | **Career Tracking** | Log job/internship applications with timelines and status |
@@ -52,6 +52,7 @@
 |---------|-----------|
 | Database | PostgreSQL (local via Docker / cloud via Supabase / Railway) |
 | Cache | Redis (optional, for future phases) |
+| Image Storage | Cloudinary (event banner uploads; folder: `campusos/events/`) |
 | Local Dev | docker-compose.yml at project root |
 
 ---
@@ -284,3 +285,12 @@ LOGIN / LOGOUT / SWAP:
 * `POST /api/v1/personal-resume` — save resume link (one per user)
 * `PUT /api/v1/personal-resume/:id` — update resume link (ownership guard)
 * `DELETE /api/v1/personal-resume/:id` — remove resume link (ownership guard)
+
+### Events Hub (Phase 4)
+* `GET /api/v1/events` — get all events
+* `GET /api/v1/events/upcoming` — get upcoming events (date >= now)
+* `GET /api/v1/events/past` — get past events (date < now)
+* `GET /api/v1/events/:id` — get single event details
+* `POST /api/v1/events` — publish a new event announcement (restricted to EVENT_ORGANIZER role)
+* `DELETE /api/v1/events/:id` — delete event announcement (restricted to EVENT_ORGANIZER/creator)
+* `POST /api/v1/events/upload` — upload banner image to Cloudinary (restricted to EVENT_ORGANIZER role)

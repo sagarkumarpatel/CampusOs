@@ -29,6 +29,7 @@ model User {
   dsaProblems     DsaProblem[]
   subjectNotes    CoreSubjectNote[]
   resume          PersonalResume?
+  organizedEvents Event[]              @relation("OrganizedEvents")
 }
 
 enum Difficulty {
@@ -152,4 +153,31 @@ model PersonalResume {
   resumeLink String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+enum EventCategory {
+  HACKATHON
+  WORKSHOP
+  TECHNICAL_EVENT
+  CODING_CONTEST
+}
+
+model Event {
+  id                  String        @id @default(uuid())
+  title               String
+  description         String
+  bannerImageUrl      String
+  category            EventCategory
+  organizer           String
+  date                DateTime
+  startTime           String
+  endTime             String
+  location            String
+  registrationDeadline DateTime
+  maximumParticipants Int
+  registrationLink    String
+  createdBy           String
+  creator             User          @relation("OrganizedEvents", fields: [createdBy], references: [id], onDelete: Cascade)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 }
