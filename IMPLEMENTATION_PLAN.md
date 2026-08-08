@@ -11,11 +11,11 @@
 
 | # | Module | Summary |
 |---|--------|---------|
-| 1 | **Placement Preparation** | DSA & CS syllabus tracker with categories, topics, and progress bars |
-| 2 | **Mentorship** | Find, request, and manage mentor-student relationships |
+| 1 | **Placement Preparation** | DSA Practice Tracker with categories, user-owned problems, and accordion checklist views |
+| 2 | **Mentorship** | Find, request, and manage mentor-student guidance |
 | 3 | **Events Hub** | Browse, register, and track hackathons, contests, seminars |
 | 4 | **Clubs Portal** | Discover, join, and manage campus clubs |
-| 5 | **Academic Resources** | Share, search, and bookmark lecture notes, PYQs, roadmaps |
+| 5 | **Academic Resources** | Share, search, and bookmark lecture notes, Subject PYQs, roadmaps |
 | 6 | **Career Tracking** | Log job/internship applications with timelines and status |
 
 ---
@@ -25,7 +25,7 @@
 ### Backend
 | Layer | Technology |
 |-------|-----------|
-| Runtime | Node.js 20+ |
+| Runtime | Node.js 20+ (tested on Node 24) |
 | Framework | Express.js 5.x |
 | Language | TypeScript |
 | ORM | Prisma 6.x |
@@ -51,7 +51,7 @@
 | Service | Technology |
 |---------|-----------|
 | Database | PostgreSQL (local via Docker / cloud via Supabase / Railway) |
-| Cache | Redis (optional, for future rate limiting / session caching) |
+| Cache | Redis (optional, for future phases) |
 | Local Dev | docker-compose.yml at project root |
 
 ---
@@ -70,7 +70,10 @@ CampusOsProject/
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── prisma/
-│   │   └── schema.prisma       # Prisma DB schema (all models)
+│   │   ├── schema.prisma       # Prisma DB schema (all models)
+│   │   ├── seed.js             # Compiled JS database seeds
+│   │   ├── seed.ts             # Source TS database seeds (DSA Categories)
+│   │   └── clean-db.js         # Transactional database reset helper script
 │   └── src/
 │       ├── server.ts           # Entry point — binds Express to PORT
 │       ├── app.ts              # Express app config, CORS, routes, health
@@ -82,7 +85,7 @@ CampusOsProject/
 │           ├── auth/
 │           │   ├── types.ts        # UserPayload type + Express Request extension
 │           │   ├── schema.ts       # Zod schemas (registerSchema, loginSchema)
-│           │   ├── repository.ts   # DB queries (findByEmail, createUser, tokens)
+│           │   ├── repository.ts   # DB queries (findByEmail, tokens)
 │           │   ├── service.ts      # Business logic (register, login, refresh, logout)
 │           │   ├── controller.ts   # Request handlers
 │           │   └── routes.ts       # POST /auth/register|login|refresh|logout
@@ -91,8 +94,13 @@ CampusOsProject/
 │           │   ├── service.ts
 │           │   ├── controller.ts
 │           │   └── routes.ts       # GET /users/profile, PUT /users/profile
-│           ├── placement/          # [PHASE 2 — TO BUILD]
-│           ├── mentorship/         # [PHASE 3 — TO BUILD]
+│           ├── dsa/                # DSA Tracker Module
+│           │   ├── schema.ts       # Zod verification schemas
+│           │   ├── repository.ts   # User-isolated queries
+│           │   ├── service.ts      # Stats and problem logic
+│           │   ├── controller.ts   # Handlers
+│           │   └── routes.ts       # REST routing endpoints
+│           ├── mentorship/         # Mentorship Module
 │           ├── events/             # [PHASE 4 — TO BUILD]
 │           ├── clubs/              # [PHASE 5 — TO BUILD]
 │           ├── resources/          # [PHASE 6 — TO BUILD]
@@ -105,29 +113,24 @@ CampusOsProject/
     ├── tsconfig.json
     └── src/
         ├── lib/
-        │   └── api.ts          # apiFetch() with auto token refresh on 401
+        │   └── api.ts          # apiFetch() with token auto refresh
         ├── providers/
         │   ├── QueryProvider.tsx    # TanStack Query client wrapper
-        │   └── AuthProvider.tsx     # Auth context: user, login, logout, refresh
+        │   └── AuthProvider.tsx     # Context with cache cleaning
         └── app/
-            ├── layout.tsx          # Root layout: QueryProvider + AuthProvider
-            ├── page.tsx            # / Landing page (public)
+            ├── layout.tsx          # Root layout
+            ├── page.tsx            # Landing page
             ├── auth/
-            │   ├── login/
-            │   │   └── page.tsx    # /auth/login — Login form
-            │   └── register/
-            │       └── page.tsx    # /auth/register — Registration form with role select
+            │   ├── login/page.tsx  # Login Form
+            │   └── register/page.tsx
             └── dashboard/
-                ├── layout.tsx      # Protected sidebar layout (all modules)
-                ├── page.tsx        # /dashboard — Summary overview of all modules
-                ├── profile/
-                │   └── page.tsx    # /dashboard/profile — Edit profile, skills, college
-                ├── placement/      # [PHASE 2 — TO BUILD]
-                ├── mentorship/     # [PHASE 3 — TO BUILD]
-                ├── events/         # [PHASE 4 — TO BUILD]
-                ├── clubs/          # [PHASE 5 — TO BUILD]
-                ├── resources/      # [PHASE 6 — TO BUILD]
-                └── career/         # [PHASE 7 — TO BUILD]
+                ├── layout.tsx      # Sidebar layout with sticky position
+                ├── page.tsx        # Overview Dashboard card
+                ├── profile/page.tsx
+                └── placement/
+                    ├── page.tsx    # Placement Landing (DSA Overview stats)
+                    └── dsa/
+                        └── page.tsx # Full Width Accordion DSA Tracker
 ```
 
 ---
@@ -138,34 +141,61 @@ Located at `backend/prisma/schema.prisma`
 
 ```prisma
 enum Role {
-  STUDENT | MENTOR | CLUB_MANAGER | EVENT_ORGANIZER
+  STUDENT
+  MENTOR
+  CLUB_MANAGER
+  EVENT_ORGANIZER
 }
 
 model User {
-  id, email (unique), passwordHash, role, createdAt, updatedAt
-  → has one Profile
-  → has many RefreshTokens
+  id              String               @id @default(uuid())
+  email           String               @unique
+  passwordHash    String
+  role            Role                 @default(STUDENT)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  profile         Profile?
+  refreshTokens   RefreshToken[]
+  mentorProfile   MentorProfile?
+  studentRequests MentorshipRequest[]  @relation("StudentRequests")
+  dsaProgress     UserDsaProblem[]
+  dsaProblems     DsaProblem[]
 }
 
-model RefreshToken {
-  id, token (unique), userId (FK), expiresAt, createdAt
+model DsaCategory {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  problems    DsaProblem[]
+  createdAt   DateTime     @default(now())
 }
 
-model Profile {
-  id, userId (unique FK), firstName, lastName,
-  avatarUrl?, bio?, skills (String[]),
-  college?, graduationYear?, resumeUrl?,
-  createdAt, updatedAt
+model DsaProblem {
+  id            String            @id @default(uuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId    String
+  category      DsaCategory       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  problemName   String
+  problemLink   String
+  difficulty    Difficulty        @default(MEDIUM)
+  userCompleted UserDsaProblem[]
+  createdAt     DateTime          @default(now())
+}
+
+model UserDsaProblem {
+  id        String     @id @default(uuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemId String
+  problem   DsaProblem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  completed Boolean    @default(false)
+  updatedAt DateTime   @updatedAt
+  createdAt DateTime   @default(now())
+
+  @@unique([userId, problemId])
 }
 ```
-
-### Future Models to Add (per phase)
-- **Phase 2**: `PreparationCategory`, `PreparationTopic`, `PreparationProgress`
-- **Phase 3**: `MentorProfile`, `MentorshipRequest`, `Mentorship`
-- **Phase 4**: `Event`, `EventRegistration`
-- **Phase 5**: `Club`, `ClubMembership`
-- **Phase 6**: `Resource`, `ResourceBookmark`
-- **Phase 7**: `CareerApplication`
 
 ---
 
@@ -174,292 +204,38 @@ model Profile {
 ```
 REGISTER: POST /api/v1/auth/register
   Body: { email, password, firstName, lastName, role }
-  → Hash password with bcryptjs
-  → Create User + Profile in a Prisma transaction
-  → Sign accessToken (JWT, 15m) + refreshToken (JWT, 7d)
-  → Save refreshToken to DB (RefreshToken table)
-  → Set refreshToken in HTTP-only cookie
-  → Return { user, accessToken }
+  → Hash password, transaction setup User + Profile
+  → AccessToken (JWT, 15m) + RefreshToken (JWT, 7d)
+  → Set HttpOnly Cookie, return { accessToken }
 
-LOGIN: POST /api/v1/auth/login
-  Body: { email, password }
-  → Find user, compare password
-  → Generate and store new token pair
-  → Same cookie + response pattern
-
-REFRESH: POST /api/v1/auth/refresh
-  → Read refreshToken from HTTP-only cookie
-  → Validate in DB + check expiry
-  → Delete old token (rotation), create new pair
-  → Return { accessToken, refreshToken (new cookie), user }
-
-LOGOUT: POST /api/v1/auth/logout
-  → Delete refreshToken from DB
-  → Clear cookie
-
-FRONTEND AUTO-REFRESH:
-  apiFetch() in src/lib/api.ts:
-    → On 401, calls /auth/refresh silently
-    → Retries original request with new accessToken
-    → On refresh failure, fires 'auth-logout' event → AuthProvider clears state
+LOGIN / LOGOUT / SWAP:
+  → Clearing QueryClient cache via queryClient.clear() inside AuthProvider
+  → Prevents cache bleed across user sessions.
 ```
 
 ---
 
-## 6. API Endpoints (Current)
+## 6. API Endpoints
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/api/v1/auth/register` | ❌ | Register a new user |
-| POST | `/api/v1/auth/login` | ❌ | Login |
-| POST | `/api/v1/auth/refresh` | ❌ (cookie) | Refresh access token |
-| POST | `/api/v1/auth/logout` | ❌ (cookie) | Logout, clear token |
-| GET | `/api/v1/users/profile` | ✅ Bearer | Get own profile |
-| PUT | `/api/v1/users/profile` | ✅ Bearer | Update own profile |
-| GET | `/health` | ❌ | DB health check |
+### Authentication
+* `POST /api/v1/auth/register` (Public)
+* `POST /api/v1/auth/login` (Public)
+* `POST /api/v1/auth/refresh` (Cookie check)
+* `POST /api/v1/auth/logout` (Auth checks)
 
----
+### DSA Practice Tracker (Phase 2)
+* `GET /api/v1/dsa/dashboard` — user overview metrics
+* `GET /api/v1/dsa/categories` — list categories with user counts
+* `GET /api/v1/dsa/categories/:id/problems` — get user's problems in category
+* `POST /api/v1/dsa/problems` — add a user-owned problem
+* `PUT /api/v1/dsa/problems/:id` — modify a user-owned problem (guard active)
+* `DELETE /api/v1/dsa/problems/:id` — delete a user-owned problem (guard active)
+* `PATCH /api/v1/dsa/problems/:id/status` — toggle completion status (guard active)
 
-## 7. Phase Roadmap
-
-### ✅ Phase 1: Foundation (COMPLETE)
-Backend skeleton, Auth, Profile, Dashboard layout, Frontend pages.
-
-### 🔲 Phase 2: Placement Preparation
-**Backend Models to add to schema.prisma:**
-```prisma
-model PreparationCategory {
-  id, name, description?, icon?, color?
-  topics PreparationTopic[]
-}
-
-model PreparationTopic {
-  id, title, categoryId (FK), difficulty (EASY/MEDIUM/HARD), resourceUrl?
-  progress PreparationProgress[]
-}
-
-model PreparationProgress {
-  id, userId (FK), topicId (FK), status (NOT_STARTED/IN_PROGRESS/COMPLETED)
-  notes?, updatedAt
-  @@unique([userId, topicId])
-}
-```
-**Backend Routes:**
-- `GET /api/v1/placement/categories` — list all categories
-- `GET /api/v1/placement/categories/:id/topics` — list topics in a category
-- `GET /api/v1/placement/progress` — get user's topic progress
-- `PUT /api/v1/placement/progress/:topicId` — mark topic status
-
-**Frontend Pages:**
-- `/dashboard/placement` — Category grid with per-category progress bars
-- `/dashboard/placement/[categoryId]` — Topic list view with status toggles
-
----
-
-### 🔲 Phase 3: Mentorship
-**Backend Models:**
-```prisma
-model MentorProfile {
-  id, userId (FK unique), title, company, skills (String[])
-  bio?, linkedinUrl?, calendlyUrl?, isAvailable (bool)
-}
-
-model MentorshipRequest {
-  id, studentId (FK), mentorId (FK)
-  message, status (PENDING/ACCEPTED/REJECTED/CANCELLED)
-  createdAt, updatedAt
-}
-```
-**Backend Routes:**
-- `GET /api/v1/mentors` — Browse available mentors (filter by skill)
-- `POST /api/v1/mentors/profile` — Create mentor profile (MENTOR role)
-- `POST /api/v1/mentors/:mentorId/request` — Send mentorship request
-- `PUT /api/v1/mentors/requests/:requestId` — Accept/Reject (MENTOR)
-- `GET /api/v1/mentors/requests` — List my requests (student + mentor)
-
-**Frontend Pages:**
-- `/dashboard/mentorship` — Browse mentor cards, filter by skills
-- `/dashboard/mentorship/requests` — Manage sent/received requests
-
----
-
-### 🔲 Phase 4: Events
-**Backend Models:**
-```prisma
-model Event {
-  id, title, description, type (HACKATHON/CONTEST/SEMINAR/WORKSHOP)
-  startDate, endDate, venue?, registrationDeadline
-  maxAttendees?, organizerId (FK), coverImageUrl?
-  registrations EventRegistration[]
-}
-
-model EventRegistration {
-  id, userId (FK), eventId (FK), registeredAt
-  @@unique([userId, eventId])
-}
-```
-**Backend Routes:**
-- `GET /api/v1/events` — Browse events (filter by type, date)
-- `POST /api/v1/events` — Create event (EVENT_ORGANIZER role)
-- `POST /api/v1/events/:eventId/register` — Register for an event
-- `DELETE /api/v1/events/:eventId/register` — Cancel registration
-- `GET /api/v1/events/my` — Get my registered events
-
-**Frontend Pages:**
-- `/dashboard/events` — Event cards grid with registration status
-- `/dashboard/events/[eventId]` — Event detail + register button
-
----
-
-### 🔲 Phase 5: Clubs
-**Backend Models:**
-```prisma
-model Club {
-  id, name, description, logoUrl?, category?
-  managerId (FK), createdAt
-  members ClubMembership[]
-  events Event[]   // optional FK link
-}
-
-model ClubMembership {
-  id, userId (FK), clubId (FK), role (MEMBER/ADMIN)
-  joinedAt
-  @@unique([userId, clubId])
-}
-```
-**Backend Routes:**
-- `GET /api/v1/clubs` — Browse all clubs
-- `POST /api/v1/clubs` — Create club (CLUB_MANAGER role)
-- `POST /api/v1/clubs/:clubId/join` — Join a club
-- `DELETE /api/v1/clubs/:clubId/leave` — Leave a club
-- `GET /api/v1/clubs/my` — Get my clubs
-
-**Frontend Pages:**
-- `/dashboard/clubs` — Club discovery grid
-- `/dashboard/clubs/[clubId]` — Club detail + join/leave button
-
----
-
-### 🔲 Phase 6: Academic Resources
-**Backend Models:**
-```prisma
-model Resource {
-  id, title, description, type (NOTE/PYQ/ROADMAP/CHEATSHEET)
-  subject?, fileUrl?, externalUrl?, tags (String[])
-  uploaderId (FK), createdAt
-  bookmarks ResourceBookmark[]
-}
-
-model ResourceBookmark {
-  id, userId (FK), resourceId (FK), savedAt
-  @@unique([userId, resourceId])
-}
-```
-**Backend Routes:**
-- `GET /api/v1/resources` — Browse/search resources
-- `POST /api/v1/resources` — Upload resource (authenticated)
-- `POST /api/v1/resources/:resourceId/bookmark` — Bookmark a resource
-- `DELETE /api/v1/resources/:resourceId/bookmark` — Remove bookmark
-- `GET /api/v1/resources/bookmarks` — Get my bookmarks
-
-**Frontend Pages:**
-- `/dashboard/resources` — Search + browse resource cards
-- `/dashboard/resources/upload` — Upload a resource form
-
----
-
-### 🔲 Phase 7: Career Tracking
-**Backend Models:**
-```prisma
-enum ApplicationStatus {
-  APPLIED | ONLINE_TEST | TECHNICAL_INTERVIEW | HR_INTERVIEW | OFFERED | REJECTED | WITHDRAWN
-}
-
-model CareerApplication {
-  id, userId (FK), companyName, role, jobType (INTERNSHIP/FULLTIME)
-  status ApplicationStatus, appliedDate, notes?
-  ctc?, location?, jobUrl?
-  updatedAt, createdAt
-}
-```
-**Backend Routes:**
-- `GET /api/v1/career` — Get my applications (filter by status)
-- `POST /api/v1/career` — Log a new application
-- `PUT /api/v1/career/:id` — Update application status
-- `DELETE /api/v1/career/:id` — Delete an application
-
-**Frontend Pages:**
-- `/dashboard/career` — Kanban-style board or timeline table
-- `/dashboard/career/new` — Add application form
-
----
-
-### 🔲 Phase 8: Production Engineering
-- Containerize backend using `Dockerfile` + `docker-compose.override.yml`
-- Deployment via Railway / Render / Vercel (frontend)
-- GitHub Actions CI/CD pipeline with lint, typecheck, and test steps
-- Rate limiting middleware (express-rate-limit)
-- Logging with Morgan + Winston
-- Centralized error handler middleware
-- Vitest test suite for backend services
-
----
-
-## 8. Environment Variables
-
-### Backend `backend/.env`
-```env
-PORT=5000
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/campusos?schema=public"
-JWT_SECRET="<strong-random-secret>"
-JWT_REFRESH_SECRET="<strong-random-secret>"
-JWT_ACCESS_EXPIRATION="15m"
-JWT_REFRESH_EXPIRATION="7d"
-CORS_ORIGIN="http://localhost:3000"
-NODE_ENV="development"
-```
-
-### Frontend `frontend/.env.local`
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
-```
-
----
-
-## 9. Running Locally
-
-### Prerequisites
-- Node.js 20+
-- Docker Desktop (for local Postgres)
-- npm 10+
-
-### Steps
-```bash
-# 1. Start Postgres locally
-docker compose up -d postgres
-
-# 2. Run database migrations
-cd backend
-npx prisma migrate dev --name init
-
-# 3. Start backend dev server
-npm run dev
-# → http://localhost:5000
-
-# 4. Start frontend dev server (new terminal)
-cd frontend
-npm run dev
-# → http://localhost:3000
-```
-
----
-
-## 10. Coding Conventions
-
-- **Naming**: camelCase for variables/functions, PascalCase for classes/types
-- **Module structure**: Each backend module must have `types.ts`, `schema.ts`, `repository.ts`, `service.ts`, `controller.ts`, `routes.ts`
-- **Error handling**: All controller methods must use try/catch. Services throw descriptive `Error` objects
-- **Zod validation**: All request bodies must be parsed through a Zod schema in the controller
-- **No raw SQL**: Always use Prisma queries. Transactions for multi-table writes
-- **Types**: Never use `any` — always type `req.user` via the extended `Express.Request` interface
-- **Frontend**: All pages using hooks must be `'use client'`. Providers are in `src/providers/`
+### Mentorship (Phase 3)
+* `GET /api/v1/mentors` — browse directory list
+* `GET /api/v1/mentors/profile` — fetch mentor profile
+* `POST /api/v1/mentors/profile` — create profile
+* `POST /api/v1/mentors/:mentorId/request` — request guidance session
+* `GET /api/v1/mentors/requests` — list bidirectional requests
+* `PUT /api/v1/mentors/requests/:requestId` — accept/reject/cancel requests
