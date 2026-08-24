@@ -20,8 +20,8 @@ router.get('/past', authenticate, (req, res) => controller.getPastEvents(req, re
 router.get('/:id', authenticate, (req, res) => controller.getEventById(req, res));
 
 // Event Manager only routes
-router.post('/', authenticate, requireRole(['EVENT_ORGANIZER']), (req, res) => controller.createEvent(req, res));
-router.delete('/:id', authenticate, requireRole(['EVENT_ORGANIZER']), (req, res) => controller.deleteEvent(req, res));
-router.post('/upload', authenticate, requireRole(['EVENT_ORGANIZER']), upload.single('banner'), (req, res) => controller.uploadBanner(req, res));
+router.post('/', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.createEvent(req, res));
+router.delete('/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.deleteEvent(req, res));
+router.post('/upload', authenticate, requireRole(['PLACEMENT_COORDINATOR']), upload.single('banner'), (req, res) => controller.uploadBanner(req, res));
 
 export default router;

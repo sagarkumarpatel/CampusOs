@@ -40,9 +40,9 @@ export class EventsService {
     }
     
     // Enforce that only Event Managers can delete events.
-    // If we want only the creator or any Event Manager to delete, let's restrict to EVENT_ORGANIZER role
-    if (role !== 'EVENT_ORGANIZER' && event.createdBy !== userId) {
-      throw new Error('Forbidden: Only Event Managers can delete events');
+    // If we want only the creator or any Placement Coordinator to delete, let's restrict to PLACEMENT_COORDINATOR role
+    if (role !== 'PLACEMENT_COORDINATOR' && event.createdBy !== userId) {
+      throw new Error('Forbidden: Only Placement Coordinators can delete events');
     }
 
     return repository.deleteEvent(id);

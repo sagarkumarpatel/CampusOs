@@ -8,7 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 interface User {
   id: string;
   email: string;
-  role: 'STUDENT' | 'MENTOR' | 'CLUB_MANAGER' | 'EVENT_ORGANIZER';
+  role: 'STUDENT' | 'MENTOR' | 'CLUB_MANAGER' | 'PLACEMENT_COORDINATOR';
   profile?: {
     firstName: string;
     lastName: string;

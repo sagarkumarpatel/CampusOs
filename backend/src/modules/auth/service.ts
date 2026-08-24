@@ -25,6 +25,13 @@ export class AuthService {
       throw new Error('Email already exists');
     }
 
+    if (role === Role.PLACEMENT_COORDINATOR) {
+      const coordinatorExists = await authRepository.findPlacementCoordinator();
+      if (coordinatorExists) {
+        throw new Error('Placement Coordinator already exists in the system');
+      }
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(passwordHash, salt);
 

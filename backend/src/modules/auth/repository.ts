@@ -66,4 +66,10 @@ export class AuthRepository {
       where: { userId },
     });
   }
+
+  async findPlacementCoordinator() {
+    return prisma.user.findFirst({
+      where: { role: Role.PLACEMENT_COORDINATOR },
+    });
+  }
 }

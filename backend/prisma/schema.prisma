@@ -11,7 +11,7 @@ enum Role {
   STUDENT
   MENTOR
   CLUB_MANAGER
-  EVENT_ORGANIZER
+  PLACEMENT_COORDINATOR
 }
 
 model User {
@@ -181,3 +181,38 @@ model Event {
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
 }
+
+model ResourceCoreSubjectNote {
+  id           String   @id @default(uuid())
+  subjectName  String
+  resourceLink String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ResourcePreviousYearQuestion {
+  id                String   @id @default(uuid())
+  subjectName       String
+  year              Int
+  semester          Int
+  questionPaperLink String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ResourceInterviewNote {
+  id                 String   @id @default(uuid())
+  topicName          String
+  interviewNotesLink String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model ResourceCheatSheet {
+  id        String   @id @default(uuid())
+  name      String
+  imageUrl  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
