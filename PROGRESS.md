@@ -142,21 +142,20 @@
 | File | Status | Description |
 |------|--------|-------------|
 | `prisma/schema.prisma` | ✅ Done | Added `EventCategory` enum and `Event` model; linked relations to User model. |
-| `src/config/cloudinary.ts` | ✅ Done | Cloudinary SDK initialized using `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` env vars. Credentials **verified working** via Cloudinary API ping. Images stored under `campusos/events/` folder. |
+| `src/config/cloudinary.ts` | ✅ Done | Cloudinary SDK initialized using `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` env vars. Images stored under `campusos/events/` folder. |
 | `backend/.env` | ✅ Done | Cloudinary credentials added by user and confirmed valid. |
 | `backend/.env.example` | ✅ Done | Template updated with Cloudinary placeholder variables and dashboard URL reference. |
 | `src/app.ts` | ✅ Done | Registered `/api/v1/events` endpoint routing. |
-| `src/modules/events/*` | ✅ Done | Types, Zod schemas, Repository, Service, Controller, Routes for the Events Hub module. Enforces Event Manager (`EVENT_ORGANIZER`) authorization on write/delete APIs. Handles image upload buffers to Cloudinary. |
+| `src/modules/events/*` | ✅ Done | Types, Zod schemas, Repository, Service, Controller, Routes for the Events Hub module. Role-guarded write/delete APIs. Handles image upload buffers to Cloudinary. **Updated in Phase 5 to use `PLACEMENT_COORDINATOR` role.** |
 
 #### Frontend — `frontend/`
 | File | Status | Description |
 |------|--------|-------------|
-| `src/app/dashboard/events/page.tsx` | ✅ Done | Responsive Events Hub view. Tab selectors for Upcoming vs Past Announcements. Search filtering. Category filter buttons. View Details modal overlay. If user is `EVENT_ORGANIZER`, shows "Publish Event" floating button with a popup form modal handling file uploads and metadata validation, and displays a delete button for announcements. |
+| `src/app/dashboard/events/page.tsx` | ✅ Done | Responsive Events Hub view. Tab selectors for Upcoming vs Past Announcements. Search filtering. Category filter buttons. View Details modal overlay. Role check updated to `PLACEMENT_COORDINATOR` in Phase 5. |
 
 #### Cloudinary Verification
 - ✅ Credentials configured in `backend/.env`
 - ✅ API ping returned `status: ok` — integration confirmed working
-- 🗑️ `src/test-cloudinary.ts` — temporary dev helper; deleted after verification
 
 #### TypeScript Verification
 - ✅ `cd backend && npm run build` — compiles cleanly with zero errors
@@ -164,17 +163,85 @@
 
 ---
 
-## 🔲 NEXT STEP: Phase 5 — Clubs Portal
-See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.
+## ✅ PHASE 5: Resources Module — COMPLETE
 
-## 🔲 Phase 6: Academic Resources — PENDING
-See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.
+> Role change included: `EVENT_ORGANIZER` replaced by `PLACEMENT_COORDINATOR` system-wide.
+> The Placement Coordinator is the sole authority over the Resources Module (and Events Hub).
+> Only **one** Placement Coordinator can exist in the system (enforced at registration).
+
+### What Was Built
+
+#### Role System Changes
+| File | Change |
+|------|--------|
+| `prisma/schema.prisma` | `Role` enum: `EVENT_ORGANIZER` → `PLACEMENT_COORDINATOR` |
+| `src/modules/auth/schema.ts` | Zod `registerSchema` role enum updated |
+| `src/modules/auth/types.ts` | `UserPayload.role` union type updated |
+| `src/modules/auth/repository.ts` | Added `findPlacementCoordinator()` method |
+| `src/modules/auth/service.ts` | `register()` now rejects a second `PLACEMENT_COORDINATOR` (HTTP 409) |
+| `src/modules/events/routes.ts` | `requireRole` updated from `EVENT_ORGANIZER` → `PLACEMENT_COORDINATOR` |
+| `src/modules/events/service.ts` | Delete guard updated to `PLACEMENT_COORDINATOR` |
+| `frontend/src/providers/AuthProvider.tsx` | `User.role` type updated to include `PLACEMENT_COORDINATOR` |
+| `frontend/src/app/auth/register/page.tsx` | Role select option updated to "Placement Coordinator" |
+| `frontend/src/app/dashboard/events/page.tsx` | `isEventManager` role check updated to `PLACEMENT_COORDINATOR` |
+
+#### New Database Models (via `npx prisma db push`)
+| Model | Fields |
+|-------|--------|
+| `ResourceCoreSubjectNote` | `id`, `subjectName`, `resourceLink`, `createdAt`, `updatedAt` |
+| `ResourcePreviousYearQuestion` | `id`, `subjectName`, `year`, `semester`, `questionPaperLink`, `createdAt`, `updatedAt` |
+| `ResourceInterviewNote` | `id`, `topicName`, `interviewNotesLink`, `createdAt`, `updatedAt` |
+| `ResourceCheatSheet` | `id`, `name`, `imageUrl` (Cloudinary `secure_url`), `createdAt`, `updatedAt` |
+
+#### Backend — `backend/src/modules/resources/`
+| File | Status | Description |
+|------|--------|-------------|
+| `types.ts` | ✅ Done | Input type interfaces for all four resource types |
+| `schema.ts` | ✅ Done | Zod validation schemas for create and update operations |
+| `repository.ts` | ✅ Done | Prisma CRUD operations (findMany, create, update, delete) for all four resource types |
+| `service.ts` | ✅ Done | Business logic, validation via Zod, delegates to repository |
+| `controller.ts` | ✅ Done | HTTP handlers with `req.params['id'] as string` cast; Cloudinary image upload via buffer → base64 |
+| `routes.ts` | ✅ Done | `GET /` (all auth), write routes (`POST`, `PUT`, `DELETE`) restricted to `PLACEMENT_COORDINATOR`; `/cheat-sheets/upload` declared before `/:id` to avoid param shadowing |
+
+Registered in `src/app.ts` under `/api/v1/resources`.
+
+#### API Endpoints Added
+| Method | Path | Access |
+|--------|------|--------|
+| `GET` | `/api/v1/resources` | All authenticated users |
+| `POST` | `/api/v1/resources/subject-notes` | `PLACEMENT_COORDINATOR` only |
+| `PUT` | `/api/v1/resources/subject-notes/:id` | `PLACEMENT_COORDINATOR` only |
+| `DELETE` | `/api/v1/resources/subject-notes/:id` | `PLACEMENT_COORDINATOR` only |
+| `POST` | `/api/v1/resources/previous-year-questions` | `PLACEMENT_COORDINATOR` only |
+| `PUT` | `/api/v1/resources/previous-year-questions/:id` | `PLACEMENT_COORDINATOR` only |
+| `DELETE` | `/api/v1/resources/previous-year-questions/:id` | `PLACEMENT_COORDINATOR` only |
+| `POST` | `/api/v1/resources/interview-notes` | `PLACEMENT_COORDINATOR` only |
+| `PUT` | `/api/v1/resources/interview-notes/:id` | `PLACEMENT_COORDINATOR` only |
+| `DELETE` | `/api/v1/resources/interview-notes/:id` | `PLACEMENT_COORDINATOR` only |
+| `POST` | `/api/v1/resources/cheat-sheets` | `PLACEMENT_COORDINATOR` only |
+| `POST` | `/api/v1/resources/cheat-sheets/upload` | `PLACEMENT_COORDINATOR` only (Cloudinary) |
+| `PUT` | `/api/v1/resources/cheat-sheets/:id` | `PLACEMENT_COORDINATOR` only |
+| `DELETE` | `/api/v1/resources/cheat-sheets/:id` | `PLACEMENT_COORDINATOR` only |
+
+#### Frontend — `frontend/`
+| File | Status | Description |
+|------|--------|-------------|
+| `src/app/dashboard/resources/page.tsx` | ✅ Done | Four-section Resources dashboard: Core Subject Notes, Previous Year Questions, Interview Notes, Cheat Sheets. Role-aware: Add/Edit/Delete visible only to `PLACEMENT_COORDINATOR`; all other users see read-only cards. Responsive grid (1→2→3 columns). Single reusable Add/Edit modal per section. Delete confirmation dialog. Cheat Sheet image upload → Cloudinary → preview. All data via TanStack Query with cache invalidation. |
+
+#### TypeScript Verification
+- ✅ `npx tsc --noEmit` (backend) — zero errors after `req.params['id'] as string` cast applied
+- ✅ Backend health check: `{ status: "healthy", database: "connected" }`
+
+---
+
+## 🔲 NEXT STEP: Phase 6 — Clubs Portal
+See `IMPLEMENTATION_PLAN.md` for full spec.
 
 ## 🔲 Phase 7: Career Tracking — PENDING
-See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.
+See `IMPLEMENTATION_PLAN.md` for full spec.
 
 ## 🔲 Phase 8: Production Engineering — PENDING
-See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.
+See `IMPLEMENTATION_PLAN.md` for full spec.
 
 ---
 
@@ -183,6 +250,8 @@ See `IMPLEMENTATION_PLAN.md` Section 7 for full spec.
 | Issue | Status | Notes |
 |-------|--------|-------|
 | Docker Desktop required for Postgres | ⚠️ Open | If Docker not available, use `railway.app` or `supabase.com` for hosted PostgreSQL. Update `DATABASE_URL` in `.env` accordingly |
-| Redis container in docker-compose.yml is defined but not yet used in code | ℹ️ Info | Will be used in Phase 3+ for session caching or rate limiting |
+| Redis container in docker-compose.yml is defined but not yet used in code | ℹ️ Info | Will be used in a future phase for session caching or rate limiting |
 | `frontend/.env.local` not yet created | ⚠️ Open | Must create this file with `NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1` before running frontend |
 | Prisma migration not yet run | ⚠️ Open | `npx prisma migrate dev --name init` must be run after Postgres is running |
+| Only one `PLACEMENT_COORDINATOR` allowed | ℹ️ Info | Enforced in `AuthService.register`. Second registration attempt returns HTTP 409 Conflict. |
+| Express `req.params` typing | ℹ️ Info | In Express v5, `req.params[key]` is `string \| string[]`. Must cast with `as string` before passing to service methods expecting `string`. |
