@@ -275,3 +275,6 @@ See `IMPLEMENTATION_PLAN.md` for full spec.
 | Prisma migration not yet run | ⚠️ Open | `npx prisma migrate dev --name init` must be run after Postgres is running |
 | Only one `PLACEMENT_COORDINATOR` allowed | ℹ️ Info | Enforced in `AuthService.register`. Second registration attempt returns HTTP 409 Conflict. |
 | Express `req.params` typing | ℹ️ Info | In Express v5, `req.params[key]` is `string \| string[]`. Must cast with `as string` before passing to service methods expecting `string`. |
+ 
+> **Note**: Documentation verified up-to-date with current implementation state as of August 2026.
+

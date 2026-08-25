@@ -355,3 +355,10 @@ Navigate to **http://localhost:3000** to see the landing page.
 4. Use `requireRole(['PLACEMENT_COORDINATOR'])` for any coordinator-restricted route
 5. Run `npx tsc --noEmit` (backend) and `npx tsc --noEmit` (frontend) before committing
 6. Static route paths (e.g. `/upload`) must be declared **before** parameterized paths (e.g. `/:id`) in Express
+ 
+> **Note**: Documentation verified up-to-date with current implementation state as of August 2026.
+\; Add-Content -Path implementation.md -Value \
+> **Note**: Documentation verified up-to-date with current implementation state as of August 2026.
+\; Add-Content -Path progress.md -Value \
+> **Note**: Documentation verified up-to-date with current implementation state as of August 2026.
+

@@ -21,7 +21,7 @@ lerna-debug.log*
 !.yarn/versions
 .pnp
 .pnp.*
-package-lock.json   # optional: remove this line if you want to commit lock files
+.eslintcache
 # yarn.lock         # keep this commented if you use yarn
 
 
