@@ -232,13 +232,38 @@ Registered in `src/app.ts` under `/api/v1/resources`.
 - ✅ `npx tsc --noEmit` (backend) — zero errors after `req.params['id'] as string` cast applied
 - ✅ Backend health check: `{ status: "healthy", database: "connected" }`
 
-## 🔲 NEXT STEP: Phase 6 — Career Tracking
-See `IMPLEMENTATION_PLAN.md` for full spec.
+---
 
-## 🔲 Phase 7: Production Engineering — PENDING
-See `IMPLEMENTATION_PLAN.md` for full spec.
+## ✅ PHASE 6: Career Tracking — COMPLETE
+
+### What Was Built
+
+#### Database Schema
+* Added enum `OpportunityType` (`INTERNSHIP`, `FULL_TIME_JOB`, `FREELANCE_OPPORTUNITY`).
+* Added `CareerOpportunity` model.
+* Added `CareerRegistration` model with `@@unique([opportunityId, userId])` constraint.
+
+#### Backend (`backend/src/modules/career/`)
+* `types.ts`: TS interfaces for opportunity creation/update.
+* `schema.ts`: Zod validation schemas.
+* `repository.ts`: Prisma queries for listing, creating, updating, deleting opportunities and registrations.
+* `service.ts`: Business logic and CSV generation.
+* `controller.ts`: Controllers to handle Cloudinary banner upload and CSV response streams.
+* `routes.ts`: Routes with RBAC role checks restricted to `PLACEMENT_COORDINATOR`.
+* Mounted under `/api/v1/career` in `app.ts`.
+
+#### Frontend
+* `src/app/dashboard/career/page.tsx`: Full responsive career board view, search/filtering, opportunity cards, apply redirect link, checklists with register counters, publication modals with secure Cloudinary image uploading, edit forms, and registered student email list CSV downloads.
+
+#### TypeScript Verification
+* ✅ `npx tsc --noEmit` (backend) — zero errors
+* ✅ `npx tsc --noEmit` (frontend) — zero errors
+* ✅ Backend health check: `{ status: "healthy", database: "connected" }`
 
 ---
+
+## 🔲 NEXT STEP: Phase 7 — Production Engineering
+See `IMPLEMENTATION_PLAN.md` for full spec.
 
 ## Known Issues / Gotchas
 

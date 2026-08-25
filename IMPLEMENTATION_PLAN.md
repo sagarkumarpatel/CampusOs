@@ -15,7 +15,7 @@
 | 2 | **Mentorship** | Find, request, and manage mentor-student guidance | ✅ Complete |
 | 3 | **Events Hub** | Browse, filter, publish, and delete events with banner image uploads to Cloudinary | ✅ Complete |
 | 4 | **Resources Module** | Shared academic resources — Core Subject Notes, PYQs, Interview Notes, Cheat Sheets — managed exclusively by the Placement Coordinator | ✅ Complete |
-| 5 | **Career Tracking** | Log job/internship applications with timelines and status | 🔲 Phase 6 |
+| 5 | **Career Tracking** | Log job/internship applications with timelines and status | ✅ Complete |
 
 ---
 
@@ -377,13 +377,7 @@ LOGIN / LOGOUT / SWAP:
 
 ## 8. Remaining Phases
 
-### Phase 6: Career Tracking
-- Model: `JobApplication` (company, role, status, appliedDate, notes, userId)
-- Enum: `ApplicationStatus` (APPLIED, SCREENING, INTERVIEW, OFFER, REJECTED)
-- Frontend: Kanban board or timeline view, status filter, add/edit modals
-- Routes under `/api/v1/career`
-
-### Phase 8: Production Engineering
+### Phase 6: Production Engineering
 - Add proper Prisma migrations (replace `db push` with `migrate deploy`)
 - Rate limiting (express-rate-limit + Redis)
 - Error monitoring (Sentry)

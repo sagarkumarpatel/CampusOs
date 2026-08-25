@@ -50,7 +50,7 @@ Instead of juggling separate tools for tracking interview prep, finding mentors,
 | 👥 **Mentorship** | Find mentors, send session requests, accept/reject flow, LinkedIn connect | ✅ Live |
 | 📅 **Events Hub** | Browse/filter announcements, external registration redirect, image uploads via Cloudinary | ✅ Live |
 | 📄 **Resources Module** | Shared academic resources — Subject Notes, Previous Year Questions, Interview Notes, Cheat Sheets — managed by Placement Coordinator, viewable by all students | ✅ Live |
-| 💼 **Career Tracking** | Log job/internship applications with status timelines | 🔲 Phase 6 |
+| 💼 **Career Tracking** | Publish, search, and track available internships, full-time jobs, and freelance opportunities with student checklist registrations | ✅ Live |
 
 ---
 
@@ -342,7 +342,7 @@ Navigate to **http://localhost:3000** to see the landing page.
 | Phase 3 | Mentorship (Mentor Profiles, Session Requests) | ✅ **Complete** |
 | Phase 4 | Events Hub (Create, Browse, Filter, Cloudinary Uploads) | ✅ **Complete** |
 | Phase 5 | Resources Module (Shared Notes, PYQs, Interview Notes, Cheat Sheets) + Placement Coordinator Role | ✅ **Complete** |
-| Phase 6 | Career Tracking (Applications, Status, Timeline) | 🔲 Next |
+| Phase 6 | Career Tracking (Opportunities Board, Registrations, CSV Downloads) | ✅ **Complete** |
 | Phase 7 | Production Engineering (Migrations, Rate Limiting, CI/CD) | 🔲 Pending |
 
 ---

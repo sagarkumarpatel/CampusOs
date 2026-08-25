@@ -14,21 +14,23 @@ enum Role {
 }
 
 model User {
-  id              String               @id @default(uuid())
-  email           String               @unique
-  passwordHash    String
-  role            Role                 @default(STUDENT)
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
-  profile         Profile?
-  refreshTokens   RefreshToken[]
-  mentorProfile   MentorProfile?
-  studentRequests MentorshipRequest[]  @relation("StudentRequests")
-  dsaProgress     UserDsaProblem[]
-  dsaProblems     DsaProblem[]
-  subjectNotes    CoreSubjectNote[]
-  resume          PersonalResume?
-  organizedEvents Event[]              @relation("OrganizedEvents")
+  id                  String               @id @default(uuid())
+  email               String               @unique
+  passwordHash        String
+  role                Role                 @default(STUDENT)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  profile             Profile?
+  refreshTokens       RefreshToken[]
+  mentorProfile       MentorProfile?
+  studentRequests     MentorshipRequest[]  @relation("StudentRequests")
+  dsaProgress         UserDsaProblem[]
+  dsaProblems         DsaProblem[]
+  subjectNotes        CoreSubjectNote[]
+  resume              PersonalResume?
+  organizedEvents     Event[]              @relation("OrganizedEvents")
+  careerOpportunities CareerOpportunity[]
+  careerRegistrations CareerRegistration[]
 }
 
 enum Difficulty {
@@ -213,5 +215,39 @@ model ResourceCheatSheet {
   imageUrl  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum OpportunityType {
+  INTERNSHIP
+  FULL_TIME_JOB
+  FREELANCE_OPPORTUNITY
+}
+
+model CareerOpportunity {
+  id              String               @id @default(uuid())
+  companyName     String
+  role            String
+  jobType         OpportunityType
+  location        String
+  stipendPerMonth Int
+  applicationLink String
+  bannerImageUrl  String
+  createdById     String
+  createdBy       User                 @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  registrations   CareerRegistration[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+}
+
+model CareerRegistration {
+  id            String            @id @default(uuid())
+  opportunityId String
+  opportunity   CareerOpportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email         String
+  createdAt     DateTime          @default(now())
+
+  @@unique([opportunityId, userId])
 }
 
