@@ -232,15 +232,10 @@ Registered in `src/app.ts` under `/api/v1/resources`.
 - ✅ `npx tsc --noEmit` (backend) — zero errors after `req.params['id'] as string` cast applied
 - ✅ Backend health check: `{ status: "healthy", database: "connected" }`
 
----
-
-## 🔲 NEXT STEP: Phase 6 — Clubs Portal
+## 🔲 NEXT STEP: Phase 6 — Career Tracking
 See `IMPLEMENTATION_PLAN.md` for full spec.
 
-## 🔲 Phase 7: Career Tracking — PENDING
-See `IMPLEMENTATION_PLAN.md` for full spec.
-
-## 🔲 Phase 8: Production Engineering — PENDING
+## 🔲 Phase 7: Production Engineering — PENDING
 See `IMPLEMENTATION_PLAN.md` for full spec.
 
 ---

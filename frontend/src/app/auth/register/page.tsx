@@ -12,7 +12,7 @@ const registerSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  role: z.enum(['STUDENT', 'MENTOR', 'CLUB_MANAGER', 'PLACEMENT_COORDINATOR']),
+  role: z.enum(['STUDENT', 'MENTOR', 'PLACEMENT_COORDINATOR']),
 });
 
 type RegisterForm = z.infer<typeof registerSchema>;
@@ -120,7 +120,6 @@ export default function RegisterPage() {
             >
               <option value="STUDENT">Student</option>
               <option value="MENTOR">Mentor</option>
-              <option value="CLUB_MANAGER">Club Manager</option>
               <option value="PLACEMENT_COORDINATOR">Placement Coordinator</option>
             </select>
             {errors.role && <p className="text-rose-400 text-xs mt-1.5">{errors.role.message}</p>}

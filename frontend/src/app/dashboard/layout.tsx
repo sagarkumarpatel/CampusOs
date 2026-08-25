@@ -34,7 +34,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: 'Placement Prep', href: '/dashboard/placement', icon: BookOpen },
     { name: 'Mentorship', href: '/dashboard/mentorship', icon: Users },
     { name: 'Events Hub', href: '/dashboard/events', icon: Calendar },
-    { name: 'Clubs', href: '/dashboard/clubs', icon: Layers },
     { name: 'Resources', href: '/dashboard/resources', icon: FileText },
     { name: 'Career Tracking', href: '/dashboard/career', icon: Briefcase },
   ];

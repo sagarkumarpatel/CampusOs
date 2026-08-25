@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "CampusOS - Unified Student Growth Platform",
-  description: "Centralized campus growth platform for placement preparation, mentor guidance, event registration, clubs, notes, and career tracking.",
+  description: "Centralized campus growth platform for placement preparation, mentor guidance, event registration, notes, and career tracking.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

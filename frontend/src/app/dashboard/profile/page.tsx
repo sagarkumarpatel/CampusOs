@@ -79,7 +79,7 @@ export default function ProfilePage() {
     <div className="p-8 max-w-2xl mx-auto overflow-y-auto space-y-6">
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight text-white">Profile Setup</h1>
-        <p className="text-slate-400 text-sm mt-1">Configure your personal and academic credentials for matching mentors and clubs.</p>
+        <p className="text-slate-400 text-sm mt-1">Configure your personal and academic credentials for matching mentors.</p>
       </div>
 
       {success && (

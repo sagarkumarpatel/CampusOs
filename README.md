@@ -5,7 +5,7 @@
 ![CampusOS Banner](https://via.placeholder.com/900x200/1e1b4b/a5b4fc?text=CampusOS+%E2%80%94+Unified+Student+Growth+Platform)
 
 **Unified campus growth platform for students.**  
-Placement prep · Mentor matching · Event hubs · Academic resources · Clubs · Career tracking
+Placement prep · Mentor matching · Event hubs · Academic resources · Career tracking
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](#)
@@ -50,8 +50,7 @@ Instead of juggling separate tools for tracking interview prep, finding mentors,
 | 👥 **Mentorship** | Find mentors, send session requests, accept/reject flow, LinkedIn connect | ✅ Live |
 | 📅 **Events Hub** | Browse/filter announcements, external registration redirect, image uploads via Cloudinary | ✅ Live |
 | 📄 **Resources Module** | Shared academic resources — Subject Notes, Previous Year Questions, Interview Notes, Cheat Sheets — managed by Placement Coordinator, viewable by all students | ✅ Live |
-| 🏙️ **Clubs Portal** | Discover and join campus clubs | 🔲 Phase 6 |
-| 💼 **Career Tracking** | Log job/internship applications with status timelines | 🔲 Phase 7 |
+| 💼 **Career Tracking** | Log job/internship applications with status timelines | 🔲 Phase 6 |
 
 ---
 
@@ -92,7 +91,6 @@ CampusOS uses role-based access control (RBAC) enforced on both the frontend and
 |------|-------------|-------------|
 | `STUDENT` | Default role. Read-only on shared resources. Full access to own private placement data. | — |
 | `MENTOR` | Can create a mentor profile and accept/reject session requests. | — |
-| `CLUB_MANAGER` | Will manage clubs in Phase 6. | — |
 | `PLACEMENT_COORDINATOR` | Manages the Events Hub (publish/delete events) and the Resources Module (all CRUD). Replaces the old `EVENT_ORGANIZER` role. | **Only one allowed system-wide.** Second registration attempt returns HTTP 409. |
 
 ---
@@ -128,8 +126,7 @@ CampusOsProject/
 │           ├── mentorship/     # ✅ Phase 3 — Mentorship Module
 │           ├── events/         # ✅ Phase 4 — Events Hub
 │           ├── resources/      # ✅ Phase 5 — Shared Resources Module
-│           ├── clubs/          # 🔲 Phase 6
-│           └── career/         # 🔲 Phase 7
+│           └── career/         # 🔲 Phase 6
 │
 └── frontend/
     └── src/
@@ -140,7 +137,7 @@ CampusOsProject/
             ├── auth/login/                 # Login
             ├── auth/register/              # Registration (all roles)
             └── dashboard/
-                ├── layout.tsx              # Sidebar layout (7 nav items)
+                ├── layout.tsx              # Sidebar layout (6 nav items)
                 ├── page.tsx                # Dashboard overview
                 ├── profile/                # Profile edit
                 ├── placement/
@@ -248,7 +245,7 @@ Navigate to **http://localhost:3000** to see the landing page.
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/api/v1/auth/register` | ❌ | Create account (roles: STUDENT, MENTOR, CLUB_MANAGER, PLACEMENT_COORDINATOR) |
+| `POST` | `/api/v1/auth/register` | ❌ | Create account (roles: STUDENT, MENTOR, PLACEMENT_COORDINATOR) |
 | `POST` | `/api/v1/auth/login` | ❌ | Login |
 | `POST` | `/api/v1/auth/refresh` | ❌ (cookie) | Rotate refresh token |
 | `POST` | `/api/v1/auth/logout` | ❌ (cookie) | Logout |
@@ -345,9 +342,8 @@ Navigate to **http://localhost:3000** to see the landing page.
 | Phase 3 | Mentorship (Mentor Profiles, Session Requests) | ✅ **Complete** |
 | Phase 4 | Events Hub (Create, Browse, Filter, Cloudinary Uploads) | ✅ **Complete** |
 | Phase 5 | Resources Module (Shared Notes, PYQs, Interview Notes, Cheat Sheets) + Placement Coordinator Role | ✅ **Complete** |
-| Phase 6 | Clubs Portal (Discover, Join, Manage) | 🔲 Next |
-| Phase 7 | Career Tracking (Applications, Status, Timeline) | 🔲 Pending |
-| Phase 8 | Production Engineering (Migrations, Rate Limiting, CI/CD) | 🔲 Pending |
+| Phase 6 | Career Tracking (Applications, Status, Timeline) | 🔲 Next |
+| Phase 7 | Production Engineering (Migrations, Rate Limiting, CI/CD) | 🔲 Pending |
 
 ---
 

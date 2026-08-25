@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Calendar,
   Users,
-  Layers,
   FileText,
   Briefcase,
   ArrowUpRight,
@@ -115,29 +114,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Module 4: Joined Clubs */}
-        <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 transition-all group flex flex-col justify-between">
-          <div>
-            <div className="flex justify-between items-start mb-4">
-              <span className="p-3 bg-indigo-500/10 rounded-xl text-indigo-400 group-hover:scale-110 transition-transform">
-                <Layers className="w-5 h-5" />
-              </span>
-              <Link href="/dashboard/clubs" className="text-slate-400 hover:text-white flex items-center gap-1 text-xs">
-                Explore Clubs <ArrowUpRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-            <h3 className="font-semibold text-lg mb-1">Joined Clubs</h3>
-            <p className="text-xs text-slate-400 mb-4">Campus communities you support</p>
-            
-            <div className="flex flex-wrap gap-2">
-              <span className="text-[10px] font-semibold px-2.5 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 rounded-full">Coding Club</span>
-              <span className="text-[10px] font-semibold px-2.5 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 rounded-full">AI/ML Club</span>
-            </div>
-          </div>
-          <div className="mt-4 text-xs text-slate-400">
-            Active memberships: <span className="text-white font-semibold">2</span>
-          </div>
-        </div>
 
         {/* Module 5: Saved Notes */}
         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 transition-all group flex flex-col justify-between">

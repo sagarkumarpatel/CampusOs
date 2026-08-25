@@ -16,16 +16,15 @@ export default function Home() {
         </h1>
         <p className="text-lg md:text-xl text-slate-300 max-w-2xl mb-10 leading-relaxed font-light">
           Your complete campus growth journey connected in one unified ecosystem.
-          Placement preparation, mentor matching, event hubs, clubs, and career tracking.
+          Placement preparation, mentor matching, event hubs, and career tracking.
         </p>
 
-        {/* Six Core Needs Grid Preview */}
+        {/* Five Core Needs Grid Preview */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-3xl mb-12 text-left">
           {[
             { title: 'Placement Prep', desc: 'DSA & CS fundamentals progress tracker.' },
             { title: 'Mentor Guidance', desc: 'Find alumni & developers for mentorship.' },
             { title: 'Event Registration', desc: 'Hackathons, coding contests & seminars.' },
-            { title: 'Clubs Portal', desc: 'Discover and join active campus communities.' },
             { title: 'Academic Resources', desc: 'Lecture notes, PYQs, and cheat sheets.' },
             { title: 'Career Tracking', desc: 'Track jobs, internships & timelines.' },
           ].map((item, idx) => (

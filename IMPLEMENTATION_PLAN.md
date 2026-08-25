@@ -15,8 +15,7 @@
 | 2 | **Mentorship** | Find, request, and manage mentor-student guidance | ✅ Complete |
 | 3 | **Events Hub** | Browse, filter, publish, and delete events with banner image uploads to Cloudinary | ✅ Complete |
 | 4 | **Resources Module** | Shared academic resources — Core Subject Notes, PYQs, Interview Notes, Cheat Sheets — managed exclusively by the Placement Coordinator | ✅ Complete |
-| 5 | **Clubs Portal** | Discover, join, and manage campus clubs | 🔲 Phase 6 |
-| 6 | **Career Tracking** | Log job/internship applications with timelines and status | 🔲 Phase 7 |
+| 5 | **Career Tracking** | Log job/internship applications with timelines and status | 🔲 Phase 6 |
 
 ---
 
@@ -64,7 +63,6 @@
 enum Role {
   STUDENT             // Default. Full read access. Private placement data.
   MENTOR              // Can create a mentor profile and accept session requests.
-  CLUB_MANAGER        // Future — manages clubs portal.
   PLACEMENT_COORDINATOR  // Replaces EVENT_ORGANIZER. Manages Events Hub + Resources Module.
                          // CONSTRAINT: Only ONE Placement Coordinator may register in the system.
 }
@@ -129,8 +127,7 @@ CampusOsProject/
 │           │   ├── service.ts      # Business logic
 │           │   ├── controller.ts   # HTTP handlers + Cloudinary upload
 │           │   └── routes.ts       # REST endpoints with RBAC middleware
-│           ├── clubs/              # 🔲 Phase 6 — Clubs Portal
-│           └── career/             # 🔲 Phase 7 — Career Tracking
+│           └── career/             # 🔲 Phase 6 — Career Tracking
 │
 └── frontend/
     ├── .env.local              # NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
@@ -173,7 +170,6 @@ Located at `backend/prisma/schema.prisma`
 enum Role {
   STUDENT
   MENTOR
-  CLUB_MANAGER
   PLACEMENT_COORDINATOR   // ← was EVENT_ORGANIZER before Phase 5
 }
 
@@ -314,7 +310,7 @@ LOGIN / LOGOUT / SWAP:
 ## 7. API Endpoints
 
 ### Authentication
-* `POST /api/v1/auth/register` (Public) — roles: STUDENT | MENTOR | CLUB_MANAGER | PLACEMENT_COORDINATOR
+* `POST /api/v1/auth/register` (Public) — roles: STUDENT | MENTOR | PLACEMENT_COORDINATOR
 * `POST /api/v1/auth/login` (Public)
 * `POST /api/v1/auth/refresh` (Cookie check)
 * `POST /api/v1/auth/logout` (Auth checks)
@@ -381,14 +377,7 @@ LOGIN / LOGOUT / SWAP:
 
 ## 8. Remaining Phases
 
-### Phase 6: Clubs Portal
-- Model: `Club` (name, description, category, memberCount, imageUrl, managerId)
-- Model: `ClubMembership` (userId, clubId, joinedAt)
-- Role: `CLUB_MANAGER` creates and manages clubs
-- Frontend: Discovery grid, club detail modal, Join/Leave toggle
-- Routes under `/api/v1/clubs`
-
-### Phase 7: Career Tracking
+### Phase 6: Career Tracking
 - Model: `JobApplication` (company, role, status, appliedDate, notes, userId)
 - Enum: `ApplicationStatus` (APPLIED, SCREENING, INTERVIEW, OFFER, REJECTED)
 - Frontend: Kanban board or timeline view, status filter, add/edit modals

@@ -10,7 +10,6 @@ datasource db {
 enum Role {
   STUDENT
   MENTOR
-  CLUB_MANAGER
   PLACEMENT_COORDINATOR
 }
 
