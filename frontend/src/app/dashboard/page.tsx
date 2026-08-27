@@ -49,10 +49,10 @@ export default function DashboardPage() {
 
   const activeMentorRequest = mentorshipRequests?.sent?.find((r: any) => r.status === 'ACCEPTED');
   const nextEvent = upcomingEvents?.[0];
-  const savedResourcesCount = (resourcesData?.subjectNotes?.length || 0) + 
-                              (resourcesData?.previousYearQuestions?.length || 0) + 
-                              (resourcesData?.interviewNotes?.length || 0) + 
-                              (resourcesData?.cheatSheets?.length || 0);
+  const savedResourcesCount = (resourcesData?.subjectNotes?.length || 0) +
+    (resourcesData?.previousYearQuestions?.length || 0) +
+    (resourcesData?.interviewNotes?.length || 0) +
+    (resourcesData?.cheatSheets?.length || 0);
   const latestResource = resourcesData?.cheatSheets?.[0] || resourcesData?.subjectNotes?.[0];
   const latestApplication = careerOpportunities?.[0];
 
@@ -75,7 +75,7 @@ export default function DashboardPage() {
 
       {/* Modules Dashboard Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
+
         {/* Module 1: Placement Preparation Progress */}
         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 transition-all group flex flex-col justify-between">
           <div>
@@ -91,13 +91,13 @@ export default function DashboardPage() {
             <p className="text-xs text-slate-400 mb-6">Track your DSA and Computer Science syllabus</p>
           </div>
           <div>
-            <div className="flex justify-between text-xs font-semibold mb-2">
+            {/* <div className="flex justify-between text-xs font-semibold mb-2">
               <span className="text-indigo-300">Overall Progress</span>
               <span>{Math.round(dsaStats?.overallProgress || 0)}%</span>
-            </div>
-            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+            </div> */}
+            {/* <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
               <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${Math.round(dsaStats?.overallProgress || 0)}%` }} />
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export default function DashboardPage() {
             </div>
             <h3 className="font-semibold text-lg mb-1">My Mentor</h3>
             <p className="text-xs text-slate-400 mb-4">Connecting with senior guidance</p>
-            
+
             {activeMentorRequest ? (
               <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
                 <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm text-white">
@@ -151,7 +151,7 @@ export default function DashboardPage() {
             </div>
             <h3 className="font-semibold text-lg mb-1">Upcoming Events</h3>
             <p className="text-xs text-slate-400 mb-4">Hackathons, contests & seminars</p>
-            
+
             <div className="space-y-2">
               {nextEvent ? (
                 <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex justify-between items-center">
@@ -186,7 +186,7 @@ export default function DashboardPage() {
             </div>
             <h3 className="font-semibold text-lg mb-1">Academic Resources</h3>
             <p className="text-xs text-slate-400 mb-4">Saved lecture notes & roadmaps</p>
-            
+
             <div className="space-y-2">
               {latestResource ? (
                 <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
@@ -218,7 +218,7 @@ export default function DashboardPage() {
             </div>
             <h3 className="font-semibold text-lg mb-1">Career Tracking</h3>
             <p className="text-xs text-slate-400 mb-4">Application pipeline timeline</p>
-            
+
             {latestApplication ? (
               <div className="p-3 rounded-xl bg-white/5 border border-white/5">
                 <div className="flex justify-between text-xs font-semibold mb-1">
