@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '../../../providers/AuthProvider';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 const registerSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -46,17 +47,27 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex-1 min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Background glow spots */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl" />
+    <div className="flex-1 min-h-screen bg-[#121212] flex items-center justify-center p-6 relative overflow-hidden font-sans selection:bg-[#FF5722]/30 selection:text-white">
+      
+      {/* Back Button */}
+      <Link 
+        href="/#top" 
+        className="absolute top-6 left-6 z-50 flex items-center gap-2 text-[#AAAAAA] hover:text-white transition-colors"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="text-sm font-medium">Back to Home</span>
+      </Link>
 
-      <div className="w-full max-w-lg bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl relative z-10">
+      {/* Background glow spots */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#FF5722]/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#FF5722]/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
+
+      <div className="w-full max-w-lg bg-[#1E1E1E] border border-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl relative z-10">
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-violet-300">
+          <Link href="/" className="text-3xl font-extrabold text-white tracking-tight">
             CampusOS
           </Link>
-          <p className="text-sm text-slate-400 mt-2">Create your student or mentor account</p>
+          <p className="text-sm text-[#AAAAAA] mt-2">Create your student or mentor account</p>
         </div>
 
         {error && (
@@ -68,55 +79,55 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">First Name</label>
+              <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">First Name</label>
               <input
                 type="text"
                 {...register('firstName')}
                 placeholder="Jane"
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white placeholder-[#AAAAAA]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
               />
               {errors.firstName && <p className="text-rose-400 text-xs mt-1.5">{errors.firstName.message}</p>}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Last Name</label>
+              <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">Last Name</label>
               <input
                 type="text"
                 {...register('lastName')}
                 placeholder="Doe"
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white placeholder-[#AAAAAA]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
               />
               {errors.lastName && <p className="text-rose-400 text-xs mt-1.5">{errors.lastName.message}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email Address</label>
+            <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">Email Address</label>
             <input
               type="email"
               {...register('email')}
               placeholder="jane.doe@university.edu"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white placeholder-[#AAAAAA]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
             />
             {errors.email && <p className="text-rose-400 text-xs mt-1.5">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Password</label>
+            <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">Password</label>
             <input
               type="password"
               {...register('password')}
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white placeholder-[#AAAAAA]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
             />
             {errors.password && <p className="text-rose-400 text-xs mt-1.5">{errors.password.message}</p>}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Account Type / Role</label>
+            <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">Account Type / Role</label>
             <select
               {...register('role')}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-indigo-500/50 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
             >
               <option value="STUDENT">Student</option>
               <option value="MENTOR">Mentor</option>
@@ -128,15 +139,15 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loadingState}
-            className="w-full py-3.5 rounded-xl font-medium bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:scale-100 transition-all duration-200 text-sm mt-4"
+            className="w-full py-3.5 rounded-xl font-medium bg-[#FF5722] hover:bg-[#FF6B00] text-white shadow-lg shadow-[#FF5722]/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:scale-100 transition-all duration-200 text-sm mt-4"
           >
             {loadingState ? 'Creating account...' : 'Register'}
           </button>
         </form>
 
-        <p className="text-center text-xs text-slate-400 mt-8">
+        <p className="text-center text-xs text-[#AAAAAA] mt-8">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-indigo-400 hover:underline">
+          <Link href="/auth/login" className="text-[#FF5722] hover:underline font-medium">
             Login here
           </Link>
         </p>
