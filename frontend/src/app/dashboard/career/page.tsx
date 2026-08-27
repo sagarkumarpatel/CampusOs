@@ -278,7 +278,7 @@ export default function CareerTrackingPage() {
       case 'FREELANCE_OPPORTUNITY':
         return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
       default:
-        return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+        return 'bg-slate-500/10 text-text-muted border-slate-500/20';
     }
   };
 
@@ -287,11 +287,11 @@ export default function CareerTrackingPage() {
       {/* Header and Add Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
-            <Briefcase className="w-8 h-8 text-indigo-400" />
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-3">
+            <Briefcase className="w-8 h-8 text-accent-coral" />
             Career Tracking
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-text-muted text-sm mt-1">
             Discover internships, jobs, and freelance opportunities posted by your Placement Coordinator.
           </p>
         </div>
@@ -299,7 +299,7 @@ export default function CareerTrackingPage() {
         {isCoordinator && (
           <button
             onClick={() => openFormModal()}
-            className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white rounded-xl font-medium shadow-lg shadow-indigo-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all text-sm"
+            className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-accent-coral to-accent-coral hover:from-accent-coral hover:to-orange-600 text-foreground rounded-xl font-medium shadow-lg shadow-accent-coral/10 hover:scale-[1.02] active:scale-[0.98] transition-all text-sm"
           >
             <Plus className="w-4 h-4" />
             Publish Opportunity
@@ -308,16 +308,16 @@ export default function CareerTrackingPage() {
       </div>
 
       {/* Filters and Search */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between p-4 rounded-2xl bg-surface border border-border">
         {/* Search */}
         <div className="relative w-full md:w-80">
-          <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-text-muted" />
           <input
             type="text"
             placeholder="Search company or role..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500/50 text-sm"
+            className="w-full pl-10 pr-4 py-3 rounded-xl bg-background/50 border border-border text-foreground placeholder-slate-400 focus:outline-none focus:border-accent-coral/50 text-sm"
           />
         </div>
 
@@ -329,8 +329,8 @@ export default function CareerTrackingPage() {
               onClick={() => setSelectedType(type)}
               className={`px-4 py-2.5 rounded-xl border text-xs font-semibold tracking-wide transition-all ${
                 selectedType === type
-                  ? 'bg-indigo-500 border-indigo-400 text-white shadow-lg shadow-indigo-500/20'
-                  : 'bg-white/5 border-white/5 text-slate-300 hover:bg-white/10'
+                  ? 'bg-accent-coral border-accent-coral text-foreground shadow-lg shadow-accent-coral/20'
+                  : 'bg-surface border-border text-text-muted hover:bg-white/10'
               }`}
             >
               {type === 'All' ? 'All Opportunities' : getJobTypeLabel(type)}
@@ -341,22 +341,22 @@ export default function CareerTrackingPage() {
 
       {/* Grid List */}
       {isLoading ? (
-        <div className="text-center py-20 text-slate-400">Loading opportunities...</div>
+        <div className="text-center py-20 text-text-muted">Loading opportunities...</div>
       ) : filteredOpportunities.length === 0 ? (
-        <div className="text-center py-24 rounded-2xl bg-white/5 border border-white/5 border-dashed text-slate-400">
-          <Briefcase className="w-12 h-12 text-slate-500 mx-auto mb-3" />
+        <div className="text-center py-24 rounded-2xl bg-surface border border-border border-dashed text-text-muted">
+          <Briefcase className="w-12 h-12 text-text-muted mx-auto mb-3" />
           <p className="text-sm font-medium">No opportunities found</p>
-          <p className="text-xs text-slate-500 mt-1">Try refining your search or filters.</p>
+          <p className="text-xs text-text-muted mt-1">Try refining your search or filters.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredOpportunities.map((op) => (
             <div
               key={op.id}
-              className="rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/30 overflow-hidden flex flex-col justify-between transition-all group"
+              className="rounded-2xl bg-surface border border-border hover:border-accent-coral/30 overflow-hidden flex flex-col justify-between transition-all group"
             >
               {/* Banner */}
-              <div className="relative h-44 bg-slate-900 flex items-center justify-center overflow-hidden">
+              <div className="relative h-44 bg-background flex items-center justify-center overflow-hidden">
                 {op.bannerImageUrl ? (
                   <img
                     src={op.bannerImageUrl}
@@ -364,8 +364,8 @@ export default function CareerTrackingPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-indigo-950 to-slate-900 flex items-center justify-center">
-                    <ImageIcon className="w-8 h-8 text-white/20" />
+                  <div className="w-full h-full bg-gradient-to-br from-accent-coral to-orange-400 flex items-center justify-center">
+                    <ImageIcon className="w-8 h-8 text-foreground/20" />
                   </div>
                 )}
                 
@@ -377,22 +377,22 @@ export default function CareerTrackingPage() {
               {/* Content */}
               <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
                 <div>
-                  <h3 className="text-xl font-bold text-white tracking-tight line-clamp-1">{op.role}</h3>
-                  <p className="text-indigo-400 font-semibold text-sm tracking-wide mt-1">{op.companyName}</p>
+                  <h3 className="text-xl font-bold text-foreground tracking-tight line-clamp-1">{op.role}</h3>
+                  <p className="text-accent-coral font-semibold text-sm tracking-wide mt-1">{op.companyName}</p>
 
-                  <div className="mt-4 space-y-2 text-xs text-slate-300">
+                  <div className="mt-4 space-y-2 text-xs text-text-muted">
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <MapPin className="w-3.5 h-3.5 text-text-muted shrink-0" />
                       <span>{op.location}</span>
                     </div>
                     <div className="flex items-center gap-2 font-medium">
-                      <span className="text-slate-400">Stipend / Salary:</span>
-                      <span className="text-white font-semibold">₹{op.stipendPerMonth.toLocaleString()} / month</span>
+                      <span className="text-text-muted">Stipend / Salary:</span>
+                      <span className="text-foreground font-semibold">₹{op.stipendPerMonth.toLocaleString()} / month</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-white/5">
+                <div className="space-y-4 pt-4 border-t border-border">
                   <div className="flex justify-between items-center text-xs">
                     {/* User registered indicator */}
                     <button
@@ -402,19 +402,19 @@ export default function CareerTrackingPage() {
                           registered: op.hasRegistered,
                         })
                       }
-                      className="flex items-center gap-2 hover:text-white transition-colors"
+                      className="flex items-center gap-2 hover:text-foreground transition-colors"
                     >
                       {op.hasRegistered ? (
-                        <CheckSquare className="w-5 h-5 text-indigo-400" />
+                        <CheckSquare className="w-5 h-5 text-accent-coral" />
                       ) : (
-                        <Square className="w-5 h-5 text-slate-500 hover:text-slate-400" />
+                        <Square className="w-5 h-5 text-text-muted hover:text-text-muted" />
                       )}
-                      <span className={op.hasRegistered ? 'text-indigo-400 font-semibold' : 'text-slate-400'}>
+                      <span className={op.hasRegistered ? 'text-accent-coral font-semibold' : 'text-text-muted'}>
                         Registered
                       </span>
                     </button>
 
-                    <div className="flex items-center gap-1 text-slate-400">
+                    <div className="flex items-center gap-1 text-text-muted">
                       <Users className="w-3.5 h-3.5" />
                       <span>{op.registrationCount} {op.registrationCount === 1 ? 'Student' : 'Students'}</span>
                     </div>
@@ -426,7 +426,7 @@ export default function CareerTrackingPage() {
                       href={op.applicationLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-slate-900 border border-white/10 hover:border-white/20 text-white rounded-xl text-xs font-semibold transition-all"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-background border border-border hover:border-border text-foreground rounded-xl text-xs font-semibold transition-all"
                     >
                       Apply
                       <ExternalLink className="w-3 h-3" />
@@ -438,21 +438,21 @@ export default function CareerTrackingPage() {
                         <button
                           onClick={() => handleDownload(op)}
                           title="Download registered student emails"
-                          className="p-2.5 bg-slate-900 border border-white/10 hover:border-indigo-500/30 text-slate-300 hover:text-indigo-400 rounded-xl transition-all"
+                          className="p-2.5 bg-background border border-border hover:border-accent-coral/30 text-text-muted hover:text-accent-coral rounded-xl transition-all"
                         >
                           <Download className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => openFormModal(op)}
                           title="Edit"
-                          className="p-2.5 bg-slate-900 border border-white/10 hover:border-indigo-500/30 text-slate-300 hover:text-indigo-400 rounded-xl transition-all"
+                          className="p-2.5 bg-background border border-border hover:border-accent-coral/30 text-text-muted hover:text-accent-coral rounded-xl transition-all"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => setDeletingOpportunity(op)}
                           title="Delete"
-                          className="p-2.5 bg-slate-900 border border-white/10 hover:border-rose-500/30 text-slate-300 hover:text-rose-400 rounded-xl transition-all"
+                          className="p-2.5 bg-background border border-border hover:border-rose-500/30 text-text-muted hover:text-rose-400 rounded-xl transition-all"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -469,13 +469,13 @@ export default function CareerTrackingPage() {
       {/* Opportunity Add/Edit Modal */}
       {isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl bg-slate-900 border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-lg rounded-2xl bg-background border border-border shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             {/* Modal Header */}
-            <div className="p-6 border-b border-white/5 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-white">
+            <div className="p-6 border-b border-border flex justify-between items-center">
+              <h2 className="text-xl font-bold text-foreground">
                 {editingOpportunity ? 'Edit Career Opportunity' : 'Publish Career Opportunity'}
               </h2>
-              <button onClick={closeFormModal} className="text-slate-400 hover:text-white text-sm">
+              <button onClick={closeFormModal} className="text-text-muted hover:text-foreground text-sm">
                 Cancel
               </button>
             </div>
@@ -490,11 +490,11 @@ export default function CareerTrackingPage() {
 
               {/* Banner upload */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
                   Company Banner
                 </label>
                 <div className="flex items-center gap-4">
-                  <div className="relative w-28 h-20 bg-slate-950 border border-white/10 rounded-xl overflow-hidden flex items-center justify-center">
+                  <div className="relative w-28 h-20 bg-background border border-border rounded-xl overflow-hidden flex items-center justify-center">
                     {bannerImageUrl ? (
                       <img src={bannerImageUrl} alt="Preview" className="w-full h-full object-cover" />
                     ) : (
@@ -511,21 +511,21 @@ export default function CareerTrackingPage() {
                     />
                     <label
                       htmlFor="banner-file"
-                      className={`inline-flex items-center gap-1.5 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl text-xs font-semibold cursor-pointer transition-all ${
+                      className={`inline-flex items-center gap-1.5 px-4 py-2.5 bg-surface hover:bg-white/10 border border-border text-foreground rounded-xl text-xs font-semibold cursor-pointer transition-all ${
                         isUploading ? 'opacity-50 pointer-events-none' : ''
                       }`}
                     >
                       <ImageIcon className="w-3.5 h-3.5" />
                       {isUploading ? 'Uploading...' : 'Choose Image'}
                     </label>
-                    <p className="text-[10px] text-slate-500 mt-1">Recommended: PNG/JPG banners (max 5MB)</p>
+                    <p className="text-[10px] text-text-muted mt-1">Recommended: PNG/JPG banners (max 5MB)</p>
                   </div>
                 </div>
               </div>
 
               {/* Company Name */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
                   Company Name
                 </label>
                 <input
@@ -533,32 +533,32 @@ export default function CareerTrackingPage() {
                   placeholder="e.g. Google"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder-slate-500 focus:outline-none focus:border-accent-coral/50 text-sm"
                 />
               </div>
 
               {/* Role */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Role</label>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">Role</label>
                 <input
                   type="text"
                   placeholder="e.g. Software Engineering Intern"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder-slate-500 focus:outline-none focus:border-accent-coral/50 text-sm"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 {/* Job Type */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
                     Job Type
                   </label>
                   <select
                     value={jobType}
                     onChange={(e: any) => setJobType(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:border-indigo-500/50 text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-accent-coral/50 text-sm"
                   >
                     <option value="INTERNSHIP">Internship</option>
                     <option value="FULL_TIME_JOB">Full-Time Job</option>
@@ -568,7 +568,7 @@ export default function CareerTrackingPage() {
 
                 {/* Location */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
                     Location
                   </label>
                   <input
@@ -576,14 +576,14 @@ export default function CareerTrackingPage() {
                     placeholder="e.g. Bangalore, India"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder-slate-500 focus:outline-none focus:border-accent-coral/50 text-sm"
                   />
                 </div>
               </div>
 
               {/* Stipend per Month */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
                   Stipend per Month (INR)
                 </label>
                 <input
@@ -591,13 +591,13 @@ export default function CareerTrackingPage() {
                   placeholder="e.g. 40000"
                   value={stipendPerMonth}
                   onChange={(e) => setStipendPerMonth(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder-slate-500 focus:outline-none focus:border-accent-coral/50 text-sm"
                 />
               </div>
 
               {/* Application Link */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
                   Application Link
                 </label>
                 <input
@@ -605,17 +605,17 @@ export default function CareerTrackingPage() {
                   placeholder="https://example.com/apply"
                   value={applicationLink}
                   onChange={(e) => setApplicationLink(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder-slate-500 focus:outline-none focus:border-accent-coral/50 text-sm"
                 />
               </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="p-6 border-t border-white/5 flex gap-3">
+            <div className="p-6 border-t border-border flex gap-3">
               <button
                 type="button"
                 onClick={closeFormModal}
-                className="flex-1 py-3 border border-white/10 hover:bg-white/5 text-slate-300 rounded-xl font-medium transition-all text-sm"
+                className="flex-1 py-3 border border-border hover:bg-surface text-text-muted rounded-xl font-medium transition-all text-sm"
               >
                 Cancel
               </button>
@@ -623,7 +623,7 @@ export default function CareerTrackingPage() {
                 type="button"
                 onClick={() => saveOpportunityMutation.mutate()}
                 disabled={saveOpportunityMutation.isPending || isUploading}
-                className="flex-1 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white rounded-xl font-medium shadow-lg shadow-indigo-500/10 transition-all text-sm disabled:opacity-50"
+                className="flex-1 py-3 bg-gradient-to-r from-accent-coral to-accent-coral hover:from-accent-coral hover:to-orange-600 text-foreground rounded-xl font-medium shadow-lg shadow-accent-coral/10 transition-all text-sm disabled:opacity-50"
               >
                 {saveOpportunityMutation.isPending ? 'Saving...' : 'Publish'}
               </button>
@@ -635,10 +635,10 @@ export default function CareerTrackingPage() {
       {/* Delete Confirmation Modal */}
       {deletingOpportunity && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl bg-slate-900 border border-white/10 p-6 shadow-2xl space-y-6">
+          <div className="w-full max-w-sm rounded-2xl bg-background border border-border p-6 shadow-2xl space-y-6">
             <div className="space-y-2">
-              <h3 className="text-lg font-bold text-white">Delete Opportunity?</h3>
-              <p className="text-sm text-slate-400 leading-normal">
+              <h3 className="text-lg font-bold text-foreground">Delete Opportunity?</h3>
+              <p className="text-sm text-text-muted leading-normal">
                 Are you sure you want to delete this opportunity for <strong>{deletingOpportunity.companyName}</strong>?
                 This will also permanently clear all student registrations for this post.
               </p>
@@ -647,14 +647,14 @@ export default function CareerTrackingPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setDeletingOpportunity(null)}
-                className="flex-1 py-2.5 border border-white/10 hover:bg-white/5 text-slate-300 rounded-xl text-xs font-semibold transition-all"
+                className="flex-1 py-2.5 border border-border hover:bg-surface text-text-muted rounded-xl text-xs font-semibold transition-all"
               >
                 Cancel
               </button>
               <button
                 onClick={() => deleteOpportunityMutation.mutate(deletingOpportunity.id)}
                 disabled={deleteOpportunityMutation.isPending}
-                className="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-semibold transition-all"
+                className="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-foreground rounded-xl text-xs font-semibold transition-all"
               >
                 {deleteOpportunityMutation.isPending ? 'Deleting...' : 'Delete'}
               </button>

@@ -23,8 +23,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-indigo-500"></div>
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-accent-coral"></div>
       </div>
     );
   }
@@ -39,34 +39,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col md:flex-row">
+    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row font-sans transition-colors duration-300">
       {/* Sidebar navigation */}
-      <aside className="w-full md:w-64 md:h-screen md:sticky md:top-0 bg-slate-900 border-b md:border-b-0 md:border-r border-white/5 flex flex-col shrink-0 overflow-hidden">
+      <aside className="w-full md:w-64 md:h-screen md:sticky md:top-0 bg-surface border-b md:border-b-0 md:border-r border-border flex flex-col shrink-0 overflow-hidden shadow-2xl shadow-black/5 z-20">
         {/* Logo Header */}
-        <div className="p-6 border-b border-white/5 flex items-center justify-between shrink-0">
-          <Link href="/dashboard" className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-violet-300">
+        <div className="p-6 border-b border-border flex items-center justify-between shrink-0">
+          <Link href="/dashboard" className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-accent-coral to-orange-400">
             CampusOS
           </Link>
-          <span className="md:hidden">
-            <Menu className="w-6 h-6 text-slate-400 cursor-pointer" />
+          <span className="md:hidden p-2 rounded-md hover:bg-border/50 cursor-pointer transition-colors">
+            <Menu className="w-6 h-6 text-text-muted" />
           </span>
         </div>
 
         {/* User preview */}
-        <div className="p-6 flex items-center gap-3 border-b border-white/5 bg-white/5 shrink-0">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center font-bold text-white shadow-md shrink-0">
+        <div className="p-6 flex items-center gap-3 border-b border-border bg-foreground/5 shrink-0 backdrop-blur-sm">
+          <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-accent-coral to-orange-500 flex items-center justify-center font-bold text-white shadow-lg shrink-0">
             {user?.profile?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
           </div>
           <div className="flex-1 overflow-hidden">
-            <h4 className="text-sm font-semibold truncate">
+            <h4 className="text-sm font-semibold truncate text-foreground">
               {user?.profile ? `${user.profile.firstName} ${user.profile.lastName}` : 'Sagar'}
             </h4>
-            <span className="text-xs text-slate-400 capitalize">{user?.role?.toLowerCase() || 'student'}</span>
+            <span className="text-xs text-text-muted capitalize">{user?.role?.toLowerCase() || 'student'}</span>
           </div>
         </div>
 
         {/* Navigation list (scrolls independently) */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto min-h-0">
+        <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto min-h-0">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
@@ -74,13 +74,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-3 px-4 min-h-[44px] rounded-xl text-sm font-medium transition-all duration-200 group ${
                   active
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    ? 'bg-accent-coral text-white shadow-lg shadow-accent-coral/20 hover:-translate-y-0.5'
+                    : 'text-text-muted hover:text-foreground hover:bg-foreground/5 hover:translate-x-1'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className={`w-4 h-4 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
                 {item.name}
               </Link>
             );
@@ -88,31 +88,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Bottom Actions Pin */}
-        <div className="p-4 border-t border-white/5 space-y-1 shrink-0 mt-auto bg-slate-900/80 backdrop-blur-md">
+        <div className="p-4 border-t border-border space-y-1.5 shrink-0 mt-auto bg-surface/80 backdrop-blur-md">
           <Link
             href="/dashboard/profile"
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+            className={`flex items-center gap-3 px-4 min-h-[44px] rounded-xl text-sm font-medium transition-all duration-200 group ${
               pathname === '/dashboard/profile'
-                ? 'bg-indigo-600 text-white'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-accent-coral text-white shadow-lg shadow-accent-coral/20'
+                : 'text-text-muted hover:text-foreground hover:bg-foreground/5 hover:translate-x-1'
             }`}
           >
-            <User className="w-4 h-4" />
+            <User className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
             Profile Setup
           </Link>
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all text-left cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 min-h-[44px] rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-all text-left cursor-pointer group hover:translate-x-1"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
             Sign Out
           </button>
         </div>
       </aside>
 
       {/* Main page content area */}
-      <main className="flex-1 flex flex-col min-h-0 bg-slate-950">
-        {children}
+      <main className="flex-1 flex flex-col min-h-0 bg-background relative overflow-y-auto">
+        <div className="max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8">
+          {children}
+        </div>
       </main>
     </div>
   );

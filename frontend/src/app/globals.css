@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F8F9FA;
+  --surface: #FFFFFF;
+  --foreground: #111827;
+  --text-muted: #6B7280;
+  --border: rgba(0,0,0,0.05);
+  --accent-coral: #FF5733;
+}
+
+/* Fallback to user preference for dark mode, or explicit class if applied */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0F0F10;
+    --surface: #18181B;
+    --foreground: #FFFFFF;
+    --text-muted: #A1A1AA;
+    --border: rgba(255,255,255,0.08);
+    --accent-coral: #FF4D2D;
+  }
+}
+
+.dark {
+  --background: #0F0F10;
+  --surface: #18181B;
+  --foreground: #FFFFFF;
+  --text-muted: #A1A1AA;
+  --border: rgba(255,255,255,0.08);
+  --accent-coral: #FF4D2D;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-accent-coral: var(--accent-coral);
+  --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-geist-mono), Courier, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
+

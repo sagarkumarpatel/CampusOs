@@ -113,19 +113,19 @@ export default function DsaTrackerPage() {
         <div className="space-y-1">
           <Link
             href="/dashboard/placement"
-            className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1 mb-2 font-medium"
+            className="text-xs text-accent-coral hover:text-violet-300 flex items-center gap-1 mb-2 font-medium"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Placement Dashboard
           </Link>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">DSA Practice Tracker</h1>
-          <p className="text-slate-400 text-sm font-light">
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">DSA Practice Tracker</h1>
+          <p className="text-text-muted text-sm font-light">
             Keep track of your coding progress across dynamic programming, graphs, trees, and other core algorithms.
           </p>
         </div>
 
         <button
           onClick={() => handleOpenAdd()}
-          className="px-5 py-3 bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-violet-600/20 flex items-center justify-center gap-2 self-start sm:self-center"
+          className="px-5 py-3 bg-accent-coral hover:bg-accent-coral active:bg-orange-600 text-foreground rounded-xl text-sm font-semibold transition-all shadow-lg shadow-accent-coral/20 flex items-center justify-center gap-2 self-start sm:self-center"
         >
           <Plus className="w-4 h-4" /> Add Problem
         </button>
@@ -134,8 +134,8 @@ export default function DsaTrackerPage() {
       {/* Accordion Topics List */}
       <div className="space-y-4">
         {isCategoriesLoading ? (
-          <div className="p-12 text-center text-slate-500 bg-white/5 border border-white/10 rounded-3xl">
-            <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-violet-400" />
+          <div className="p-12 text-center text-text-muted bg-surface border border-border rounded-3xl">
+            <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-accent-coral" />
             <p className="text-sm">Loading topics...</p>
           </div>
         ) : (
@@ -146,8 +146,8 @@ export default function DsaTrackerPage() {
                 key={cat.id}
                 className={`rounded-3xl border transition-all overflow-hidden ${
                   isExpanded
-                    ? 'bg-white/5 border-violet-500/30 shadow-xl'
-                    : 'bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]'
+                    ? 'bg-surface border-accent-coral/30 shadow-xl'
+                    : 'bg-surface border-border hover:border-border hover:bg-white/[0.04]'
                 }`}
               >
                 {/* Accordion Header Row */}
@@ -157,23 +157,23 @@ export default function DsaTrackerPage() {
                 >
                   <div className="flex-1 min-w-0 space-y-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-bold text-white group-hover:text-violet-300">
+                      <h3 className="text-xl font-bold text-foreground group-hover:text-violet-300">
                         {cat.name}
                       </h3>
                       {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-violet-400" />
+                        <ChevronUp className="w-5 h-5 text-accent-coral" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                        <ChevronDown className="w-5 h-5 text-text-muted" />
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 font-light truncate max-w-2xl">
+                    <p className="text-xs text-text-muted font-light truncate max-w-2xl">
                       {cat.description}
                     </p>
                   </div>
 
                   {/* Progress & Stats Area */}
                   <div className="flex flex-wrap items-center gap-6 lg:self-center">
-                    <div className="flex gap-2 text-[10px] text-slate-400">
+                    <div className="flex gap-2 text-[10px] text-text-muted">
                       <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 font-semibold">
                         {cat.easySolved} / {cat.easyCount} Easy
                       </span>
@@ -188,16 +188,16 @@ export default function DsaTrackerPage() {
                     <div className="flex items-center gap-3 min-w-[180px]">
                       <div className="flex-1 bg-white/10 h-2 rounded-full overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-500"
+                          className="h-full rounded-full bg-gradient-to-r from-accent-coral to-fuchsia-500 transition-all duration-500"
                           style={{ width: `${cat.progressPercent}%` }}
                         />
                       </div>
-                      <span className="text-xs font-bold text-white min-w-[28px] text-right">
+                      <span className="text-xs font-bold text-foreground min-w-[28px] text-right">
                         {cat.progressPercent}%
                       </span>
                     </div>
 
-                    <div className="text-xs font-medium text-slate-300 border-l border-white/10 pl-6 hidden sm:block">
+                    <div className="text-xs font-medium text-text-muted border-l border-border pl-6 hidden sm:block">
                       {cat.solvedProblems} / {cat.totalProblems} Solved
                     </div>
                   </div>
@@ -205,7 +205,7 @@ export default function DsaTrackerPage() {
 
                 {/* Accordion Content Row */}
                 {isExpanded && (
-                  <div className="border-t border-white/5 bg-slate-950/20 p-6">
+                  <div className="border-t border-border bg-background/20 p-6">
                     <ProblemsListSection
                       categoryId={cat.id}
                       onEdit={(prob) => handleOpenEdit(prob, cat.id)}
@@ -302,8 +302,8 @@ function ProblemsListSection({
 
   if (isLoading) {
     return (
-      <div className="py-8 text-center text-slate-500">
-        <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-violet-400" />
+      <div className="py-8 text-center text-text-muted">
+        <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-accent-coral" />
         <p className="text-xs">Loading problems...</p>
       </div>
     );
@@ -311,12 +311,12 @@ function ProblemsListSection({
 
   if (!problems || problems.length === 0) {
     return (
-      <div className="py-8 text-center text-slate-500 border-2 border-dashed border-white/5 rounded-2xl">
+      <div className="py-8 text-center text-text-muted border-2 border-dashed border-border rounded-2xl">
         <BookOpen className="w-8 h-8 mx-auto mb-2 text-slate-600" />
         <p className="text-xs">No problems added to this topic yet.</p>
         <button
           onClick={onAdd}
-          className="mt-3 text-xs font-semibold text-violet-400 hover:text-violet-300"
+          className="mt-3 text-xs font-semibold text-accent-coral hover:text-violet-300"
         >
           Add the first problem
         </button>
@@ -328,7 +328,7 @@ function ProblemsListSection({
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="border-b border-white/5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          <tr className="border-b border-border text-[10px] font-semibold uppercase tracking-wider text-text-muted">
             <th className="py-3 px-4 w-12 text-center font-bold">Solved</th>
             <th className="py-3 px-4">Problem Name</th>
             <th className="py-3 px-4 w-28">Difficulty</th>
@@ -337,7 +337,7 @@ function ProblemsListSection({
         </thead>
         <tbody className="divide-y divide-white/5 text-sm">
           {problems.map((prob) => (
-            <tr key={prob.id} className="hover:bg-white/[0.02] transition-colors group">
+            <tr key={prob.id} className="hover:bg-surface transition-colors group">
               <td className="py-4 px-4 text-center">
                 <input
                   type="checkbox"
@@ -348,7 +348,7 @@ function ProblemsListSection({
                       completed: e.target.checked
                     })
                   }
-                  className="w-4.5 h-4.5 rounded border-white/10 text-violet-600 bg-slate-900 focus:ring-violet-500 cursor-pointer"
+                  className="w-4.5 h-4.5 rounded border-border text-accent-coral bg-background focus:ring-accent-coral cursor-pointer"
                 />
               </td>
               <td className="py-4 px-4">
@@ -356,10 +356,10 @@ function ProblemsListSection({
                   href={prob.problemLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-white hover:text-violet-400 transition-colors inline-flex items-center gap-1.5"
+                  className="font-medium text-foreground hover:text-accent-coral transition-colors inline-flex items-center gap-1.5"
                 >
                   {prob.problemName}
-                  <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400" />
+                  <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted" />
                 </a>
               </td>
               <td className="py-4 px-4">
@@ -379,13 +379,13 @@ function ProblemsListSection({
                 <div className="flex items-center justify-end gap-2">
                   <button
                     onClick={() => onEdit(prob)}
-                    className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-all cursor-pointer"
+                    className="p-1.5 text-text-muted hover:text-foreground rounded-lg hover:bg-surface transition-all cursor-pointer"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => onDelete(prob)}
-                    className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-white/5 transition-all cursor-pointer"
+                    className="p-1.5 text-text-muted hover:text-rose-400 rounded-lg hover:bg-surface transition-all cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -449,41 +449,41 @@ function AddProblemModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-white/10 p-6 rounded-3xl max-w-md w-full space-y-4">
-        <h3 className="text-xl font-bold text-white">Add Problem</h3>
+      <div className="bg-background border border-border p-6 rounded-3xl max-w-md w-full space-y-4">
+        <h3 className="text-xl font-bold text-foreground">Add Problem</h3>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400">Problem Name</label>
+            <label className="text-xs font-semibold text-text-muted">Problem Name</label>
             <input
               type="text"
               value={problemName}
               onChange={(e) => setProblemName(e.target.value)}
               placeholder="e.g. Two Sum"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500/50"
+              className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               required
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400">Problem Link</label>
+            <label className="text-xs font-semibold text-text-muted">Problem Link</label>
             <input
               type="url"
               value={problemLink}
               onChange={(e) => setProblemLink(e.target.value)}
               placeholder="https://leetcode.com/problems/..."
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500/50"
+              className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400">Difficulty</label>
+              <label className="text-xs font-semibold text-text-muted">Difficulty</label>
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value as any)}
-                className="w-full px-4 py-3 bg-slate-950 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500/50"
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               >
                 <option value="EASY">Easy</option>
                 <option value="MEDIUM">Medium</option>
@@ -492,11 +492,11 @@ function AddProblemModal({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400">Category</label>
+              <label className="text-xs font-semibold text-text-muted">Category</label>
               <select
                 value={formCategoryId}
                 onChange={(e) => setFormCategoryId(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-950 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500/50"
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               >
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
@@ -513,14 +513,14 @@ function AddProblemModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-xs text-slate-400 hover:text-white transition-colors"
+              className="px-4 py-2.5 text-xs text-text-muted hover:text-foreground transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={addProblemMutation.isPending}
-              className="px-5 py-2.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition-all"
+              className="px-5 py-2.5 bg-accent-coral hover:bg-accent-coral disabled:opacity-50 text-foreground rounded-xl text-xs font-semibold transition-all"
             >
               {addProblemMutation.isPending ? 'Adding...' : 'Add Problem'}
             </button>
@@ -592,41 +592,41 @@ function EditProblemModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-white/10 p-6 rounded-3xl max-w-md w-full space-y-4">
-        <h3 className="text-xl font-bold text-white">Edit Problem</h3>
+      <div className="bg-background border border-border p-6 rounded-3xl max-w-md w-full space-y-4">
+        <h3 className="text-xl font-bold text-foreground">Edit Problem</h3>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400">Problem Name</label>
+            <label className="text-xs font-semibold text-text-muted">Problem Name</label>
             <input
               type="text"
               value={problemName}
               onChange={(e) => setProblemName(e.target.value)}
               placeholder="e.g. Two Sum"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500/50"
+              className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               required
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400">Problem Link</label>
+            <label className="text-xs font-semibold text-text-muted">Problem Link</label>
             <input
               type="url"
               value={problemLink}
               onChange={(e) => setProblemLink(e.target.value)}
               placeholder="https://leetcode.com/problems/..."
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500/50"
+              className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400">Difficulty</label>
+              <label className="text-xs font-semibold text-text-muted">Difficulty</label>
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value as any)}
-                className="w-full px-4 py-3 bg-slate-950 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500/50"
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               >
                 <option value="EASY">Easy</option>
                 <option value="MEDIUM">Medium</option>
@@ -635,11 +635,11 @@ function EditProblemModal({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400">Category</label>
+              <label className="text-xs font-semibold text-text-muted">Category</label>
               <select
                 value={formCategoryId}
                 onChange={(e) => setFormCategoryId(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-950 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500/50"
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               >
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
@@ -656,14 +656,14 @@ function EditProblemModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-xs text-slate-400 hover:text-white transition-colors"
+              className="px-4 py-2.5 text-xs text-text-muted hover:text-foreground transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={editProblemMutation.isPending}
-              className="px-5 py-2.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition-all"
+              className="px-5 py-2.5 bg-accent-coral hover:bg-accent-coral disabled:opacity-50 text-foreground rounded-xl text-xs font-semibold transition-all"
             >
               {editProblemMutation.isPending ? 'Saving...' : 'Save Changes'}
             </button>
@@ -698,17 +698,17 @@ function DeleteProblemModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-white/10 p-6 rounded-3xl max-w-sm w-full space-y-4">
-        <h3 className="text-xl font-bold text-white">Delete Problem</h3>
-        <p className="text-sm text-slate-400 font-light">
-          Are you sure you want to permanently delete <span className="font-semibold text-white">"{problem.problemName}"</span>?
+      <div className="bg-background border border-border p-6 rounded-3xl max-w-sm w-full space-y-4">
+        <h3 className="text-xl font-bold text-foreground">Delete Problem</h3>
+        <p className="text-sm text-text-muted font-light">
+          Are you sure you want to permanently delete <span className="font-semibold text-foreground">"{problem.problemName}"</span>?
         </p>
 
         <div className="flex gap-3 justify-end pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 text-xs text-slate-400 hover:text-white transition-colors"
+            className="px-4 py-2.5 text-xs text-text-muted hover:text-foreground transition-colors"
           >
             Cancel
           </button>
@@ -716,7 +716,7 @@ function DeleteProblemModal({
             type="button"
             onClick={() => deleteProblemMutation.mutate(problem.id)}
             disabled={deleteProblemMutation.isPending}
-            className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition-all"
+            className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-foreground rounded-xl text-xs font-semibold transition-all"
           >
             {deleteProblemMutation.isPending ? 'Deleting...' : 'Delete'}
           </button>

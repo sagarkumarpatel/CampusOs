@@ -56,7 +56,7 @@ export default function CategoryTopicsPage() {
   if (isLoading) {
     return (
       <div className="p-8 flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-indigo-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-accent-coral"></div>
       </div>
     );
   }
@@ -76,16 +76,16 @@ export default function CategoryTopicsPage() {
   };
 
   const statusColors = {
-    NOT_STARTED: 'bg-slate-800 text-slate-400',
+    NOT_STARTED: 'bg-background text-text-muted',
     IN_PROGRESS: 'bg-blue-600/20 text-blue-400 border-blue-500/30',
-    COMPLETED: 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20',
+    COMPLETED: 'bg-emerald-500 text-foreground shadow-lg shadow-emerald-500/20',
   };
 
   return (
     <div className="p-8 space-y-6 max-w-5xl mx-auto overflow-y-auto">
       {/* Back navigation */}
       <div>
-        <Link href="/dashboard/placement" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
+        <Link href="/dashboard/placement" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-foreground transition-colors">
           <ArrowLeft className="w-4 h-4" />
           Back to categories
         </Link>
@@ -93,29 +93,29 @@ export default function CategoryTopicsPage() {
 
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-extrabold text-white">Syllabus Topics</h1>
-          <p className="text-slate-400 text-sm mt-1">Mark topics to track overall category progress.</p>
+          <h1 className="text-3xl font-extrabold text-foreground">Syllabus Topics</h1>
+          <p className="text-text-muted text-sm mt-1">Mark topics to track overall category progress.</p>
         </div>
       </div>
 
       <div className="space-y-4">
         {topics?.length === 0 ? (
-          <p className="text-slate-500 text-sm">No topics have been seeded for this category yet.</p>
+          <p className="text-text-muted text-sm">No topics have been seeded for this category yet.</p>
         ) : (
           topics?.map((topic) => (
             <div
               key={topic.id}
-              className="p-6 rounded-2xl bg-white/5 border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-white/10 transition-colors"
+              className="p-6 rounded-2xl bg-surface border border-border flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-white/10 transition-colors"
             >
               <div className="space-y-3 flex-1">
                 <div className="flex items-center gap-3">
                   <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${difficultyColors[topic.difficulty]}`}>
                     {topic.difficulty}
                   </span>
-                  <h3 className="text-lg font-bold text-white">{topic.title}</h3>
+                  <h3 className="text-lg font-bold text-foreground">{topic.title}</h3>
                 </div>
 
-                <div className="flex items-center gap-6 text-xs text-slate-400">
+                <div className="flex items-center gap-6 text-xs text-text-muted">
                   {topic.resourceUrl && (
                     <a
                       href={topic.resourceUrl}
@@ -136,7 +136,7 @@ export default function CategoryTopicsPage() {
                     defaultValue={topic.notes || ''}
                     placeholder="Add custom notes or solve link..."
                     onBlur={(e) => handleNotesChange(topic.id, topic.status, e.target.value)}
-                    className="w-full max-w-md px-3 py-1.5 rounded-lg bg-black/20 border border-white/5 text-xs text-slate-300 focus:outline-none focus:border-indigo-500/50"
+                    className="w-full max-w-md px-3 py-1.5 rounded-lg bg-black/20 border border-border text-xs text-text-muted focus:outline-none focus:border-accent-coral/50"
                   />
                 </div>
               </div>
@@ -151,7 +151,7 @@ export default function CategoryTopicsPage() {
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 border border-transparent ${
                       topic.status === status
                         ? statusColors[status]
-                        : 'bg-white/5 hover:bg-white/10 text-slate-400'
+                        : 'bg-surface hover:bg-white/10 text-text-muted'
                     }`}
                   >
                     {mutation.isPending && mutation.variables?.topicId === topic.id && mutation.variables?.status === status ? (
