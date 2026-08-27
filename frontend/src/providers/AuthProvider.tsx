@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const handleLogoutEvent = () => {
       setUser(null);
-      router.push('/auth/login');
+      router.push('/');
     };
 
     window.addEventListener('auth-logout', handleLogoutEvent);
@@ -131,7 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       queryClient.clear();
       setAccessToken(null);
       setUser(null);
-      router.push('/auth/login');
+      router.push('/');
     }
   };
 
@@ -151,7 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const isRootPath = pathname === '/';
       
       if (!user && !isAuthPath && !isRootPath) {
-        router.push('/auth/login');
+        router.push('/');
       } else if (user && isAuthPath) {
         router.push('/dashboard');
       }
