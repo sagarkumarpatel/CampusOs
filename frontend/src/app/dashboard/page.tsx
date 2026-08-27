@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '../../lib/api';
 import { useAuth } from '../../providers/AuthProvider';
 import Link from 'next/link';
 import {
@@ -14,6 +16,47 @@ import {
 
 export default function DashboardPage() {
   const { user } = useAuth();
+
+  const { data: dsaStats, isLoading: isDsaLoading } = useQuery({
+    queryKey: ['dsa-dashboard-stats'],
+    queryFn: () => apiFetch('/dsa/dashboard'),
+    enabled: !!user,
+  });
+
+  const { data: mentorshipRequests, isLoading: isMentorshipLoading } = useQuery({
+    queryKey: ['mentors-requests'],
+    queryFn: () => apiFetch('/mentors/requests'),
+    enabled: !!user,
+  });
+
+  const { data: upcomingEvents, isLoading: isEventsLoading } = useQuery({
+    queryKey: ['upcoming-events'],
+    queryFn: () => apiFetch('/events/upcoming'),
+    enabled: !!user,
+  });
+
+  const { data: resourcesData, isLoading: isResourcesLoading } = useQuery({
+    queryKey: ['resources-data'],
+    queryFn: () => apiFetch('/resources'),
+    enabled: !!user,
+  });
+
+  const { data: careerOpportunities, isLoading: isCareerLoading } = useQuery({
+    queryKey: ['career-opportunities'],
+    queryFn: () => apiFetch('/career'),
+    enabled: !!user,
+  });
+
+  const activeMentorRequest = mentorshipRequests?.sent?.find((r: any) => r.status === 'ACCEPTED');
+  const nextEvent = upcomingEvents?.[0];
+  const savedResourcesCount = (resourcesData?.subjectNotes?.length || 0) + 
+                              (resourcesData?.previousYearQuestions?.length || 0) + 
+                              (resourcesData?.interviewNotes?.length || 0) + 
+                              (resourcesData?.cheatSheets?.length || 0);
+  const latestResource = resourcesData?.cheatSheets?.[0] || resourcesData?.subjectNotes?.[0];
+  const latestApplication = careerOpportunities?.[0];
+
+  const isLoading = isDsaLoading || isMentorshipLoading || isEventsLoading || isResourcesLoading || isCareerLoading;
 
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto overflow-y-auto">
@@ -50,10 +93,10 @@ export default function DashboardPage() {
           <div>
             <div className="flex justify-between text-xs font-semibold mb-2">
               <span className="text-indigo-300">Overall Progress</span>
-              <span>70%</span>
+              <span>{Math.round(dsaStats?.overallProgress || 0)}%</span>
             </div>
             <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-              <div className="bg-indigo-500 h-full rounded-full" style={{ width: '70%' }} />
+              <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${Math.round(dsaStats?.overallProgress || 0)}%` }} />
             </div>
           </div>
         </div>
@@ -72,19 +115,26 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-lg mb-1">My Mentor</h3>
             <p className="text-xs text-slate-400 mb-4">Connecting with senior guidance</p>
             
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
-              <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm text-white">
-                R
+            {activeMentorRequest ? (
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+                <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm text-white">
+                  {activeMentorRequest.mentorName?.charAt(0) || 'M'}
+                </div>
+                <div>
+                  <h4 className="text-xs font-semibold">{activeMentorRequest.mentorName}</h4>
+                  <p className="text-[10px] text-slate-400">{activeMentorRequest.mentorTitle} @ {activeMentorRequest.mentorCompany}</p>
+                </div>
               </div>
-              <div>
-                <h4 className="text-xs font-semibold">Rohit Sharma</h4>
-                <p className="text-[10px] text-slate-400">Software Engineer @ Google</p>
+            ) : (
+              <div className="text-xs text-slate-400 p-3 rounded-xl bg-white/5 border border-white/5 text-center">
+                No mentor selected yet.
               </div>
-            </div>
+            )}
           </div>
-          <div className="mt-4 flex justify-between items-center text-xs">
-            <span className="text-[10px] text-indigo-400 font-medium px-2 py-0.5 rounded bg-indigo-500/15">Active Session</span>
-            <span className="text-slate-400">Next Sync: Tomorrow</span>
+          <div className="mt-4 flex justify-between items-center text-xs h-6">
+            {activeMentorRequest && (
+              <span className="text-[10px] text-indigo-400 font-medium px-2 py-0.5 rounded bg-indigo-500/15">Active Session</span>
+            )}
           </div>
         </div>
 
@@ -103,14 +153,22 @@ export default function DashboardPage() {
             <p className="text-xs text-slate-400 mb-4">Hackathons, contests & seminars</p>
             
             <div className="space-y-2">
-              <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex justify-between items-center">
-                <span className="text-xs font-medium truncate">Annual WebDev Hackathon</span>
-                <span className="text-[10px] text-slate-400 shrink-0 ml-2">Aug 12</span>
-              </div>
+              {nextEvent ? (
+                <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex justify-between items-center">
+                  <span className="text-xs font-medium truncate">{nextEvent.title}</span>
+                  <span className="text-[10px] text-slate-400 shrink-0 ml-2">
+                    {new Date(nextEvent.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+              ) : (
+                <div className="p-2 rounded-lg bg-white/5 border border-white/5 text-center text-xs text-slate-400">
+                  No upcoming events
+                </div>
+              )}
             </div>
           </div>
           <div className="mt-4 text-xs text-slate-400">
-            Registered: <span className="text-indigo-400 font-semibold">1 event</span>
+            Available events: <span className="text-indigo-400 font-semibold">{upcomingEvents?.length || 0}</span>
           </div>
         </div>
 
@@ -130,14 +188,20 @@ export default function DashboardPage() {
             <p className="text-xs text-slate-400 mb-4">Saved lecture notes & roadmaps</p>
             
             <div className="space-y-2">
-              <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
-                <FileText className="w-3.5 h-3.5 text-indigo-400" />
-                <span className="text-xs truncate">DBMS Normalization Cheat Sheet</span>
-              </div>
+              {latestResource ? (
+                <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                  <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                  <span className="text-xs truncate">{latestResource.title}</span>
+                </div>
+              ) : (
+                <div className="p-2 rounded-lg bg-white/5 border border-white/5 text-center text-xs text-slate-400">
+                  No resources available
+                </div>
+              )}
             </div>
           </div>
           <div className="mt-4 text-xs text-slate-400">
-            Bookmarked items: <span className="text-white font-semibold">1</span>
+            Total resources: <span className="text-white font-semibold">{savedResourcesCount}</span>
           </div>
         </div>
 
@@ -155,16 +219,22 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-lg mb-1">Career Tracking</h3>
             <p className="text-xs text-slate-400 mb-4">Application pipeline timeline</p>
             
-            <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span>Google</span>
-                <span className="text-indigo-400">Technical Interview</span>
+            {latestApplication ? (
+              <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                <div className="flex justify-between text-xs font-semibold mb-1">
+                  <span className="truncate mr-2">{latestApplication.companyName}</span>
+                  <span className="text-indigo-400 shrink-0">{latestApplication.jobType?.replace(/_/g, ' ')}</span>
+                </div>
+                <p className="text-[10px] text-slate-400 truncate">{latestApplication.role}</p>
               </div>
-              <p className="text-[10px] text-slate-400">Software Engineer Intern</p>
-            </div>
+            ) : (
+              <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-center text-xs text-slate-400">
+                No active opportunities
+              </div>
+            )}
           </div>
           <div className="mt-4 text-xs text-slate-400">
-            Total active logs: <span className="text-white font-semibold">1</span>
+            Total active logs: <span className="text-white font-semibold">{careerOpportunities?.length || 0}</span>
           </div>
         </div>
 
