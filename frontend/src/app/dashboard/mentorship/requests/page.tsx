@@ -101,7 +101,7 @@ export default function MentorshipRequestsPage() {
       </div>
 
       {/* ─── RECEIVED (Mentor view) ─── */}
-      {user?.role === 'MENTOR' && (
+      {user?.roles?.includes('MENTOR') && (
         <section className="space-y-4">
           <div className="flex items-center gap-3 border-b border-border pb-3">
             <UserCheck className="w-5 h-5 text-accent-coral" />

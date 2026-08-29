@@ -58,7 +58,7 @@ interface ResourcesData {
 export default function ResourcesPage() {
   const { user, loading } = useAuth();
   const queryClient = useQueryClient();
-  const isPlacementCoordinator = user?.role === 'PLACEMENT_COORDINATOR';
+  const isPlacementCoordinator = user?.roles?.includes('PLACEMENT_COORDINATOR');
 
   // Modal & Form States
   const [modalType, setModalType] = useState<'subject-note' | 'prev-question' | 'interview-note' | 'cheat-sheet' | null>(null);

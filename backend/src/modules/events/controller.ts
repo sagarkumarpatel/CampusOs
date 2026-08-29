@@ -66,11 +66,11 @@ export class EventsController {
   async deleteEvent(req: Request, res: Response) {
     try {
       const userId = req.user?.userId;
-      const role = req.user?.role;
+      const roles = req.user?.roles;
       const id = req.params.id as string;
-      if (!userId || !role) return res.status(401).json({ error: 'Unauthorized' });
+      if (!userId || !roles) return res.status(401).json({ error: 'Unauthorized' });
 
-      await service.deleteEvent(id, userId, role);
+      await service.deleteEvent(id, userId, roles);
       return res.json({ message: 'Event deleted successfully' });
     } catch (error: any) {
       if (error.message === 'Forbidden: Only Event Managers can delete events') {

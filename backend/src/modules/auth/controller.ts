@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from './service';
-import { registerSchema, loginSchema } from './schema';
+import { registerSchema, loginSchema, googleAuthSchema } from './schema';
 
 const authService = new AuthService();
 
@@ -11,7 +11,6 @@ export class AuthController {
       const result = await authService.register(
         payload.email,
         payload.password,
-        payload.role,
         payload.firstName,
         payload.lastName
       );
@@ -39,6 +38,30 @@ export class AuthController {
     try {
       const payload = loginSchema.parse(req.body);
       const result = await authService.login(payload.email, payload.password);
+
+      res.cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      return res.json({
+        user: result.user,
+        accessToken: result.accessToken,
+      });
+    } catch (error: any) {
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ error: error.errors });
+      }
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  async googleLogin(req: Request, res: Response) {
+    try {
+      const payload = googleAuthSchema.parse(req.body);
+      const result = await authService.googleLogin(payload.credential);
 
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,

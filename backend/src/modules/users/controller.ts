@@ -47,4 +47,51 @@ export class UserController {
       return res.status(400).json({ error: error.message });
     }
   }
+
+  async findAll(req: Request, res: Response) {
+    try {
+      const users = await userService.findAll();
+      return res.json(users);
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  async assignMentorRole(req: Request, res: Response) {
+    try {
+      const id = String(req.params.id);
+      const user = await userService.assignMentorRole(id);
+      return res.json(user);
+    } catch (error: any) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  async removeMentorRole(req: Request, res: Response) {
+    try {
+      const id = String(req.params.id);
+      const user = await userService.removeMentorRole(id);
+      return res.json(user);
+    } catch (error: any) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  async updatePassword(req: Request, res: Response) {
+    try {
+      const userId = req.user?.userId;
+      if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+      const { password } = req.body;
+      if (!password || password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
+      
+      const bcrypt = require('bcryptjs');
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+      
+      await userService.updatePassword(userId, hash);
+      return res.json({ message: 'Password updated successfully' });
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
 }

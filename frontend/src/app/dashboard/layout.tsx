@@ -15,6 +15,7 @@ import {
   User,
   LogOut,
   Menu,
+  UserCog,
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -36,6 +37,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: 'Events Hub', href: '/dashboard/events', icon: Calendar },
     { name: 'Resources', href: '/dashboard/resources', icon: FileText },
     { name: 'Career Tracking', href: '/dashboard/career', icon: Briefcase },
+    ...(user?.roles?.includes('PLACEMENT_COORDINATOR')
+      ? [{ name: 'All Users', href: '/dashboard/users', icon: UserCog }]
+      : []),
   ];
 
   return (
@@ -61,7 +65,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <h4 className="text-sm font-semibold truncate text-foreground">
               {user?.profile ? `${user.profile.firstName} ${user.profile.lastName}` : 'Sagar'}
             </h4>
-            <span className="text-xs text-text-muted capitalize">{user?.role?.toLowerCase() || 'student'}</span>
+            <span className="text-xs text-text-muted capitalize">{user?.roles?.join(', ').toLowerCase() || 'student'}</span>
           </div>
         </div>
 

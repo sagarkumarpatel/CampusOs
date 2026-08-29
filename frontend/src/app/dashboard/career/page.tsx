@@ -38,7 +38,7 @@ interface CareerOpportunity {
 export default function CareerTrackingPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const isCoordinator = user?.role === 'PLACEMENT_COORDINATOR';
+  const isCoordinator = user?.roles?.includes('PLACEMENT_COORDINATOR');
 
   // Filters state
   const [selectedType, setSelectedType] = useState<string>('All');

@@ -8,7 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 interface User {
   id: string;
   email: string;
-  role: 'STUDENT' | 'MENTOR' | 'PLACEMENT_COORDINATOR';
+  roles: string[];
   profile?: {
     firstName: string;
     lastName: string;
@@ -24,7 +24,8 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, passwordHash: string) => Promise<void>;
-  register: (email: string, passwordHash: string, firstName: string, lastName: string, role: string) => Promise<void>;
+  googleLogin: (credential: string) => Promise<void>;
+  register: (email: string, passwordHash: string, firstName: string, lastName: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<boolean>;
   updateProfileState: (profileData: any) => void;
@@ -58,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser({
           id: data.user.id,
           email: data.user.email,
-          role: data.user.role,
+          roles: data.user.roles,
           profile,
         });
         return true;
@@ -110,11 +111,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/dashboard');
   };
 
-  const register = async (email: string, passwordHash: string, firstName: string, lastName: string, role: string) => {
+  const googleLogin = async (credential: string) => {
+    queryClient.clear();
+    const data = await apiFetch('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ credential }),
+      skipAuth: true,
+    });
+    setAccessToken(data.accessToken);
+    setUser(data.user);
+    router.push('/dashboard');
+  };
+
+  const register = async (email: string, passwordHash: string, firstName: string, lastName: string) => {
     queryClient.clear();
     const data = await apiFetch('/auth/register', {
       method: 'POST',
-      body: JSON.stringify({ email, password: passwordHash, firstName, lastName, role }),
+      body: JSON.stringify({ email, password: passwordHash, firstName, lastName }),
       skipAuth: true,
     });
     setAccessToken(data.accessToken);
@@ -159,7 +172,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user, loading, pathname]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshSession, updateProfileState }}>
+    <AuthContext.Provider value={{ user, loading, login, googleLogin, register, logout, refreshSession, updateProfileState }}>
       {children}
     </AuthContext.Provider>
   );

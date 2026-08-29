@@ -16,13 +16,13 @@ export class AuthRepository {
     });
   }
 
-  async createUser(email: string, passwordHash: string, role: Role, firstName: string, lastName: string) {
+  async createUser(email: string, passwordHash: string, firstName: string, lastName: string, roles: Role[] = [Role.STUDENT]) {
     return prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
           email,
           passwordHash,
-          role,
+          roles,
         },
       });
 
@@ -69,7 +69,7 @@ export class AuthRepository {
 
   async findPlacementCoordinator() {
     return prisma.user.findFirst({
-      where: { role: Role.PLACEMENT_COORDINATOR },
+      where: { roles: { has: Role.PLACEMENT_COORDINATOR } },
     });
   }
 }

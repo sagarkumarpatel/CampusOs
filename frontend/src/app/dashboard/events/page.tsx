@@ -181,7 +181,7 @@ export default function EventsPage() {
     createEventMutation.mutate(formData);
   };
 
-  const isEventManager = user?.role === 'PLACEMENT_COORDINATOR';
+  const isEventManager = user?.roles?.includes('PLACEMENT_COORDINATOR');
   const currentEvents = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
 
   // Client filtering

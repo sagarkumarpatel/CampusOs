@@ -9,7 +9,7 @@ export class UserRepository {
           select: {
             id: true,
             email: true,
-            role: true,
+            roles: true,
           },
         },
       },
@@ -37,10 +37,52 @@ export class UserRepository {
           select: {
             id: true,
             email: true,
-            role: true,
+            roles: true,
           },
         },
       },
+    });
+  }
+
+  async findAll() {
+    return prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        roles: true,
+        createdAt: true,
+        profile: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+  }
+
+  async updateRoles(userId: string, roles: any[]) {
+    return prisma.user.update({
+      where: { id: userId },
+      data: { roles },
+      select: {
+        id: true,
+        email: true,
+        roles: true,
+        profile: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+  }
+
+  async updatePassword(userId: string, passwordHash: string) {
+    return prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
     });
   }
 }

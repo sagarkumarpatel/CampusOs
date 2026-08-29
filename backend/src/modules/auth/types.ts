@@ -1,7 +1,7 @@
 export interface UserPayload {
   userId: string;
   email: string;
-  role: 'STUDENT' | 'MENTOR' | 'PLACEMENT_COORDINATOR';
+  roles: ('STUDENT' | 'MENTOR' | 'PLACEMENT_COORDINATOR')[];
 }
 
 declare global {

@@ -33,15 +33,13 @@ export class EventsService {
     return repository.createEvent(createdBy, data);
   }
 
-  async deleteEvent(id: string, userId: string, role: string) {
+  async deleteEvent(id: string, userId: string, roles: string[]) {
     const event = await repository.findEventById(id);
     if (!event) {
       throw new Error('Event not found');
     }
     
-    // Enforce that only Event Managers can delete events.
-    // If we want only the creator or any Placement Coordinator to delete, let's restrict to PLACEMENT_COORDINATOR role
-    if (role !== 'PLACEMENT_COORDINATOR' && event.createdBy !== userId) {
+    if (!roles.includes('PLACEMENT_COORDINATOR') && event.createdBy !== userId) {
       throw new Error('Forbidden: Only Placement Coordinators can delete events');
     }
 

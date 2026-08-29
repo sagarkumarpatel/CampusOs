@@ -7,19 +7,19 @@ import { z } from 'zod';
 import { useAuth } from '../../../providers/AuthProvider';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 
 const registerSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  role: z.enum(['STUDENT', 'MENTOR', 'PLACEMENT_COORDINATOR']),
 });
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
-  const { register: authRegister } = useAuth();
+  const { register: authRegister, googleLogin } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loadingState, setLoadingState] = useState(false);
 
@@ -29,16 +29,13 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      role: 'STUDENT',
-    },
   });
 
   const onSubmit = async (data: RegisterForm) => {
     setError(null);
     setLoadingState(true);
     try {
-      await authRegister(data.email, data.password, data.firstName, data.lastName, data.role);
+      await authRegister(data.email, data.password, data.firstName, data.lastName);
     } catch (err: any) {
       setError(err.message || 'Failed to register account');
     } finally {
@@ -75,6 +72,35 @@ export default function RegisterPage() {
             {error}
           </div>
         )}
+
+        <div className="mb-6 flex justify-center">
+          <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+              if (credentialResponse.credential) {
+                setError(null);
+                setLoadingState(true);
+                try {
+                  await googleLogin(credentialResponse.credential);
+                } catch (err: any) {
+                  setError(err.message || 'Google authentication failed');
+                  setLoadingState(false);
+                }
+              }
+            }}
+            onError={() => {
+              setError('Google authentication failed');
+            }}
+            shape="rectangular"
+            theme="filled_black"
+            text="continue_with"
+          />
+        </div>
+
+        <div className="flex items-center mb-6">
+          <div className="flex-1 border-t border-white/10"></div>
+          <span className="px-4 text-xs text-[#AAAAAA] uppercase tracking-wider">or register with email</span>
+          <div className="flex-1 border-t border-white/10"></div>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="grid grid-cols-2 gap-4">
@@ -123,18 +149,7 @@ export default function RegisterPage() {
             {errors.password && <p className="text-rose-400 text-xs mt-1.5">{errors.password.message}</p>}
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">Account Type / Role</label>
-            <select
-              {...register('role')}
-              className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
-            >
-              <option value="STUDENT">Student</option>
-              <option value="MENTOR">Mentor</option>
-              <option value="PLACEMENT_COORDINATOR">Placement Coordinator</option>
-            </select>
-            {errors.role && <p className="text-rose-400 text-xs mt-1.5">{errors.role.message}</p>}
-          </div>
+
 
           <button
             type="submit"

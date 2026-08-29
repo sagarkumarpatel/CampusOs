@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { useAuth } from '../../../providers/AuthProvider';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -16,7 +17,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loadingState, setLoadingState] = useState(false);
 
@@ -69,6 +70,35 @@ export default function LoginPage() {
             {error}
           </div>
         )}
+
+        <div className="mb-6 flex justify-center">
+          <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+              if (credentialResponse.credential) {
+                setError(null);
+                setLoadingState(true);
+                try {
+                  await googleLogin(credentialResponse.credential);
+                } catch (err: any) {
+                  setError(err.message || 'Google authentication failed');
+                  setLoadingState(false);
+                }
+              }
+            }}
+            onError={() => {
+              setError('Google authentication failed');
+            }}
+            shape="rectangular"
+            theme="filled_black"
+            text="continue_with"
+          />
+        </div>
+
+        <div className="flex items-center mb-6">
+          <div className="flex-1 border-t border-white/10"></div>
+          <span className="px-4 text-xs text-[#AAAAAA] uppercase tracking-wider">or sign in with email</span>
+          <div className="flex-1 border-t border-white/10"></div>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>

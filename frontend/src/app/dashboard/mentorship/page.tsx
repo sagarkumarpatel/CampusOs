@@ -67,7 +67,7 @@ export default function MentorshipDirectory() {
   const { data: ownProfile } = useQuery<OwnProfile | null>({
     queryKey: ['mentor-own-profile'],
     queryFn: () => apiFetch('/mentors/profile').catch(() => null),
-    enabled: user?.role === 'MENTOR',
+    enabled: user?.roles?.includes('MENTOR'),
   });
 
   // Mutations
@@ -172,7 +172,7 @@ export default function MentorshipDirectory() {
           </Link>
 
           {/* Mentor profile settings toggle */}
-          {user?.role === 'MENTOR' && (
+          {user?.roles?.includes('MENTOR') && (
             <button
               onClick={() => setShowProfileModal(true)}
               className="flex items-center gap-2 px-5 py-3 rounded-xl bg-accent-coral hover:bg-accent-coral text-foreground font-medium text-sm transition-all"
