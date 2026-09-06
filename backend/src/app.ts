@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRoutes from './modules/auth/routes';
@@ -53,6 +53,19 @@ app.get('/health', async (req, res) => {
     status: healthy ? 'healthy' : 'unhealthy',
     database: dbStatus,
     redis: redisStatus,
+  });
+});
+
+// Global Error Handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Unhandled Error:', err);
+  const status = err.status || 500;
+  const message = err.message || 'Internal Server Error';
+  
+  return res.status(status).json({
+    error: process.env.NODE_ENV === 'production' && status === 500 
+      ? 'Internal Server Error' 
+      : message
   });
 });
 
