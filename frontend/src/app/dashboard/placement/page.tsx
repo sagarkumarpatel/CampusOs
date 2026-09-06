@@ -210,12 +210,12 @@ export default function PlacementDashboard() {
 
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto overflow-y-auto">
-      {/* Header Banner */}
-      <div className="p-8 rounded-3xl bg-gradient-to-r from-violet-900 via-violet-950 to-slate-950 border border-violet-500/20 relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl" />
+      {/* Banner */}
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-accent-coral via-orange-500 to-orange-400 border border-accent-coral/20 relative overflow-hidden shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-accent-coral/10 rounded-full blur-3xl" />
         <div className="relative z-10 space-y-2">
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Placement Preparation</h1>
-          <p className="text-foreground text-sm max-w-xl font-light">
+          <p className="text-white text-sm max-w-xl font-light">
             Track your DSA practice, organise subject notes, and keep your resume accessible — all in one place.
           </p>
         </div>

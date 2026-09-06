@@ -15,7 +15,8 @@ import {
   ExternalLink,
   Upload,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  X
 } from 'lucide-react';
 
 interface SubjectNote {
@@ -65,6 +66,9 @@ export default function ResourcesPage() {
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; type: 'subject-note' | 'prev-question' | 'interview-note' | 'cheat-sheet' } | null>(null);
+
+  // Image preview state
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Form Fields
   const [subjectNoteForm, setSubjectNoteForm] = useState({ subjectName: '', resourceLink: '' });
@@ -320,7 +324,7 @@ export default function ResourcesPage() {
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white via-orange-500 to-orange-400">
+          <h1 className="text-3xl font-extrabold bg-clip-text bg-gradient-to-r from-white via-orange-500 to-orange-400">
             Resources Library
           </h1>
           <p className="text-text-muted mt-1 text-sm">
@@ -509,7 +513,7 @@ export default function ResourcesPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-2.5 h-2.5 rounded-full bg-sky-400 shrink-0" />
-                  <h3 className="font-bold text-slate-100 group-hover:text-foreground transition-colors">
+                  <h3 className="font-bold text-black-100 group-hover:text-foreground transition-colors">
                     {item.topicName}
                   </h3>
                 </div>
@@ -584,7 +588,11 @@ export default function ResourcesPage() {
                   <img
                     src={cs.imageUrl}
                     alt={cs.name}
-                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewImage(cs.imageUrl);
+                    }}
                   />
                 </div>
                 <div className="p-5 flex items-center justify-between gap-4">
@@ -857,6 +865,28 @@ export default function ResourcesPage() {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            <img
+              src={previewImage}
+              alt="Full size preview"
+              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            />
           </div>
         </div>
       )}

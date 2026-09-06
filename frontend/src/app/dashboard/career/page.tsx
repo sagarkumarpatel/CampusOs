@@ -18,6 +18,7 @@ import {
   CheckSquare,
   Square,
   Users,
+  X,
 } from 'lucide-react';
 
 interface CareerOpportunity {
@@ -61,6 +62,9 @@ export default function CareerTrackingPage() {
 
   // Delete modal state
   const [deletingOpportunity, setDeletingOpportunity] = useState<CareerOpportunity | null>(null);
+
+  // Image preview state
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Fetch opportunities
   const { data: opportunities = [], isLoading } = useQuery<CareerOpportunity[]>({
@@ -361,7 +365,11 @@ export default function CareerTrackingPage() {
                   <img
                     src={op.bannerImageUrl}
                     alt={op.companyName}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewImage(op.bannerImageUrl);
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-accent-coral to-orange-400 flex items-center justify-center">
@@ -659,6 +667,28 @@ export default function CareerTrackingPage() {
                 {deleteOpportunityMutation.isPending ? 'Deleting...' : 'Delete'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            <img 
+              src={previewImage} 
+              alt="Full size preview" 
+              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" 
+            />
           </div>
         </div>
       )}
