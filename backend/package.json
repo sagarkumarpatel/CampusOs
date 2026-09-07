@@ -25,6 +25,7 @@
     "express": "^5.2.1",
     "google-auth-library": "^11.0.2",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -35,7 +36,6 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.2.0",
     "@types/node": "^26.1.2",
-    "multer": "^2.2.0",
     "prisma": "^6.19.3",
     "tsx": "^4.23.5",
     "typescript": "^7.0.2"
