@@ -95,7 +95,7 @@ export default function ResourcesPage() {
       queryClient.invalidateQueries({ queryKey: ['resources'] });
       closeModal();
     },
-    onError: (error: any) => setFormError(error.message || 'Failed to save subject note'),
+    onError: (error: unknown) => setFormError(error instanceof Error ? error.message : 'Failed to save subject note'),
   });
 
   const updateSubjectNoteMutation = useMutation({
@@ -105,7 +105,7 @@ export default function ResourcesPage() {
       queryClient.invalidateQueries({ queryKey: ['resources'] });
       closeModal();
     },
-    onError: (error: any) => setFormError(error.message || 'Failed to update subject note'),
+    onError: (error: unknown) => setFormError(error instanceof Error ? error.message : 'Failed to update subject note'),
   });
 
   const deleteSubjectNoteMutation = useMutation({
@@ -123,7 +123,7 @@ export default function ResourcesPage() {
       queryClient.invalidateQueries({ queryKey: ['resources'] });
       closeModal();
     },
-    onError: (error: any) => setFormError(error.message || 'Failed to save question paper'),
+    onError: (error: unknown) => setFormError(error instanceof Error ? error.message : 'Failed to save question paper'),
   });
 
   const updatePrevQuestionMutation = useMutation({
@@ -133,7 +133,7 @@ export default function ResourcesPage() {
       queryClient.invalidateQueries({ queryKey: ['resources'] });
       closeModal();
     },
-    onError: (error: any) => setFormError(error.message || 'Failed to update question paper'),
+    onError: (error: unknown) => setFormError(error instanceof Error ? error.message : 'Failed to update question paper'),
   });
 
   const deletePrevQuestionMutation = useMutation({
@@ -151,7 +151,7 @@ export default function ResourcesPage() {
       queryClient.invalidateQueries({ queryKey: ['resources'] });
       closeModal();
     },
-    onError: (error: any) => setFormError(error.message || 'Failed to save interview note'),
+    onError: (error: unknown) => setFormError(error instanceof Error ? error.message : 'Failed to save interview note'),
   });
 
   const updateInterviewNoteMutation = useMutation({
@@ -161,7 +161,7 @@ export default function ResourcesPage() {
       queryClient.invalidateQueries({ queryKey: ['resources'] });
       closeModal();
     },
-    onError: (error: any) => setFormError(error.message || 'Failed to update interview note'),
+    onError: (error: unknown) => setFormError(error instanceof Error ? error.message : 'Failed to update interview note'),
   });
 
   const deleteInterviewNoteMutation = useMutation({
@@ -179,7 +179,7 @@ export default function ResourcesPage() {
       queryClient.invalidateQueries({ queryKey: ['resources'] });
       closeModal();
     },
-    onError: (error: any) => setFormError(error.message || 'Failed to save cheat sheet'),
+    onError: (error: unknown) => setFormError(error instanceof Error ? error.message : 'Failed to save cheat sheet'),
   });
 
   const updateCheatSheetMutation = useMutation({
@@ -189,7 +189,7 @@ export default function ResourcesPage() {
       queryClient.invalidateQueries({ queryKey: ['resources'] });
       closeModal();
     },
-    onError: (error: any) => setFormError(error.message || 'Failed to update cheat sheet'),
+    onError: (error: unknown) => setFormError(error instanceof Error ? error.message : 'Failed to update cheat sheet'),
   });
 
   const deleteCheatSheetMutation = useMutation({
@@ -218,8 +218,8 @@ export default function ResourcesPage() {
       });
 
       setCheatSheetForm((prev) => ({ ...prev, imageUrl: data.imageUrl }));
-    } catch (err: any) {
-      setFormError(err.message || 'Failed to upload image');
+    } catch (err: unknown) {
+      setFormError(err instanceof Error ? err.message : 'Failed to upload image');
     } finally {
       setIsUploading(false);
     }
@@ -238,6 +238,7 @@ export default function ResourcesPage() {
   };
 
   // Open modal for editing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const openEdit = (type: 'subject-note' | 'prev-question' | 'interview-note' | 'cheat-sheet', item: any) => {
     setEditMode(true);
     setEditId(item.id);

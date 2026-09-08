@@ -98,8 +98,8 @@ export default function EventsPage() {
       setShowAddModal(false);
       resetForm();
     },
-    onError: (err: any) => {
-      setFormError(err.message || 'Failed to publish event');
+    onError: (err: unknown) => {
+      setFormError(err instanceof Error ? err.message : 'Failed to publish event');
     },
   });
 
@@ -114,8 +114,8 @@ export default function EventsPage() {
       queryClient.invalidateQueries({ queryKey: ['events-past'] });
       setSelectedEvent(null);
     },
-    onError: (err: any) => {
-      alert(err.message || 'Failed to delete event');
+    onError: (err: unknown) => {
+      alert(err instanceof Error ? err.message : 'Failed to delete event');
     },
   });
 
@@ -169,8 +169,8 @@ export default function EventsPage() {
 
       const res = await response.json();
       setFormData((prev) => ({ ...prev, bannerImageUrl: res.bannerImageUrl }));
-    } catch (err: any) {
-      setFormError(err.message || 'Banner upload failed');
+    } catch (err: unknown) {
+      setFormError(err instanceof Error ? err.message : 'Banner upload failed');
     } finally {
       setIsUploading(false);
     }
@@ -307,7 +307,7 @@ export default function EventsPage() {
           <div className="space-y-1">
             <h3 className="font-semibold text-lg text-foreground">No announcements found</h3>
             <p className="text-xs text-text-muted font-light max-w-sm mx-auto">
-              We couldn't find any {activeTab} announcements matching your criteria. Check back later or adjust filters.
+              We couldn&apos;t find any {activeTab} announcements matching your criteria. Check back later or adjust filters.
             </p>
           </div>
         </div>

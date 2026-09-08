@@ -97,7 +97,7 @@ export default function MentorshipRequestsPage() {
 
       <div>
         <h1 className="text-3xl font-extrabold text-foreground tracking-tight">My Mentorship Requests</h1>
-        <p className="text-text-muted text-sm mt-1">Track the status of requests you've sent and received.</p>
+        <p className="text-text-muted text-sm mt-1">Track the status of requests you&apos;ve sent and received.</p>
       </div>
 
       {/* ─── RECEIVED (Mentor view) ─── */}
@@ -208,7 +208,7 @@ export default function MentorshipRequestsPage() {
 
         {requests?.sent?.length === 0 ? (
           <div className="text-center py-10 space-y-3">
-            <p className="text-text-muted text-sm">You haven't sent any mentorship requests yet.</p>
+            <p className="text-text-muted text-sm">You haven&apos;t sent any mentorship requests yet.</p>
             <Link href="/dashboard/mentorship" className="inline-flex items-center gap-1.5 text-xs text-accent-coral hover:text-violet-300 font-semibold transition-colors">
               Browse Mentors →
             </Link>
@@ -288,7 +288,7 @@ export default function MentorshipRequestsPage() {
                               Connect on LinkedIn
                             </a>
                           ) : (
-                            <p className="text-xs text-text-muted italic">This mentor hasn't added a LinkedIn URL yet.</p>
+                            <p className="text-xs text-text-muted italic">This mentor hasn&apos;t added a LinkedIn URL yet.</p>
                           )}
                           {req.calendlyUrl && (
                             <a
@@ -310,7 +310,7 @@ export default function MentorshipRequestsPage() {
                       <div className="rounded-xl bg-rose-500/5 border border-rose-500/10 p-4 space-y-2">
                         <p className="text-xs font-bold text-rose-400 uppercase tracking-wider">Request Declined</p>
                         <p className="text-xs text-text-muted leading-relaxed">
-                          Unfortunately, <span className="font-semibold text-foreground">{req.mentorName}</span> wasn't able to take on your request at this time. Don't be discouraged — browse other mentors in the directory and send them a request.
+                          Unfortunately, <span className="font-semibold text-foreground">{req.mentorName}</span> wasn&apos;t able to take on your request at this time. Don&apos;t be discouraged — browse other mentors in the directory and send them a request.
                         </p>
                         <Link href="/dashboard/mentorship" className="inline-flex items-center gap-1.5 text-xs text-accent-coral hover:text-violet-300 font-semibold transition-colors">
                           Browse other mentors →

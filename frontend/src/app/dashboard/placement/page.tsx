@@ -81,8 +81,8 @@ export default function PlacementDashboard() {
       setShowNoteModal(false);
       resetNoteForm();
     },
-    onError: (err: any) => {
-      setNoteError(err.message || 'Failed to save subject note');
+    onError: (err: unknown) => {
+      setNoteError(err instanceof Error ? err.message : 'Failed to save subject note');
     }
   });
 
@@ -124,8 +124,8 @@ export default function PlacementDashboard() {
       setResumeLinkInput('');
       setResumeError('');
     },
-    onError: (err: any) => {
-      setResumeError(err.message || 'Failed to save resume link');
+    onError: (err: unknown) => {
+      setResumeError(err instanceof Error ? err.message : 'Failed to save resume link');
     },
   });
 

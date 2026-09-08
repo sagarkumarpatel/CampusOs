@@ -34,8 +34,8 @@ export default function LoginPage() {
     setLoadingState(true);
     try {
       await login(data.email, data.password);
-    } catch (err: any) {
-      setError(err.message || 'Failed to authenticate');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to authenticate');
     } finally {
       setLoadingState(false);
     }
@@ -79,8 +79,8 @@ export default function LoginPage() {
                 setLoadingState(true);
                 try {
                   await googleLogin(credentialResponse.credential);
-                } catch (err: any) {
-                  setError(err.message || 'Google authentication failed');
+                } catch (err: unknown) {
+                  setError(err instanceof Error ? err.message : 'Google authentication failed');
                   setLoadingState(false);
                 }
               }

@@ -9,7 +9,6 @@ import {
   BookOpen,
   Users,
   Calendar,
-  Layers,
   FileText,
   Briefcase,
   User,

@@ -36,8 +36,8 @@ export default function RegisterPage() {
     setLoadingState(true);
     try {
       await authRegister(data.email, data.password, data.firstName, data.lastName);
-    } catch (err: any) {
-      setError(err.message || 'Failed to register account');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to register account');
     } finally {
       setLoadingState(false);
     }
@@ -81,8 +81,8 @@ export default function RegisterPage() {
                 setLoadingState(true);
                 try {
                   await googleLogin(credentialResponse.credential);
-                } catch (err: any) {
-                  setError(err.message || 'Google authentication failed');
+                } catch (err: unknown) {
+                  setError(err instanceof Error ? err.message : 'Google authentication failed');
                   setLoadingState(false);
                 }
               }

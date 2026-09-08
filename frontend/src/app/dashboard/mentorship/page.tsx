@@ -83,8 +83,8 @@ export default function MentorshipDirectory() {
       setMessage('');
       queryClient.invalidateQueries({ queryKey: ['mentors-requests'] });
     },
-    onError: (err: any) => {
-      alert(err.message || 'Failed to send request. Check if a pending request already exists.');
+    onError: (err: unknown) => {
+      alert(err instanceof Error ? err.message : 'Failed to send request. Check if a pending request already exists.');
     },
   });
 

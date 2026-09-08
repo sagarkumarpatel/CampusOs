@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, QueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../../../lib/api';
 import { useAuth } from '../../../../providers/AuthProvider';
 import Link from 'next/link';
@@ -279,7 +279,7 @@ function ProblemsListSection({
   onEdit: (prob: DsaProblem) => void;
   onDelete: (prob: DsaProblem) => void;
   onAdd: () => void;
-  queryClient: any;
+  queryClient: QueryClient;
 }) {
   const { data: problems, isLoading } = useQuery<DsaProblem[]>({
     queryKey: ['dsa-problems', categoryId],
@@ -428,8 +428,8 @@ function AddProblemModal({
       queryClient.invalidateQueries({ queryKey: ['dsa-problems', formCategoryId] });
       onSuccess();
     },
-    onError: (err: any) => {
-      setFormError(err.message || 'Failed to add problem');
+    onError: (err: unknown) => {
+      setFormError(err instanceof Error ? err.message : 'Failed to add problem');
     }
   });
 
@@ -482,7 +482,7 @@ function AddProblemModal({
               <label className="text-xs font-semibold text-text-muted">Difficulty</label>
               <select
                 value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value as any)}
+                onChange={(e) => setDifficulty(e.target.value as 'EASY' | 'MEDIUM' | 'HARD')}
                 className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               >
                 <option value="EASY">Easy</option>
@@ -570,8 +570,8 @@ function EditProblemModal({
       }
       onSuccess();
     },
-    onError: (err: any) => {
-      setFormError(err.message || 'Failed to update problem');
+    onError: (err: unknown) => {
+      setFormError(err instanceof Error ? err.message : 'Failed to update problem');
     }
   });
 
@@ -625,7 +625,7 @@ function EditProblemModal({
               <label className="text-xs font-semibold text-text-muted">Difficulty</label>
               <select
                 value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value as any)}
+                onChange={(e) => setDifficulty(e.target.value as 'EASY' | 'MEDIUM' | 'HARD')}
                 className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:border-accent-coral/50"
               >
                 <option value="EASY">Easy</option>
@@ -701,7 +701,7 @@ function DeleteProblemModal({
       <div className="bg-background border border-border p-6 rounded-3xl max-w-sm w-full space-y-4">
         <h3 className="text-xl font-bold text-foreground">Delete Problem</h3>
         <p className="text-sm text-text-muted font-light">
-          Are you sure you want to permanently delete <span className="font-semibold text-foreground">"{problem.problemName}"</span>?
+          Are you sure you want to permanently delete <span className="font-semibold text-foreground">&quot;{problem.problemName}&quot;</span>?
         </p>
 
         <div className="flex gap-3 justify-end pt-2">

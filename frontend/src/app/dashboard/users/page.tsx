@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { useAuth } from '../../../providers/AuthProvider';
@@ -17,6 +17,7 @@ export default function UsersPage() {
 
   const isCoordinator = user?.roles?.includes('PLACEMENT_COORDINATOR');
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: users, isLoading } = useQuery<any[]>({
     queryKey: ['all-users'],
     queryFn: () => apiFetch('/users'),
@@ -40,7 +41,7 @@ export default function UsersPage() {
       setPasswordStatus({ success: 'Password updated successfully' });
       setPasswordForm({ newPassword: '', show: false });
     },
-    onError: (err: any) => setPasswordStatus({ error: err.message || 'Failed to update password' }),
+    onError: (err: unknown) => setPasswordStatus({ error: err instanceof Error ? err.message : 'Failed to update password' }),
   });
 
   const handlePasswordSubmit = (e: React.FormEvent) => {

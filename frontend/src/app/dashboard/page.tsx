@@ -33,7 +33,7 @@ const itemVariants: Variants = {
 export default function DashboardPage() {
   const { user } = useAuth();
 
-  const { data: dsaStats, isLoading: isDsaLoading } = useQuery({
+  const { isLoading: isDsaLoading } = useQuery({
     queryKey: ['dsa-dashboard-stats'],
     queryFn: () => apiFetch('/dsa/dashboard'),
     enabled: !!user,
@@ -63,7 +63,7 @@ export default function DashboardPage() {
     enabled: !!user,
   });
 
-  const activeMentorRequest = mentorshipRequests?.sent?.find((r: any) => r.status === 'ACCEPTED');
+  const activeMentorRequest = mentorshipRequests?.sent?.find((r: { status: string }) => r.status === 'ACCEPTED');
   const nextEvent = upcomingEvents?.[0];
   const savedResourcesCount = (resourcesData?.subjectNotes?.length || 0) +
     (resourcesData?.previousYearQuestions?.length || 0) +
@@ -71,8 +71,6 @@ export default function DashboardPage() {
     (resourcesData?.cheatSheets?.length || 0);
   const latestResource = resourcesData?.cheatSheets?.[0] || resourcesData?.subjectNotes?.[0];
   const latestApplication = careerOpportunities?.[0];
-
-  const isLoading = isDsaLoading || isMentorshipLoading || isEventsLoading || isResourcesLoading || isCareerLoading;
 
   return (
     <motion.div 

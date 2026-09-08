@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { apiFetch, setAccessToken, getAccessToken } from '../lib/api';
+import { apiFetch, setAccessToken } from '../lib/api';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -28,7 +28,7 @@ interface AuthContextType {
   register: (email: string, passwordHash: string, firstName: string, lastName: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<boolean>;
-  updateProfileState: (profileData: any) => void;
+  updateProfileState: (profileData: Partial<User['profile']>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           profile,
         });
         return true;
-      } catch (err) {
+      } catch (_err) {
         setAccessToken(null);
         setUser(null);
         return false;
@@ -97,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       active = false;
       window.removeEventListener('auth-logout', handleLogoutEvent);
     };
-  }, []);
+  }, [router]);
 
   const login = async (email: string, passwordHash: string) => {
     queryClient.clear();
@@ -138,7 +138,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await apiFetch('/auth/logout', { method: 'POST' });
-    } catch (err) {
+    } catch (_err) {
       // Ignore logout errors
     } finally {
       queryClient.clear();
@@ -148,11 +148,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateProfileState = (profileData: any) => {
+  const updateProfileState = (profileData: Partial<User['profile']>) => {
     if (user) {
       setUser({
         ...user,
-        profile: profileData,
+        profile: { ...user.profile, ...profileData } as User['profile'],
       });
     }
   };
@@ -169,7 +169,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push('/dashboard');
       }
     }
-  }, [user, loading, pathname]);
+  }, [user, loading, pathname, router]);
 
   return (
     <AuthContext.Provider value={{ user, loading, login, googleLogin, register, logout, refreshSession, updateProfileState }}>

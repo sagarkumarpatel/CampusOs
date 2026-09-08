@@ -13,7 +13,6 @@ import {
   Edit2,
   Download,
   Search,
-  Filter,
   Image as ImageIcon,
   CheckSquare,
   Square,
@@ -108,8 +107,8 @@ export default function CareerTrackingPage() {
       setBannerImageUrl(data.imageUrl);
       setIsUploading(false);
     },
-    onError: (err: any) => {
-      setFormError(err.message);
+    onError: (err: unknown) => {
+      setFormError(err instanceof Error ? err.message : 'Upload failed');
       setIsUploading(false);
     },
   });
@@ -143,8 +142,8 @@ export default function CareerTrackingPage() {
       queryClient.invalidateQueries({ queryKey: ['career-opportunities'] });
       closeFormModal();
     },
-    onError: (err: any) => {
-      setFormError(err.message || 'Failed to save opportunity');
+    onError: (err: unknown) => {
+      setFormError(err instanceof Error ? err.message : 'Failed to save opportunity');
     },
   });
 
@@ -159,8 +158,8 @@ export default function CareerTrackingPage() {
       queryClient.invalidateQueries({ queryKey: ['career-opportunities'] });
       setDeletingOpportunity(null);
     },
-    onError: (err: any) => {
-      alert(err.message || 'Failed to delete opportunity');
+    onError: (err: unknown) => {
+      alert(err instanceof Error ? err.message : 'Failed to delete opportunity');
     },
   });
 
@@ -180,8 +179,8 @@ export default function CareerTrackingPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['career-opportunities'] });
     },
-    onError: (err: any) => {
-      alert(err.message || 'Failed to toggle registration');
+    onError: (err: unknown) => {
+      alert(err instanceof Error ? err.message : 'Failed to toggle registration');
     },
   });
 
@@ -245,8 +244,8 @@ export default function CareerTrackingPage() {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-    } catch (error: any) {
-      alert(error.message || 'Failed to download registered students');
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Failed to download registered students');
     }
   };
 
@@ -565,7 +564,7 @@ export default function CareerTrackingPage() {
                   </label>
                   <select
                     value={jobType}
-                    onChange={(e: any) => setJobType(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setJobType(e.target.value as 'INTERNSHIP' | 'FULL_TIME_JOB' | 'FREELANCE_OPPORTUNITY')}
                     className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-accent-coral/50 text-sm"
                   >
                     <option value="INTERNSHIP">Internship</option>
