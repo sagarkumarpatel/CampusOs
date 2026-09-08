@@ -156,7 +156,7 @@ export class AuthService {
     }
 
     try {
-      const decoded = jwt.verify(token, JWT_REFRESH_SECRET) as any;
+      jwt.verify(token, JWT_REFRESH_SECRET) as any;
       
       // Delete old refresh token (rotation)
       await authRepository.deleteRefreshToken(token);

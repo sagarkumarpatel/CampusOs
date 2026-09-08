@@ -5,12 +5,12 @@ import { getCloudinary } from '../../config/cloudinary';
 export class ResourcesController {
   private service = new ResourcesService();
 
-  async getAllResources(req: Request, res: Response) {
+  async getAllResources(_req: Request, res: Response) {
     try {
       const resources = await this.service.getAllResources();
       return res.json(resources);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -19,8 +19,8 @@ export class ResourcesController {
     try {
       const note = await this.service.createSubjectNote(req.body);
       return res.status(201).json(note);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -28,8 +28,8 @@ export class ResourcesController {
     try {
       const note = await this.service.updateSubjectNote(req.params['id'] as string, req.body);
       return res.json(note);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -37,8 +37,8 @@ export class ResourcesController {
     try {
       await this.service.deleteSubjectNote(req.params['id'] as string);
       return res.json({ message: 'Subject note resource deleted successfully' });
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -47,8 +47,8 @@ export class ResourcesController {
     try {
       const pq = await this.service.createPrevYearQuestion(req.body);
       return res.status(201).json(pq);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -56,8 +56,8 @@ export class ResourcesController {
     try {
       const pq = await this.service.updatePrevYearQuestion(req.params['id'] as string, req.body);
       return res.json(pq);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -65,8 +65,8 @@ export class ResourcesController {
     try {
       await this.service.deletePrevYearQuestion(req.params['id'] as string);
       return res.json({ message: 'Previous year question resource deleted successfully' });
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -75,8 +75,8 @@ export class ResourcesController {
     try {
       const note = await this.service.createInterviewNote(req.body);
       return res.status(201).json(note);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -84,8 +84,8 @@ export class ResourcesController {
     try {
       const note = await this.service.updateInterviewNote(req.params['id'] as string, req.body);
       return res.json(note);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -93,8 +93,8 @@ export class ResourcesController {
     try {
       await this.service.deleteInterviewNote(req.params['id'] as string);
       return res.json({ message: 'Interview note resource deleted successfully' });
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -103,8 +103,8 @@ export class ResourcesController {
     try {
       const cs = await this.service.createCheatSheet(req.body);
       return res.status(201).json(cs);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -112,8 +112,8 @@ export class ResourcesController {
     try {
       const cs = await this.service.updateCheatSheet(req.params['id'] as string, req.body);
       return res.json(cs);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -121,8 +121,8 @@ export class ResourcesController {
     try {
       await this.service.deleteCheatSheet(req.params['id'] as string);
       return res.json({ message: 'Cheat sheet resource deleted successfully' });
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -142,9 +142,9 @@ export class ResourcesController {
       });
 
       return res.json({ imageUrl: result.secure_url });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in uploadCheatSheetImage:', error);
-      return res.status(500).json({ error: error.message || 'Image upload failed' });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Image upload failed' });
     }
   }
 }

@@ -33,7 +33,7 @@ app.use('/api/v1/resources', resourcesRoutes);
 app.use('/api/v1/career', careerRoutes);
 
 // Health check endpoint
-app.get('/health', async (req, res) => {
+app.get('/health', async (_req, res) => {
   let dbStatus = 'disconnected';
   let redisStatus = 'disconnected'; // We can add Redis client connectivity checks once Redis is used.
   
@@ -57,7 +57,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Global Error Handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Unhandled Error:', err);
   const status = err.status || 500;
   const message = err.message || 'Internal Server Error';

@@ -26,11 +26,11 @@ export class AuthController {
         user: result.user,
         accessToken: result.accessToken,
       });
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -50,11 +50,11 @@ export class AuthController {
         user: result.user,
         accessToken: result.accessToken,
       });
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -74,11 +74,11 @@ export class AuthController {
         user: result.user,
         accessToken: result.accessToken,
       });
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -102,8 +102,8 @@ export class AuthController {
         accessToken: result.accessToken,
         user: result.user,
       });
-    } catch (error: any) {
-      return res.status(401).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(401).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -115,8 +115,8 @@ export class AuthController {
       }
       res.clearCookie('refreshToken');
       return res.json({ message: 'Logged out successfully' });
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 }

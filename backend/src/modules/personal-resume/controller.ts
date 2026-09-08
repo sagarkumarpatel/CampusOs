@@ -12,8 +12,8 @@ export class PersonalResumeController {
 
       const resume = await service.getResume(userId);
       return res.json(resume ?? null);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -25,14 +25,14 @@ export class PersonalResumeController {
       const payload = resumeSchema.parse(req.body);
       const resume = await service.createResume(userId, payload.resumeLink);
       return res.status(201).json(resume);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      if (error.message === 'Resume already exists. Use PUT to update it.') {
-        return res.status(409).json({ error: error.message });
+      if ((error instanceof Error ? error.message : 'Unknown error') === 'Resume already exists. Use PUT to update it.') {
+        return res.status(409).json({ error: error instanceof Error ? error.message : 'Unknown error' });
       }
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -45,17 +45,17 @@ export class PersonalResumeController {
       const payload = resumeSchema.parse(req.body);
       const resume = await service.updateResume(id, userId, payload.resumeLink);
       return res.json(resume);
-    } catch (error: any) {
-      if (error.message === 'Forbidden') {
+    } catch (error: unknown) {
+      if ((error instanceof Error ? error.message : 'Unknown error') === 'Forbidden') {
         return res.status(403).json({ error: 'Forbidden' });
       }
-      if (error.message === 'Resume not found') {
+      if ((error instanceof Error ? error.message : 'Unknown error') === 'Resume not found') {
         return res.status(404).json({ error: 'Resume not found' });
       }
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -67,14 +67,14 @@ export class PersonalResumeController {
 
       await service.deleteResume(id, userId);
       return res.json({ message: 'Resume link deleted successfully' });
-    } catch (error: any) {
-      if (error.message === 'Forbidden') {
+    } catch (error: unknown) {
+      if ((error instanceof Error ? error.message : 'Unknown error') === 'Forbidden') {
         return res.status(403).json({ error: 'Forbidden' });
       }
-      if (error.message === 'Resume not found') {
+      if ((error instanceof Error ? error.message : 'Unknown error') === 'Resume not found') {
         return res.status(404).json({ error: 'Resume not found' });
       }
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 }

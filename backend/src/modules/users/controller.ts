@@ -25,8 +25,8 @@ export class UserController {
 
       const profile = await userService.getProfile(userId);
       return res.json(profile);
-    } catch (error: any) {
-      return res.status(404).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(404).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -40,20 +40,20 @@ export class UserController {
       const payload = updateProfileSchema.parse(req.body);
       const profile = await userService.updateProfile(userId, payload);
       return res.json(profile);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
-  async findAll(req: Request, res: Response) {
+  async findAll(_req: Request, res: Response) {
     try {
       const users = await userService.findAll();
       return res.json(users);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -62,8 +62,8 @@ export class UserController {
       const id = String(req.params.id);
       const user = await userService.assignMentorRole(id);
       return res.json(user);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -72,8 +72,8 @@ export class UserController {
       const id = String(req.params.id);
       const user = await userService.removeMentorRole(id);
       return res.json(user);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -90,8 +90,8 @@ export class UserController {
       
       await userService.updatePassword(userId, hash);
       return res.json({ message: 'Password updated successfully' });
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 }

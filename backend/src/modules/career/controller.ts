@@ -10,8 +10,8 @@ export class CareerController {
       const userId = req.user?.userId || '';
       const opportunities = await this.service.getOpportunities(userId);
       return res.json(opportunities);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -20,8 +20,8 @@ export class CareerController {
       const createdById = req.user?.userId || '';
       const opportunity = await this.service.createOpportunity(req.body, createdById);
       return res.status(201).json(opportunity);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -30,8 +30,8 @@ export class CareerController {
       const id = req.params['id'] as string;
       const opportunity = await this.service.updateOpportunity(id, req.body);
       return res.json(opportunity);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -40,8 +40,8 @@ export class CareerController {
       const id = req.params['id'] as string;
       await this.service.deleteOpportunity(id);
       return res.json({ message: 'Opportunity deleted successfully' });
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -53,8 +53,8 @@ export class CareerController {
 
       const result = await this.service.registerOpportunity(opportunityId, userId, email);
       return res.json(result);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -65,8 +65,8 @@ export class CareerController {
 
       const result = await this.service.unregisterOpportunity(opportunityId, userId);
       return res.json(result);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -78,8 +78,8 @@ export class CareerController {
       res.setHeader('Content-Type', 'text/csv');
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
       return res.send(csvContent);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -98,9 +98,9 @@ export class CareerController {
       });
 
       return res.json({ imageUrl: result.secure_url });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in uploadBanner:', error);
-      return res.status(500).json({ error: error.message || 'Image upload failed' });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Image upload failed' });
     }
   }
 }

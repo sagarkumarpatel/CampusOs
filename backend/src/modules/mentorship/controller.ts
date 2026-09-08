@@ -15,8 +15,8 @@ export class MentorshipController {
 
       const list = await service.getMentorsList(userId);
       return res.json(list);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -29,8 +29,8 @@ export class MentorshipController {
 
       const profile = await service.getOwnMentorProfile(userId);
       return res.json(profile);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -45,11 +45,11 @@ export class MentorshipController {
       const profile = await service.setupMentorProfile(userId, payload);
       
       return res.json(profile);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -69,11 +69,11 @@ export class MentorshipController {
       const request = await service.sendMentorshipRequest(userId, mentorId, payload.message);
 
       return res.status(201).json(request);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -86,8 +86,8 @@ export class MentorshipController {
 
       const lists = await service.getUserRequests(userId);
       return res.json(lists);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -112,11 +112,11 @@ export class MentorshipController {
       );
 
       return res.json(updated);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 }

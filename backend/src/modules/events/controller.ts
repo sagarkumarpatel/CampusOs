@@ -6,30 +6,30 @@ import { getCloudinary } from '../../config/cloudinary';
 const service = new EventsService();
 
 export class EventsController {
-  async getEvents(req: Request, res: Response) {
+  async getAll(_req: Request, res: Response) {
     try {
       const events = await service.getEvents();
       return res.json(events);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
-  async getUpcomingEvents(req: Request, res: Response) {
+  async getUpcomingEvents(_req: Request, res: Response) {
     try {
       const events = await service.getUpcomingEvents();
       return res.json(events);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
-  async getPastEvents(req: Request, res: Response) {
+  async getPastEvents(_req: Request, res: Response) {
     try {
       const events = await service.getPastEvents();
       return res.json(events);
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -38,11 +38,11 @@ export class EventsController {
       const id = req.params.id as string;
       const event = await service.getEventById(id);
       return res.json(event);
-    } catch (error: any) {
-      if (error.message === 'Event not found') {
-        return res.status(404).json({ error: error.message });
+    } catch (error: unknown) {
+      if ((error instanceof Error ? error.message : 'Unknown error') === 'Event not found') {
+        return res.status(404).json({ error: error instanceof Error ? error.message : 'Unknown error' });
       }
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -55,11 +55,11 @@ export class EventsController {
       const payload = createEventSchema.parse(req.body);
       const event = await service.createEvent(userId, payload);
       return res.status(201).json(event);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: error.errors });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -72,14 +72,14 @@ export class EventsController {
 
       await service.deleteEvent(id, userId, roles);
       return res.json({ message: 'Event deleted successfully' });
-    } catch (error: any) {
-      if (error.message === 'Forbidden: Only Event Managers can delete events') {
-        return res.status(403).json({ error: error.message });
+    } catch (error: unknown) {
+      if ((error instanceof Error ? error.message : 'Unknown error') === 'Forbidden: Only Event Managers can delete events') {
+        return res.status(403).json({ error: error instanceof Error ? error.message : 'Unknown error' });
       }
-      if (error.message === 'Event not found') {
-        return res.status(404).json({ error: error.message });
+      if ((error instanceof Error ? error.message : 'Unknown error') === 'Event not found') {
+        return res.status(404).json({ error: error instanceof Error ? error.message : 'Unknown error' });
       }
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
@@ -100,9 +100,9 @@ export class EventsController {
       });
 
       return res.json({ bannerImageUrl: result.secure_url });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in uploadBanner:', error);
-      return res.status(500).json({ error: error.message || 'Image upload failed' });
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Image upload failed' });
     }
   }
 }

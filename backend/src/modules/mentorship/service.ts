@@ -4,7 +4,7 @@ import { RequestStatus } from '@prisma/client';
 const repository = new MentorshipRepository();
 
 export class MentorshipService {
-  async getMentorsList(userId: string) {
+  async getMentorsList(_userId: string) {
     const mentors = await repository.getMentors();
     
     return mentors

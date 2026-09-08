@@ -26,9 +26,6 @@ export class EventsService {
   async createEvent(createdBy: string, data: any) {
     // Validate that End Time makes sense relative to start times or any other date bounds
     // (End Time must occur after Start Time is verified in validation schema / service)
-    const eventDate = new Date(data.date);
-    const deadlineDate = new Date(data.registrationDeadline);
-    
     // We can also perform custom validations here if needed
     return repository.createEvent(createdBy, data);
   }
