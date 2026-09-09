@@ -16,7 +16,7 @@ async function main() {
   const salt = await bcrypt.genSalt(10);
   const passwordHash = await bcrypt.hash(password, salt);
 
-  await prisma.user.upsert({
+  const user = await prisma.user.upsert({
     where: { email },
     update: { passwordHash, roles: ['STUDENT'] },
     create: {
@@ -32,7 +32,55 @@ async function main() {
     }
   });
 
-  console.log(`Test user ${email} seeded successfully`);
+  // Ensure "Arrays" category exists
+  const arraysCategory = await prisma.dsaCategory.upsert({
+    where: { name: 'Arrays' },
+    update: {},
+    create: { name: 'Arrays', description: 'Consecutive memory blocks, prefix sums, sliding windows' }
+  });
+
+  // Clean up any existing DSA problems for this test user in Arrays to ensure a fresh state
+  await prisma.dsaProblem.deleteMany({
+    where: {
+      userId: user.id,
+      categoryId: arraysCategory.id,
+    }
+  });
+
+  const twoSum = await prisma.dsaProblem.create({
+    data: {
+      userId: user.id,
+      categoryId: arraysCategory.id,
+      problemName: 'Two Sum',
+      problemLink: 'https://leetcode.com/problems/two-sum/',
+      difficulty: 'EASY',
+    }
+  });
+
+  const threeSum = await prisma.dsaProblem.create({
+    data: {
+      userId: user.id,
+      categoryId: arraysCategory.id,
+      problemName: '3Sum',
+      problemLink: 'https://leetcode.com/problems/3sum/',
+      difficulty: 'MEDIUM',
+    }
+  });
+
+  // Ensure completion status is false initially
+  await prisma.userDsaProblem.upsert({
+    where: { userId_problemId: { userId: user.id, problemId: twoSum.id } },
+    update: { completed: false },
+    create: { userId: user.id, problemId: twoSum.id, completed: false }
+  });
+
+  await prisma.userDsaProblem.upsert({
+    where: { userId_problemId: { userId: user.id, problemId: threeSum.id } },
+    update: { completed: false },
+    create: { userId: user.id, problemId: threeSum.id, completed: false }
+  });
+
+  console.log(`Test user ${email} seeded successfully with DSA test data`);
 }
 
 main()
