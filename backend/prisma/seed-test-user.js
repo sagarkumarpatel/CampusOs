@@ -112,6 +112,56 @@ async function main() {
   });
 
   console.log(`Test user ${email} seeded successfully with Events test data`);
+
+  // --- Phase 2.5: Resources Test Data ---
+  const RESOURCE_PREFIX = 'Playwright E2E';
+
+  // Clean up existing test resources
+  await prisma.resourceCoreSubjectNote.deleteMany({
+    where: { subjectName: { startsWith: RESOURCE_PREFIX } }
+  });
+  await prisma.resourcePreviousYearQuestion.deleteMany({
+    where: { subjectName: { startsWith: RESOURCE_PREFIX } }
+  });
+  await prisma.resourceInterviewNote.deleteMany({
+    where: { topicName: { startsWith: RESOURCE_PREFIX } }
+  });
+  await prisma.resourceCheatSheet.deleteMany({
+    where: { name: { startsWith: RESOURCE_PREFIX } }
+  });
+
+  // Seed test resources
+  await prisma.resourceCoreSubjectNote.create({
+    data: {
+      subjectName: `${RESOURCE_PREFIX} Subject Note`,
+      resourceLink: 'https://playwright.dev/note'
+    }
+  });
+
+  await prisma.resourcePreviousYearQuestion.create({
+    data: {
+      subjectName: `${RESOURCE_PREFIX} PYQ`,
+      year: 2026,
+      semester: 8,
+      questionPaperLink: 'https://playwright.dev/pyq'
+    }
+  });
+
+  await prisma.resourceInterviewNote.create({
+    data: {
+      topicName: `${RESOURCE_PREFIX} Interview`,
+      interviewNotesLink: 'https://playwright.dev/interview'
+    }
+  });
+
+  await prisma.resourceCheatSheet.create({
+    data: {
+      name: `${RESOURCE_PREFIX} Cheat Sheet`,
+      imageUrl: 'https://via.placeholder.com/800x400.png?text=Playwright+Cheat+Sheet'
+    }
+  });
+
+  console.log(`Test user ${email} seeded successfully with Resources test data`);
 }
 
 main()
