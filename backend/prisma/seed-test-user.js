@@ -81,6 +81,37 @@ async function main() {
   });
 
   console.log(`Test user ${email} seeded successfully with DSA test data`);
+
+  // --- Phase 2.4: Events Test Data ---
+  const EVENT_TITLE = 'Playwright E2E Test Hackathon';
+  
+  // Clean up existing test events
+  await prisma.event.deleteMany({
+    where: { title: EVENT_TITLE }
+  });
+
+  const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const deadlineDate = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
+
+  await prisma.event.create({
+    data: {
+      title: EVENT_TITLE,
+      description: 'This is an automated test event created for Playwright E2E testing.',
+      bannerImageUrl: 'https://via.placeholder.com/800x400.png?text=Playwright+Event',
+      category: 'HACKATHON',
+      organizer: 'E2E Testing Team',
+      date: futureDate,
+      startTime: '09:00 AM',
+      endTime: '05:00 PM',
+      location: 'Virtual',
+      registrationDeadline: deadlineDate,
+      maximumParticipants: 100,
+      registrationLink: 'https://playwright.dev/test-event',
+      createdBy: user.id
+    }
+  });
+
+  console.log(`Test user ${email} seeded successfully with Events test data`);
 }
 
 main()
