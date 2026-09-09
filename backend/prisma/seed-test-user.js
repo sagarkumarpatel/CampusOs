@@ -162,6 +162,30 @@ async function main() {
   });
 
   console.log(`Test user ${email} seeded successfully with Resources test data`);
+
+  // --- Phase 2.6: Career Tracking Test Data ---
+  const CAREER_COMPANY_PREFIX = 'Playwright E2E Corp';
+
+  // Clean up existing test career opportunities
+  await prisma.careerOpportunity.deleteMany({
+    where: { companyName: { startsWith: CAREER_COMPANY_PREFIX } }
+  });
+
+  // Seed test career opportunity
+  await prisma.careerOpportunity.create({
+    data: {
+      companyName: CAREER_COMPANY_PREFIX,
+      role: 'Software Engineering Intern',
+      jobType: 'INTERNSHIP',
+      location: 'Remote',
+      stipendPerMonth: 50000,
+      applicationLink: 'https://playwright.dev/careers',
+      bannerImageUrl: 'https://via.placeholder.com/800x400.png?text=Playwright+Career',
+      createdById: user.id
+    }
+  });
+
+  console.log(`Test user ${email} seeded successfully with Career Tracking test data`);
 }
 
 main()
