@@ -27,8 +27,9 @@ export class AuthController {
         accessToken: result.accessToken,
       });
     } catch (error: unknown) {
+      console.log("ZOD ERROR IS:", error);
       if (error instanceof Error && error.name === 'ZodError') {
-        return res.status(400).json({ error: (error as any).errors });
+        return res.status(400).json({ error: JSON.parse(error.message) });
       }
       return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
@@ -52,7 +53,7 @@ export class AuthController {
       });
     } catch (error: unknown) {
       if (error instanceof Error && error.name === 'ZodError') {
-        return res.status(400).json({ error: (error as any).errors });
+        return res.status(400).json({ error: JSON.parse(error.message) });
       }
       return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }
@@ -76,7 +77,7 @@ export class AuthController {
       });
     } catch (error: unknown) {
       if (error instanceof Error && error.name === 'ZodError') {
-        return res.status(400).json({ error: (error as any).errors });
+        return res.status(400).json({ error: JSON.parse(error.message) });
       }
       return res.status(400).json({ error: error instanceof Error ? error.message : 'Unknown error' });
     }

@@ -13,10 +13,12 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
+    const secret = process.env.JWT_SECRET || 'secret';
+    const decoded = jwt.verify(token, secret) as UserPayload;
     req.user = decoded;
     return next();
   } catch (error) {
+    console.error('JWT Verification Error:', error);
     return res.status(401).json({ error: 'Invalid or expired access token' });
   }
 };

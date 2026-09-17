@@ -9,7 +9,8 @@
     "start": "npx prisma migrate deploy && node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "db:clean": "node prisma/clean-db.js"
+    "db:clean": "node prisma/clean-db.js",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -36,12 +37,17 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.2.0",
     "@types/node": "^26.1.2",
+    "@types/supertest": "^7.2.1",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^10.10.0",
     "prisma": "^6.19.3",
+    "supertest": "^7.2.2",
     "tsx": "^4.23.5",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
