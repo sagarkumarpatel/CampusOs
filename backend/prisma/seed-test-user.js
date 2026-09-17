@@ -186,6 +186,66 @@ async function main() {
   });
 
   console.log(`Test user ${email} seeded successfully with Career Tracking test data`);
+
+  // --- Phase 2.7: Dashboard Mentor Test Data ---
+  const MENTOR_EMAIL = 'playwright-mentor@example.com';
+  
+  // Create/Upsert Mentor User
+  const mentorUser = await prisma.user.upsert({
+    where: { email: MENTOR_EMAIL },
+    update: {},
+    create: {
+      email: MENTOR_EMAIL,
+      passwordHash: 'dummy-hash',
+      roles: ['MENTOR']
+    }
+  });
+
+  await prisma.profile.upsert({
+    where: { userId: mentorUser.id },
+    update: {},
+    create: {
+      userId: mentorUser.id,
+      firstName: 'Playwright',
+      lastName: 'Mentor',
+      skills: ['E2E Testing', 'Playwright', 'Node.js']
+    }
+  });
+
+  const mentorProfile = await prisma.mentorProfile.upsert({
+    where: { userId: mentorUser.id },
+    update: {
+      title: 'E2E Senior Engineer',
+      company: 'Playwright E2E Corp'
+    },
+    create: {
+      userId: mentorUser.id,
+      title: 'E2E Senior Engineer',
+      company: 'Playwright E2E Corp',
+      skills: ['Playwright', 'E2E'],
+      bio: 'I help students learn E2E testing.'
+    }
+  });
+
+  // Clean up any existing requests from the test user to this mentor
+  await prisma.mentorshipRequest.deleteMany({
+    where: {
+      studentId: user.id,
+      mentorId: mentorProfile.id
+    }
+  });
+
+  // Create an accepted mentorship request
+  await prisma.mentorshipRequest.create({
+    data: {
+      studentId: user.id,
+      mentorId: mentorProfile.id,
+      message: 'Hello, I would like to learn Playwright.',
+      status: 'ACCEPTED'
+    }
+  });
+
+  console.log(`Test user ${email} seeded successfully with Dashboard Mentor test data`);
 }
 
 main()
