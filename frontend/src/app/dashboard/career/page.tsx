@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, getAccessToken } from '../../../lib/api';
 import { useAuth } from '../../../providers/AuthProvider';
@@ -361,10 +362,12 @@ export default function CareerTrackingPage() {
               {/* Banner */}
               <div className="relative h-44 bg-background flex items-center justify-center overflow-hidden">
                 {op.bannerImageUrl ? (
-                  <img
+                  <Image
                     src={op.bannerImageUrl}
                     alt={op.companyName}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       setPreviewImage(op.bannerImageUrl);
@@ -503,7 +506,7 @@ export default function CareerTrackingPage() {
                 <div className="flex items-center gap-4">
                   <div className="relative w-28 h-20 bg-background border border-border rounded-xl overflow-hidden flex items-center justify-center">
                     {bannerImageUrl ? (
-                      <img src={bannerImageUrl} alt="Preview" className="w-full h-full object-cover" />
+                      <Image src={bannerImageUrl} alt="Preview" fill sizes="112px" className="object-cover" />
                     ) : (
                       <ImageIcon className="w-6 h-6 text-slate-600" />
                     )}
@@ -676,18 +679,21 @@ export default function CareerTrackingPage() {
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           onClick={() => setPreviewImage(null)}
         >
-          <div className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-5xl w-full h-[80vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setPreviewImage(null)}
-              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors z-10"
             >
               <X className="w-8 h-8" />
             </button>
-            <img 
-              src={previewImage} 
-              alt="Full size preview" 
-              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" 
-            />
+            <div className="relative w-full h-full">
+              <Image 
+                src={previewImage} 
+                alt="Full size preview"
+                fill
+                className="object-contain rounded-xl shadow-2xl" 
+              />
+            </div>
           </div>
         </div>
       )}

@@ -6,6 +6,7 @@ import { apiFetch } from '../../../lib/api';
 import { useAuth } from '../../../providers/AuthProvider';
 import { Search, Compass, User, MessageSquare, Calendar, Edit3, X, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const LinkedinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -237,9 +238,9 @@ export default function MentorshipDirectory() {
             >
               <div>
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-accent-coral/10 border border-accent-coral/20 flex items-center justify-center text-lg font-bold text-accent-coral shrink-0">
+                  <div className="relative overflow-hidden w-12 h-12 rounded-full bg-accent-coral/10 border border-accent-coral/20 flex items-center justify-center text-lg font-bold text-accent-coral shrink-0">
                     {mentor.avatarUrl ? (
-                      <img src={mentor.avatarUrl} alt={mentor.name} className="w-full h-full rounded-full object-cover" />
+                      <Image src={mentor.avatarUrl} alt={mentor.name} fill sizes="48px" className="object-cover" />
                     ) : (
                       <User className="w-5 h-5" />
                     )}

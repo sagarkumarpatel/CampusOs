@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, getAccessToken } from '../../../lib/api';
 import { useAuth } from '../../../providers/AuthProvider';
@@ -322,10 +323,12 @@ export default function EventsPage() {
               {/* Event card header banner image */}
               <div className="aspect-video w-full overflow-hidden bg-surface relative">
                 {ev.bannerImageUrl ? (
-                  <img
+                  <Image
                     src={ev.bannerImageUrl}
                     alt={ev.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       setPreviewImage(ev.bannerImageUrl);
@@ -380,10 +383,12 @@ export default function EventsPage() {
           <div className="bg-background border border-border rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative my-8">
             {/* Banner Image */}
             <div className="aspect-video w-full relative bg-background">
-              <img
+              <Image
                 src={selectedEvent.bannerImageUrl}
                 alt={selectedEvent.title}
-                className="w-full h-full object-cover cursor-pointer"
+                fill
+                sizes="(max-width: 1024px) 100vw, 1024px"
+                className="object-cover cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   setPreviewImage(selectedEvent.bannerImageUrl);
@@ -513,8 +518,8 @@ export default function EventsPage() {
                     </label>
                   </div>
                   {formData.bannerImageUrl && (
-                    <div className="w-16 h-12 rounded-lg overflow-hidden shrink-0 border border-border bg-surface">
-                      <img src={formData.bannerImageUrl} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="w-16 h-12 rounded-lg overflow-hidden shrink-0 border border-border bg-surface relative">
+                      <Image src={formData.bannerImageUrl} alt="Preview" fill sizes="64px" className="object-cover" />
                     </div>
                   )}
                 </div>
@@ -689,18 +694,21 @@ export default function EventsPage() {
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           onClick={() => setPreviewImage(null)}
         >
-          <div className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-5xl w-full h-[80vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setPreviewImage(null)}
-              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors z-10"
             >
               <X className="w-8 h-8" />
             </button>
-            <img 
-              src={previewImage} 
-              alt="Full size preview" 
-              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" 
-            />
+            <div className="relative w-full h-full">
+              <Image 
+                src={previewImage} 
+                alt="Full size preview" 
+                fill
+                className="object-contain rounded-xl shadow-2xl" 
+              />
+            </div>
           </div>
         </div>
       )}

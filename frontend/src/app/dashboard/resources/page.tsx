@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../../lib/api';
 import { useAuth } from '../../../providers/AuthProvider';
@@ -586,10 +587,12 @@ export default function ResourcesPage() {
                 {/* Visual Image container */}
                 <div className="aspect-video w-full relative bg-background border-b border-border flex items-center justify-center overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={cs.imageUrl}
                     alt={cs.name}
-                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 cursor-pointer"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-contain hover:scale-105 transition-transform duration-300 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       setPreviewImage(cs.imageUrl);
@@ -796,7 +799,7 @@ export default function ResourcesPage() {
                       {cheatSheetForm.imageUrl && (
                         <div className="w-16 h-10 rounded bg-background border border-border overflow-hidden relative">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={cheatSheetForm.imageUrl} alt="Preview" className="w-full h-full object-contain" />
+                          <Image src={cheatSheetForm.imageUrl} alt="Preview" fill sizes="64px" className="object-contain" />
                         </div>
                       )}
                     </div>
@@ -876,18 +879,21 @@ export default function ResourcesPage() {
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           onClick={() => setPreviewImage(null)}
         >
-          <div className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-5xl w-full h-[80vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setPreviewImage(null)}
-              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors z-10"
             >
               <X className="w-8 h-8" />
             </button>
-            <img
-              src={previewImage}
-              alt="Full size preview"
-              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={previewImage}
+                alt="Full size preview"
+                fill
+                className="object-contain rounded-xl shadow-2xl"
+              />
+            </div>
           </div>
         </div>
       )}
