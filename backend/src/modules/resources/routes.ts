@@ -8,25 +8,25 @@ const controller = new ResourcesController();
 const upload = multer({ storage: multer.memoryStorage() });
 
 // Public shared resources retrieval for all authenticated users
-router.get('/', authenticate, (req, res) => controller.getAllResources(req, res));
+router.get('/', authenticate, (req, res, next) => controller.getAllResources(req, res, next));
 
 // Placement Coordinator only resources modification routes
-router.post('/subject-notes', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.createSubjectNote(req, res));
-router.put('/subject-notes/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.updateSubjectNote(req, res));
-router.delete('/subject-notes/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.deleteSubjectNote(req, res));
+router.post('/subject-notes', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.createSubjectNote(req, res, next));
+router.put('/subject-notes/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.updateSubjectNote(req, res, next));
+router.delete('/subject-notes/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.deleteSubjectNote(req, res, next));
 
-router.post('/previous-year-questions', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.createPrevYearQuestion(req, res));
-router.put('/previous-year-questions/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.updatePrevYearQuestion(req, res));
-router.delete('/previous-year-questions/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.deletePrevYearQuestion(req, res));
+router.post('/previous-year-questions', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.createPrevYearQuestion(req, res, next));
+router.put('/previous-year-questions/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.updatePrevYearQuestion(req, res, next));
+router.delete('/previous-year-questions/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.deletePrevYearQuestion(req, res, next));
 
-router.post('/interview-notes', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.createInterviewNote(req, res));
-router.put('/interview-notes/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.updateInterviewNote(req, res));
-router.delete('/interview-notes/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.deleteInterviewNote(req, res));
+router.post('/interview-notes', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.createInterviewNote(req, res, next));
+router.put('/interview-notes/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.updateInterviewNote(req, res, next));
+router.delete('/interview-notes/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.deleteInterviewNote(req, res, next));
 
-router.post('/cheat-sheets', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.createCheatSheet(req, res));
+router.post('/cheat-sheets', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.createCheatSheet(req, res, next));
 // Upload must be declared before /:id to avoid param shadowing
-router.post('/cheat-sheets/upload', authenticate, requireRole(['PLACEMENT_COORDINATOR']), upload.single('image'), (req, res) => controller.uploadCheatSheetImage(req, res));
-router.put('/cheat-sheets/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.updateCheatSheet(req, res));
-router.delete('/cheat-sheets/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.deleteCheatSheet(req, res));
+router.post('/cheat-sheets/upload', authenticate, requireRole(['PLACEMENT_COORDINATOR']), upload.single('image'), (req, res, next) => controller.uploadCheatSheetImage(req, res, next));
+router.put('/cheat-sheets/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.updateCheatSheet(req, res, next));
+router.delete('/cheat-sheets/:id', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.deleteCheatSheet(req, res, next));
 
 export default router;

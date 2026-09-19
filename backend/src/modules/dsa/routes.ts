@@ -5,12 +5,12 @@ import { authenticate } from '../../middleware/auth';
 const router = Router();
 const controller = new DsaController();
 
-router.get('/dashboard', authenticate, (req, res) => controller.getDashboard(req, res));
-router.get('/categories', authenticate, (req, res) => controller.getCategories(req, res));
-router.get('/categories/:id/problems', authenticate, (req, res) => controller.getProblems(req, res));
-router.post('/problems', authenticate, (req, res) => controller.createProblem(req, res));
-router.put('/problems/:id', authenticate, (req, res) => controller.updateProblem(req, res));
-router.delete('/problems/:id', authenticate, (req, res) => controller.deleteProblem(req, res));
-router.patch('/problems/:id/status', authenticate, (req, res) => controller.updateStatus(req, res));
+router.get('/dashboard', authenticate, (req, res, next) => controller.getDashboard(req, res, next));
+router.get('/categories', authenticate, (req, res, next) => controller.getCategories(req, res, next));
+router.get('/categories/:id/problems', authenticate, (req, res, next) => controller.getProblems(req, res, next));
+router.post('/problems', authenticate, (req, res, next) => controller.createProblem(req, res, next));
+router.put('/problems/:id', authenticate, (req, res, next) => controller.updateProblem(req, res, next));
+router.delete('/problems/:id', authenticate, (req, res, next) => controller.deleteProblem(req, res, next));
+router.patch('/problems/:id/status', authenticate, (req, res, next) => controller.updateStatus(req, res, next));
 
 export default router;

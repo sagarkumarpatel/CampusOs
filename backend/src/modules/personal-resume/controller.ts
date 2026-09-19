@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { PersonalResumeService } from './service';
 import { resumeSchema } from './schema';
 
 const service = new PersonalResumeService();
 
 export class PersonalResumeController {
-  async getResume(req: Request, res: Response) {
+  async getResume(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
@@ -13,11 +13,11 @@ export class PersonalResumeController {
       const resume = await service.getResume(userId);
       return res.json(resume ?? null);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async createResume(req: Request, res: Response) {
+  async createResume(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
@@ -32,11 +32,11 @@ export class PersonalResumeController {
       if ((error instanceof Error ? error.message : 'Unknown error') === 'Resume already exists. Use PUT to update it.') {
         return res.status(409).json({ error: error instanceof Error ? error.message : 'Unknown error' });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async updateResume(req: Request, res: Response) {
+  async updateResume(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const id = req.params.id as string;
@@ -55,11 +55,11 @@ export class PersonalResumeController {
       if (error instanceof Error && error.name === 'ZodError') {
         return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async deleteResume(req: Request, res: Response) {
+  async deleteResume(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const id = req.params.id as string;
@@ -74,7 +74,7 @@ export class PersonalResumeController {
       if ((error instanceof Error ? error.message : 'Unknown error') === 'Resume not found') {
         return res.status(404).json({ error: 'Resume not found' });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 }

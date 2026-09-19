@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { SubjectNotesService } from './service';
 import { subjectNoteSchema } from './schema';
 
 const service = new SubjectNotesService();
 
 export class SubjectNotesController {
-  async getNotes(req: Request, res: Response) {
+  async getNotes(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -15,11 +15,11 @@ export class SubjectNotesController {
       const notes = await service.getNotes(userId);
       return res.json(notes);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async addOrUpdateNote(req: Request, res: Response) {
+  async addOrUpdateNote(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -33,11 +33,11 @@ export class SubjectNotesController {
       if (error instanceof Error && error.name === 'ZodError') {
         return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async updateNote(req: Request, res: Response) {
+  async updateNote(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const id = req.params.id as string;
@@ -55,11 +55,11 @@ export class SubjectNotesController {
       if (error instanceof Error && error.name === 'ZodError') {
         return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async deleteNote(req: Request, res: Response) {
+  async deleteNote(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const id = req.params.id as string;
@@ -73,7 +73,7 @@ export class SubjectNotesController {
       if ((error instanceof Error ? error.message : 'Unknown error') === 'Forbidden') {
         return res.status(403).json({ error: 'Forbidden' });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 }

@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { AuthService } from './service';
 import { registerSchema, loginSchema, googleAuthSchema } from './schema';
 
 const authService = new AuthService();
 
 export class AuthController {
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response, _next: NextFunction) {
     try {
       const payload = registerSchema.parse(req.body);
       const result = await authService.register(
@@ -35,7 +35,7 @@ export class AuthController {
     }
   }
 
-  async login(req: Request, res: Response) {
+  async login(req: Request, res: Response, _next: NextFunction) {
     try {
       const payload = loginSchema.parse(req.body);
       const result = await authService.login(payload.email, payload.password);
@@ -59,7 +59,7 @@ export class AuthController {
     }
   }
 
-  async googleLogin(req: Request, res: Response) {
+  async googleLogin(req: Request, res: Response, _next: NextFunction) {
     try {
       const payload = googleAuthSchema.parse(req.body);
       const result = await authService.googleLogin(payload.credential);
@@ -83,7 +83,7 @@ export class AuthController {
     }
   }
 
-  async refresh(req: Request, res: Response) {
+  async refresh(req: Request, res: Response, _next: NextFunction) {
     try {
       const token = req.cookies.refreshToken;
       if (!token) {
@@ -108,7 +108,7 @@ export class AuthController {
     }
   }
 
-  async logout(req: Request, res: Response) {
+  async logout(req: Request, res: Response, _next: NextFunction) {
     try {
       const token = req.cookies.refreshToken;
       if (token) {
@@ -117,7 +117,7 @@ export class AuthController {
       res.clearCookie('refreshToken');
       return res.json({ message: 'Logged out successfully' });
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 }

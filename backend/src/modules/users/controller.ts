@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { UserService } from './service';
 import { z } from 'zod';
 
@@ -16,7 +16,7 @@ const updateProfileSchema = z.object({
 });
 
 export class UserController {
-  async getProfile(req: Request, res: Response) {
+  async getProfile(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -30,7 +30,7 @@ export class UserController {
     }
   }
 
-  async updateProfile(req: Request, res: Response) {
+  async updateProfile(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -48,16 +48,16 @@ export class UserController {
     }
   }
 
-  async findAll(_req: Request, res: Response) {
+  async findAll(_req: Request, res: Response, _next: NextFunction) {
     try {
       const users = await userService.findAll();
       return res.json(users);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async assignMentorRole(req: Request, res: Response) {
+  async assignMentorRole(req: Request, res: Response, _next: NextFunction) {
     try {
       const id = String(req.params.id);
       const user = await userService.assignMentorRole(id);
@@ -67,7 +67,7 @@ export class UserController {
     }
   }
 
-  async removeMentorRole(req: Request, res: Response) {
+  async removeMentorRole(req: Request, res: Response, _next: NextFunction) {
     try {
       const id = String(req.params.id);
       const user = await userService.removeMentorRole(id);
@@ -77,7 +77,7 @@ export class UserController {
     }
   }
 
-  async updatePassword(req: Request, res: Response) {
+  async updatePassword(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
@@ -91,7 +91,7 @@ export class UserController {
       await userService.updatePassword(userId, hash);
       return res.json({ message: 'Password updated successfully' });
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 }

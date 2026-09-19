@@ -1,21 +1,21 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { CareerService } from './service';
 import { getCloudinary } from '../../config/cloudinary';
 
 export class CareerController {
   private service = new CareerService();
 
-  async getOpportunities(req: Request, res: Response) {
+  async getOpportunities(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId || '';
       const opportunities = await this.service.getOpportunities(userId);
       return res.json(opportunities);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async createOpportunity(req: Request, res: Response) {
+  async createOpportunity(req: Request, res: Response, _next: NextFunction) {
     try {
       const createdById = req.user?.userId || '';
       const opportunity = await this.service.createOpportunity(req.body, createdById);
@@ -25,7 +25,7 @@ export class CareerController {
     }
   }
 
-  async updateOpportunity(req: Request, res: Response) {
+  async updateOpportunity(req: Request, res: Response, _next: NextFunction) {
     try {
       const id = req.params['id'] as string;
       const opportunity = await this.service.updateOpportunity(id, req.body);
@@ -35,7 +35,7 @@ export class CareerController {
     }
   }
 
-  async deleteOpportunity(req: Request, res: Response) {
+  async deleteOpportunity(req: Request, res: Response, _next: NextFunction) {
     try {
       const id = req.params['id'] as string;
       await this.service.deleteOpportunity(id);
@@ -45,7 +45,7 @@ export class CareerController {
     }
   }
 
-  async registerOpportunity(req: Request, res: Response) {
+  async registerOpportunity(req: Request, res: Response, _next: NextFunction) {
     try {
       const opportunityId = req.params['id'] as string;
       const userId = req.user?.userId || '';
@@ -58,7 +58,7 @@ export class CareerController {
     }
   }
 
-  async unregisterOpportunity(req: Request, res: Response) {
+  async unregisterOpportunity(req: Request, res: Response, _next: NextFunction) {
     try {
       const opportunityId = req.params['id'] as string;
       const userId = req.user?.userId || '';
@@ -70,7 +70,7 @@ export class CareerController {
     }
   }
 
-  async downloadRegisteredEmails(req: Request, res: Response) {
+  async downloadRegisteredEmails(req: Request, res: Response, _next: NextFunction) {
     try {
       const opportunityId = req.params['id'] as string;
       const { csvContent, filename } = await this.service.downloadRegisteredEmails(opportunityId);
@@ -83,7 +83,7 @@ export class CareerController {
     }
   }
 
-  async uploadBanner(req: Request, res: Response) {
+  async uploadBanner(req: Request, res: Response, _next: NextFunction) {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No banner image file uploaded' });
@@ -100,7 +100,7 @@ export class CareerController {
       return res.json({ imageUrl: result.secure_url });
     } catch (error: unknown) {
       console.error('Error in uploadBanner:', error);
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Image upload failed' });
+      return _next(error);
     }
   }
 }

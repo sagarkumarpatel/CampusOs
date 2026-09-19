@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { MentorshipService } from './service';
 import { createMentorProfileSchema, requestMentorshipSchema, updateRequestStatusSchema } from './schema';
 import { RequestStatus } from '@prisma/client';
@@ -6,7 +6,7 @@ import { RequestStatus } from '@prisma/client';
 const service = new MentorshipService();
 
 export class MentorshipController {
-  async getMentors(req: Request, res: Response) {
+  async getMentors(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -16,11 +16,11 @@ export class MentorshipController {
       const list = await service.getMentorsList(userId);
       return res.json(list);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async getOwnProfile(req: Request, res: Response) {
+  async getOwnProfile(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -30,11 +30,11 @@ export class MentorshipController {
       const profile = await service.getOwnMentorProfile(userId);
       return res.json(profile);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async setupProfile(req: Request, res: Response) {
+  async setupProfile(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -49,11 +49,11 @@ export class MentorshipController {
       if (error instanceof Error && error.name === 'ZodError') {
         return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async sendRequest(req: Request, res: Response) {
+  async sendRequest(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const mentorId = req.params.mentorId as string;
@@ -77,7 +77,7 @@ export class MentorshipController {
     }
   }
 
-  async getMyRequests(req: Request, res: Response) {
+  async getMyRequests(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -87,11 +87,11 @@ export class MentorshipController {
       const lists = await service.getUserRequests(userId);
       return res.json(lists);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async handleRequest(req: Request, res: Response) {
+  async handleRequest(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const requestId = req.params.requestId as string;

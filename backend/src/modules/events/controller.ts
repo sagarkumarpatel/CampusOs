@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { EventsService } from './service';
 import { createEventSchema } from './schema';
 import { getCloudinary } from '../../config/cloudinary';
@@ -6,34 +6,34 @@ import { getCloudinary } from '../../config/cloudinary';
 const service = new EventsService();
 
 export class EventsController {
-  async getAll(_req: Request, res: Response) {
+  async getAll(_req: Request, res: Response, _next: NextFunction) {
     try {
       const events = await service.getEvents();
       return res.json(events);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async getUpcomingEvents(_req: Request, res: Response) {
+  async getUpcomingEvents(_req: Request, res: Response, _next: NextFunction) {
     try {
       const events = await service.getUpcomingEvents();
       return res.json(events);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async getPastEvents(_req: Request, res: Response) {
+  async getPastEvents(_req: Request, res: Response, _next: NextFunction) {
     try {
       const events = await service.getPastEvents();
       return res.json(events);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async getEventById(req: Request, res: Response) {
+  async getEventById(req: Request, res: Response, _next: NextFunction) {
     try {
       const id = req.params.id as string;
       const event = await service.getEventById(id);
@@ -42,11 +42,11 @@ export class EventsController {
       if ((error instanceof Error ? error.message : 'Unknown error') === 'Event not found') {
         return res.status(404).json({ error: error instanceof Error ? error.message : 'Unknown error' });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async createEvent(req: Request, res: Response) {
+  async createEvent(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
@@ -59,11 +59,11 @@ export class EventsController {
       if (error instanceof Error && error.name === 'ZodError') {
         return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async deleteEvent(req: Request, res: Response) {
+  async deleteEvent(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const roles = req.user?.roles;
@@ -79,12 +79,12 @@ export class EventsController {
       if ((error instanceof Error ? error.message : 'Unknown error') === 'Event not found') {
         return res.status(404).json({ error: error instanceof Error ? error.message : 'Unknown error' });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
   // File upload to Cloudinary helper endpoint
-  async uploadBanner(req: Request, res: Response) {
+  async uploadBanner(req: Request, res: Response, _next: NextFunction) {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No image file uploaded' });
@@ -102,7 +102,7 @@ export class EventsController {
       return res.json({ bannerImageUrl: result.secure_url });
     } catch (error: unknown) {
       console.error('Error in uploadBanner:', error);
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Image upload failed' });
+      return _next(error);
     }
   }
 }

@@ -5,14 +5,14 @@ import { authenticate } from '../../middleware/auth';
 const router = Router();
 const controller = new UserController();
 
-router.get('/profile', authenticate, (req, res) => controller.getProfile(req, res));
-router.put('/profile', authenticate, (req, res) => controller.updateProfile(req, res));
+router.get('/profile', authenticate, (req, res, next) => controller.getProfile(req, res, next));
+router.put('/profile', authenticate, (req, res, next) => controller.updateProfile(req, res, next));
 
 import { requireRole } from '../../middleware/auth';
 
-router.get('/', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.findAll(req, res));
-router.post('/:id/mentor', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.assignMentorRole(req, res));
-router.delete('/:id/mentor', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.removeMentorRole(req, res));
-router.put('/password', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res) => controller.updatePassword(req, res));
+router.get('/', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.findAll(req, res, next));
+router.post('/:id/mentor', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.assignMentorRole(req, res, next));
+router.delete('/:id/mentor', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.removeMentorRole(req, res, next));
+router.put('/password', authenticate, requireRole(['PLACEMENT_COORDINATOR']), (req, res, next) => controller.updatePassword(req, res, next));
 
 export default router;

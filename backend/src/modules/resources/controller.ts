@@ -1,21 +1,21 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { ResourcesService } from './service';
 import { getCloudinary } from '../../config/cloudinary';
 
 export class ResourcesController {
   private service = new ResourcesService();
 
-  async getAllResources(_req: Request, res: Response) {
+  async getAllResources(_req: Request, res: Response, _next: NextFunction) {
     try {
       const resources = await this.service.getAllResources();
       return res.json(resources);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
   // Core Subject Notes
-  async createSubjectNote(req: Request, res: Response) {
+  async createSubjectNote(req: Request, res: Response, _next: NextFunction) {
     try {
       const note = await this.service.createSubjectNote(req.body);
       return res.status(201).json(note);
@@ -24,7 +24,7 @@ export class ResourcesController {
     }
   }
 
-  async updateSubjectNote(req: Request, res: Response) {
+  async updateSubjectNote(req: Request, res: Response, _next: NextFunction) {
     try {
       const note = await this.service.updateSubjectNote(req.params['id'] as string, req.body);
       return res.json(note);
@@ -33,7 +33,7 @@ export class ResourcesController {
     }
   }
 
-  async deleteSubjectNote(req: Request, res: Response) {
+  async deleteSubjectNote(req: Request, res: Response, _next: NextFunction) {
     try {
       await this.service.deleteSubjectNote(req.params['id'] as string);
       return res.json({ message: 'Subject note resource deleted successfully' });
@@ -43,7 +43,7 @@ export class ResourcesController {
   }
 
   // Previous Year Questions
-  async createPrevYearQuestion(req: Request, res: Response) {
+  async createPrevYearQuestion(req: Request, res: Response, _next: NextFunction) {
     try {
       const pq = await this.service.createPrevYearQuestion(req.body);
       return res.status(201).json(pq);
@@ -52,7 +52,7 @@ export class ResourcesController {
     }
   }
 
-  async updatePrevYearQuestion(req: Request, res: Response) {
+  async updatePrevYearQuestion(req: Request, res: Response, _next: NextFunction) {
     try {
       const pq = await this.service.updatePrevYearQuestion(req.params['id'] as string, req.body);
       return res.json(pq);
@@ -61,7 +61,7 @@ export class ResourcesController {
     }
   }
 
-  async deletePrevYearQuestion(req: Request, res: Response) {
+  async deletePrevYearQuestion(req: Request, res: Response, _next: NextFunction) {
     try {
       await this.service.deletePrevYearQuestion(req.params['id'] as string);
       return res.json({ message: 'Previous year question resource deleted successfully' });
@@ -71,7 +71,7 @@ export class ResourcesController {
   }
 
   // Interview Notes
-  async createInterviewNote(req: Request, res: Response) {
+  async createInterviewNote(req: Request, res: Response, _next: NextFunction) {
     try {
       const note = await this.service.createInterviewNote(req.body);
       return res.status(201).json(note);
@@ -80,7 +80,7 @@ export class ResourcesController {
     }
   }
 
-  async updateInterviewNote(req: Request, res: Response) {
+  async updateInterviewNote(req: Request, res: Response, _next: NextFunction) {
     try {
       const note = await this.service.updateInterviewNote(req.params['id'] as string, req.body);
       return res.json(note);
@@ -89,7 +89,7 @@ export class ResourcesController {
     }
   }
 
-  async deleteInterviewNote(req: Request, res: Response) {
+  async deleteInterviewNote(req: Request, res: Response, _next: NextFunction) {
     try {
       await this.service.deleteInterviewNote(req.params['id'] as string);
       return res.json({ message: 'Interview note resource deleted successfully' });
@@ -99,7 +99,7 @@ export class ResourcesController {
   }
 
   // Cheat Sheets
-  async createCheatSheet(req: Request, res: Response) {
+  async createCheatSheet(req: Request, res: Response, _next: NextFunction) {
     try {
       const cs = await this.service.createCheatSheet(req.body);
       return res.status(201).json(cs);
@@ -108,7 +108,7 @@ export class ResourcesController {
     }
   }
 
-  async updateCheatSheet(req: Request, res: Response) {
+  async updateCheatSheet(req: Request, res: Response, _next: NextFunction) {
     try {
       const cs = await this.service.updateCheatSheet(req.params['id'] as string, req.body);
       return res.json(cs);
@@ -117,7 +117,7 @@ export class ResourcesController {
     }
   }
 
-  async deleteCheatSheet(req: Request, res: Response) {
+  async deleteCheatSheet(req: Request, res: Response, _next: NextFunction) {
     try {
       await this.service.deleteCheatSheet(req.params['id'] as string);
       return res.json({ message: 'Cheat sheet resource deleted successfully' });
@@ -127,7 +127,7 @@ export class ResourcesController {
   }
 
   // Cloudinary image upload for Cheat Sheets
-  async uploadCheatSheetImage(req: Request, res: Response) {
+  async uploadCheatSheetImage(req: Request, res: Response, _next: NextFunction) {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No image file uploaded' });
@@ -144,7 +144,7 @@ export class ResourcesController {
       return res.json({ imageUrl: result.secure_url });
     } catch (error: unknown) {
       console.error('Error in uploadCheatSheetImage:', error);
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Image upload failed' });
+      return _next(error);
     }
   }
 }

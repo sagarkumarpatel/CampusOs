@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { DsaService } from './service';
 import { problemSchema, statusSchema } from './schema';
 
 const service = new DsaService();
 
 export class DsaController {
-  async getDashboard(req: Request, res: Response) {
+  async getDashboard(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -15,11 +15,11 @@ export class DsaController {
       const stats = await service.getDsaDashboard(userId);
       return res.json(stats);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async getCategories(req: Request, res: Response) {
+  async getCategories(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -29,11 +29,11 @@ export class DsaController {
       const categories = await service.getCategoriesList(userId);
       return res.json(categories);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async getProblems(req: Request, res: Response) {
+  async getProblems(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const categoryId = req.params.id as string;
@@ -44,11 +44,11 @@ export class DsaController {
       const problems = await service.getCategoryProblems(categoryId, userId);
       return res.json(problems);
     } catch (error: unknown) {
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async createProblem(req: Request, res: Response) {
+  async createProblem(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -69,11 +69,11 @@ export class DsaController {
       if (error instanceof Error && error.name === 'ZodError') {
         return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async updateProblem(req: Request, res: Response) {
+  async updateProblem(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const problemId = req.params.id as string;
@@ -99,11 +99,11 @@ export class DsaController {
       if (error instanceof Error && error.name === 'ZodError') {
         return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async deleteProblem(req: Request, res: Response) {
+  async deleteProblem(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const problemId = req.params.id as string;
@@ -117,11 +117,11 @@ export class DsaController {
       if ((error instanceof Error ? error.message : 'Unknown error') === 'Forbidden') {
         return res.status(403).json({ error: 'Forbidden' });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 
-  async updateStatus(req: Request, res: Response) {
+  async updateStatus(req: Request, res: Response, _next: NextFunction) {
     try {
       const userId = req.user?.userId;
       const problemId = req.params.id as string;
@@ -141,7 +141,7 @@ export class DsaController {
       if (error instanceof Error && error.name === 'ZodError') {
         return res.status(400).json({ error: (error as any).errors });
       }
-      return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+      return _next(error);
     }
   }
 }
