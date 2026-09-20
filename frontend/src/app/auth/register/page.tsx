@@ -44,12 +44,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex-1 min-h-screen bg-[#121212] flex items-center justify-center p-6 relative overflow-hidden font-sans selection:bg-[#FF5722]/30 selection:text-white">
+    <div className="flex-1 min-h-screen bg-[#ffffff] flex items-center justify-center p-6 relative overflow-hidden font-sans selection:bg-[#FF5722]/30 selection:text-black">
       
       {/* Back Button */}
       <Link 
         href="/#top" 
-        className="absolute top-6 left-6 z-50 flex items-center gap-2 text-[#AAAAAA] hover:text-white transition-colors"
+        className="absolute top-6 left-6 z-50 flex items-center gap-2 text-[#555555] hover:text-black transition-colors"
       >
         <ArrowLeft className="w-5 h-5" />
         <span className="text-sm font-medium">Back to Home</span>
@@ -59,12 +59,12 @@ export default function RegisterPage() {
       <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#FF5722]/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#FF5722]/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
 
-      <div className="w-full max-w-lg bg-[#1E1E1E] border border-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl relative z-10">
+      <div className="w-full max-w-lg bg-[#FAFAFA] border border-black/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl relative z-10">
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-extrabold text-white tracking-tight">
+          <Link href="/" className="text-3xl font-extrabold text-black tracking-tight">
             CampusOS
           </Link>
-          <p className="text-sm text-[#AAAAAA] mt-2">Create your student or mentor account</p>
+          <p className="text-sm text-[#555555] mt-2">Create your student or mentor account</p>
         </div>
 
         {error && (
@@ -97,54 +97,54 @@ export default function RegisterPage() {
         </div>
 
         <div className="flex items-center mb-6">
-          <div className="flex-1 border-t border-white/10"></div>
-          <span className="px-4 text-xs text-[#AAAAAA] uppercase tracking-wider">or register with email</span>
-          <div className="flex-1 border-t border-white/10"></div>
+          <div className="flex-1 border-t border-black/10"></div>
+          <span className="px-4 text-xs text-[#555555] uppercase tracking-wider">or register with email</span>
+          <div className="flex-1 border-t border-black/10"></div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">First Name</label>
+              <label className="block text-xs font-semibold text-[#555555] uppercase tracking-wider mb-2">First Name</label>
               <input
                 type="text"
                 {...register('firstName')}
                 placeholder="Jane"
-                className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white placeholder-[#AAAAAA]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-[#ffffff] border border-black/10 text-black placeholder-[#555555]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
               />
               {errors.firstName && <p className="text-rose-400 text-xs mt-1.5">{errors.firstName.message}</p>}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">Last Name</label>
+              <label className="block text-xs font-semibold text-[#555555] uppercase tracking-wider mb-2">Last Name</label>
               <input
                 type="text"
                 {...register('lastName')}
                 placeholder="Doe"
-                className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white placeholder-[#AAAAAA]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-[#ffffff] border border-black/10 text-black placeholder-[#555555]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
               />
               {errors.lastName && <p className="text-rose-400 text-xs mt-1.5">{errors.lastName.message}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">Email Address</label>
+            <label className="block text-xs font-semibold text-[#555555] uppercase tracking-wider mb-2">Email Address</label>
             <input
               type="email"
               {...register('email')}
               placeholder="jane.doe@university.edu"
-              className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white placeholder-[#AAAAAA]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-[#ffffff] border border-black/10 text-black placeholder-[#555555]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
             />
             {errors.email && <p className="text-rose-400 text-xs mt-1.5">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider mb-2">Password</label>
+            <label className="block text-xs font-semibold text-[#555555] uppercase tracking-wider mb-2">Password</label>
             <input
               type="password"
               {...register('password')}
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl bg-[#242424] border border-white/10 text-white placeholder-[#AAAAAA]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-[#ffffff] border border-black/10 text-black placeholder-[#555555]/50 focus:outline-none focus:border-[#FF5722]/50 transition-colors text-sm"
             />
             {errors.password && <p className="text-rose-400 text-xs mt-1.5">{errors.password.message}</p>}
           </div>
@@ -160,7 +160,7 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <p className="text-center text-xs text-[#AAAAAA] mt-8">
+        <p className="text-center text-xs text-[#555555] mt-8">
           Already have an account?{' '}
           <Link href="/auth/login" className="text-[#FF5722] hover:underline font-medium">
             Login here
